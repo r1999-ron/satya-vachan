@@ -3,9 +3,14 @@ import { ArrowRight, BookOpen, Mic2, Sparkles } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ProgressRing } from "@/components/ui/ProgressRing";
 import { StatusBadge } from "@/components/ui/StatusBadge";
+import { defaultTransformationExample, getSeedLearnedWords } from "@/data/demo";
+import { getWordOfTheDay } from "@/data/words";
 import { formatReadableDate } from "@/lib/dates";
 
 export default function HomePage() {
+  const todayWord = getWordOfTheDay();
+  const seedWords = getSeedLearnedWords();
+
   return (
     <div className="grid gap-5 md:grid-cols-[1.35fr_0.85fr] md:items-start">
       <section className="space-y-5">
@@ -20,8 +25,7 @@ export default function HomePage() {
             </p>
             <p className="max-w-xl text-sm leading-7 text-zinc-600 dark:text-zinc-400">
               Practice polished everyday Hindi, build a personal vocabulary, and
-              keep a light daily rhythm. The full coaching loop arrives in later
-              modules; this foundation is ready for it.
+              keep a light daily rhythm with today&apos;s refined word.
             </p>
           </div>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
@@ -44,18 +48,66 @@ export default function HomePage() {
         </GlassCard>
 
         <GlassCard interactive className="animate-floatIn [animation-delay:90ms]">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="min-w-0">
-              <StatusBadge>Preview</StatusBadge>
-              <h2 className="mt-3 text-xl font-bold text-ink dark:text-white">
-                Today&apos;s refinement card
-              </h2>
-              <p className="mt-2 text-wrap-anywhere text-sm leading-7 text-zinc-650 dark:text-zinc-300">
-                “Bahut achchha” can become “ati uttam” when the moment calls for
-                a more graceful register.
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+            <div className="min-w-0 space-y-4">
+              <StatusBadge>Word of the Day</StatusBadge>
+              <div className="grid gap-3 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
+                <div className="min-w-0 rounded-2xl border border-white/60 bg-white/40 p-4 dark:border-white/12 dark:bg-white/5">
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
+                    Common
+                  </p>
+                  <p className="mt-1 text-wrap-anywhere text-2xl font-bold text-zinc-700 dark:text-zinc-200">
+                    {todayWord.common}
+                  </p>
+                </div>
+                <ArrowRight
+                  className="hidden text-amber-600 sm:block"
+                  size={22}
+                  aria-hidden="true"
+                />
+                <div className="min-w-0 rounded-2xl border border-amber-200/80 bg-amber-100/55 p-4 shadow-glow dark:border-amber-300/25 dark:bg-amber-300/10">
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-amber-800 dark:text-amber-200">
+                    Refined
+                  </p>
+                  <p className="mt-1 text-wrap-anywhere text-2xl font-bold text-ink dark:text-white">
+                    {todayWord.elevated}
+                  </p>
+                </div>
+              </div>
+              <p className="text-wrap-anywhere text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                {todayWord.englishMeaning}
+              </p>
+              <div className="space-y-2 text-sm leading-7 text-zinc-600 dark:text-zinc-300">
+                <p className="text-wrap-anywhere">
+                  <span className="font-bold text-zinc-800 dark:text-zinc-100">
+                    Simple:
+                  </span>{" "}
+                  {todayWord.simpleExample}
+                </p>
+                <p className="text-wrap-anywhere">
+                  <span className="font-bold text-amber-800 dark:text-amber-200">
+                    Polished:
+                  </span>{" "}
+                  {todayWord.elevatedExample}
+                </p>
+              </div>
+              <p className="text-wrap-anywhere text-sm leading-7 text-zinc-600 dark:text-zinc-400">
+                {todayWord.usageNote}
               </p>
             </div>
-            <ProgressRing value={72} label="Elegance preview" />
+            <ProgressRing value={78} label="Word refinement preview" />
+          </div>
+        </GlassCard>
+
+        <GlassCard className="animate-floatIn [animation-delay:120ms]">
+          <StatusBadge tone="green">Demo Transformation</StatusBadge>
+          <div className="mt-4 grid gap-4 lg:grid-cols-2">
+            <p className="text-wrap-anywhere rounded-2xl border border-white/60 bg-white/35 p-4 text-sm leading-7 text-zinc-700 dark:border-white/12 dark:bg-white/5 dark:text-zinc-300">
+              {defaultTransformationExample.transcript}
+            </p>
+            <p className="text-wrap-anywhere rounded-2xl border border-emerald-200/70 bg-emerald-100/40 p-4 text-sm font-semibold leading-7 text-emerald-950 dark:border-emerald-300/20 dark:bg-emerald-300/10 dark:text-emerald-100">
+              {defaultTransformationExample.naturalPolishedVersion}
+            </p>
           </div>
         </GlassCard>
       </section>
@@ -81,10 +133,10 @@ export default function HomePage() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
-                Learned words
+                Seed words ready
               </p>
               <p className="mt-1 text-3xl font-bold text-ink dark:text-white">
-                0 saved
+                {seedWords.length} words
               </p>
             </div>
             <Link
@@ -94,6 +146,23 @@ export default function HomePage() {
             >
               <BookOpen size={22} aria-hidden="true" />
             </Link>
+          </div>
+        </GlassCard>
+
+        <GlassCard className="animate-floatIn [animation-delay:230ms]">
+          <StatusBadge tone="rose">Challenge Preview</StatusBadge>
+          <p className="mt-3 text-wrap-anywhere text-sm font-semibold leading-7 text-zinc-700 dark:text-zinc-300">
+            {todayWord.challengePrompt}
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {todayWord.tags.slice(0, 3).map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full bg-white/45 px-3 py-1 text-xs font-bold text-zinc-600 dark:bg-white/8 dark:text-zinc-300"
+              >
+                {tag}
+              </span>
+            ))}
           </div>
         </GlassCard>
       </aside>
