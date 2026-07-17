@@ -61,7 +61,7 @@ export function TransformationResult({
           </p>
         </div>
         <div className="grid gap-3">
-          {result.replacements.map((replacement) => {
+          {result.replacements.length > 0 ? result.replacements.map((replacement) => {
             const saveableWord = getSaveableWord(result, replacement);
 
             return (
@@ -73,7 +73,12 @@ export function TransformationResult({
                 onSave={onSaveWord}
               />
             );
-          })}
+          }) : (
+            <div className="rounded-2xl border border-white/60 bg-white/36 p-4 text-sm font-semibold leading-7 text-zinc-600 dark:border-white/12 dark:bg-white/5 dark:text-zinc-300">
+              No specific word swaps were needed this time. The full sentence
+              polish is still ready above.
+            </div>
+          )}
         </div>
       </div>
     </section>
@@ -101,8 +106,8 @@ function VersionPanel({
     <div
       className={
         primary
-          ? "rounded-2xl border border-emerald-200/75 bg-emerald-100/45 p-5 shadow-glow dark:border-emerald-300/20 dark:bg-emerald-300/10"
-          : "rounded-2xl border border-white/60 bg-white/34 p-5 dark:border-white/12 dark:bg-white/5"
+          ? "rounded-2xl border border-emerald-200/75 bg-emerald-100/45 p-5 shadow-glow transition duration-200 hover:-translate-y-0.5 dark:border-emerald-300/20 dark:bg-emerald-300/10"
+          : "rounded-2xl border border-white/60 bg-white/34 p-5 transition duration-200 hover:-translate-y-0.5 dark:border-white/12 dark:bg-white/5"
       }
     >
       <div className="flex flex-wrap items-center justify-between gap-3">

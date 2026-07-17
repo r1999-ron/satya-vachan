@@ -36,6 +36,11 @@ textarea {
   -webkit-tap-highlight-color: transparent;
 }
 
+button,
+a {
+  touch-action: manipulation;
+}
+
 .text-balance {
   text-wrap: balance;
 }
@@ -43,6 +48,50 @@ textarea {
 .text-wrap-anywhere {
   overflow-wrap: anywhere;
   word-break: normal;
+}
+
+.glass-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform: translateX(-120%);
+  background: linear-gradient(
+    110deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.28) 46%,
+    transparent 58%
+  );
+}
+
+.glass-shine:hover::after,
+.glass-shine:focus-within::after {
+  animation: shimmer 1.35s ease-in-out;
+}
+
+.loading-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-120%);
+  background: linear-gradient(
+    110deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.35) 46%,
+    transparent 58%
+  );
+  animation: shimmer 1.35s ease-in-out infinite;
+  animation-delay: var(--sheen-delay, 0ms);
 }
 
 @media (prefers-reduced-motion: reduce) {

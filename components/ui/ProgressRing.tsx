@@ -24,7 +24,8 @@ export function ProgressRing({
       style={{ width: size, height: size }}
       aria-label={`${label}: ${clampedValue}%`}
     >
-      <svg className="-rotate-90" viewBox="0 0 80 80" aria-hidden="true">
+      <span className="absolute inset-1 rounded-full bg-amber-300/10 blur-md dark:bg-amber-200/10" />
+      <svg className="relative -rotate-90" viewBox="0 0 80 80" aria-hidden="true">
         <circle
           cx="40"
           cy="40"
@@ -47,7 +48,7 @@ export function ProgressRing({
           className="text-amber-500 transition-[stroke-dashoffset] duration-700 motion-reduce:transition-none"
         />
       </svg>
-      <span className="absolute text-sm font-bold text-ink dark:text-white">
+      <span className="absolute text-sm font-bold tabular-nums text-ink dark:text-white">
         {clampedValue}
       </span>
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
+import type { CSSProperties } from "react";
 import {
   ArrowRight,
   CheckCircle2,
@@ -502,6 +503,10 @@ export default function PracticePage() {
             className="mt-5 min-h-36 w-full resize-y rounded-2xl border border-white/60 bg-white/55 p-4 text-sm font-semibold leading-7 text-ink outline-none transition placeholder:text-zinc-400 focus:border-amber-300 focus:ring-2 focus:ring-amber-400/35 disabled:cursor-not-allowed disabled:opacity-70 dark:border-white/12 dark:bg-white/8 dark:text-white dark:placeholder:text-zinc-500"
           />
 
+          {!state.transcript.trim() && !isBusy ? (
+            <EmptyTranscriptNudge />
+          ) : null}
+
           {state.transformError ? (
             <ErrorNotice
               actionLabel={canRetryTransformation ? "Retry polish" : undefined}
@@ -762,7 +767,7 @@ function LoadingState({ status }: { status: PracticeStatus }) {
           };
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
       <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-amber-400/18 text-amber-700 shadow-glow dark:text-amber-200">
         <WandSparkles
           className="motion-safe:animate-spin"
@@ -770,14 +775,43 @@ function LoadingState({ status }: { status: PracticeStatus }) {
           aria-hidden="true"
         />
       </span>
-      <div className="min-w-0">
+      <div className="min-w-0 flex-1">
         <h2 className="text-lg font-bold text-ink dark:text-white">
           {copy.title}
         </h2>
         <p className="mt-1 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
           {copy.body}
         </p>
+        <LoadingMeter />
       </div>
+    </div>
+  );
+}
+
+function LoadingMeter() {
+  return (
+    <div className="mt-4 grid gap-2" aria-hidden="true">
+      {[0, 1, 2].map((index) => (
+        <span
+          key={index}
+          className="loading-sheen h-2 rounded-full bg-white/55 dark:bg-white/10"
+          style={{ "--sheen-delay": `${index * 120}ms` } as CSSProperties}
+        />
+      ))}
+    </div>
+  );
+}
+
+function EmptyTranscriptNudge() {
+  return (
+    <div className="mt-4 rounded-2xl border border-dashed border-sky-200/80 bg-sky-100/35 p-4 dark:border-sky-300/20 dark:bg-sky-300/10">
+      <p className="text-sm font-bold text-sky-950 dark:text-sky-100">
+        No transcript yet
+      </p>
+      <p className="mt-1 text-sm leading-6 text-sky-950/80 dark:text-sky-100/85">
+        Choose a hint, type a sentence, or record one above. Your text will stay
+        editable before polishing.
+      </p>
     </div>
   );
 }

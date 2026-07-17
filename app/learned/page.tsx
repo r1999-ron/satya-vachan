@@ -166,6 +166,17 @@ export default function LearnedPage() {
             </div>
           </div>
         </div>
+        {savedWords.length === 0 ? (
+          <div className="mt-5 rounded-2xl border border-dashed border-amber-200/80 bg-amber-100/35 p-4 dark:border-amber-300/20 dark:bg-amber-300/10">
+            <p className="text-sm font-bold text-amber-950 dark:text-amber-100">
+              Starter words are visible for now.
+            </p>
+            <p className="mt-1 text-sm leading-6 text-amber-950/80 dark:text-amber-100/85">
+              Words saved from Practice or Daily Challenge will rise to the top
+              with a saved source badge.
+            </p>
+          </div>
+        ) : null}
       </GlassCard>
 
       <GlassCard className="animate-floatIn [animation-delay:80ms]">
@@ -271,6 +282,7 @@ export default function LearnedPage() {
           {filteredWords.map((word, index) => (
             <LearnedWordCard
               key={word.id}
+              index={index}
               word={word}
               onRemove={() => handleRemove(word, index)}
             />
@@ -316,9 +328,11 @@ export default function LearnedPage() {
 }
 
 function LearnedWordCard({
+  index,
   onRemove,
   word,
 }: {
+  index: number;
   onRemove: () => void;
   word: LearnedWord;
 }) {
@@ -326,7 +340,11 @@ function LearnedWordCard({
   const canRemove = Boolean(word.id);
 
   return (
-    <GlassCard interactive className="p-5">
+    <GlassCard
+      interactive
+      className="p-5"
+      style={{ animationDelay: `${Math.min(index, 8) * 45}ms` }}
+    >
       <div className="flex h-full flex-col gap-4">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
@@ -451,7 +469,8 @@ function EmptyDictionaryState({
 }) {
   return (
     <GlassCard className="animate-floatIn">
-      <div className="flex items-start gap-3">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex items-start gap-3">
         <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-sky-400/16 text-sky-800 dark:text-sky-200">
           <BookOpen size={19} aria-hidden="true" />
         </span>
@@ -474,6 +493,10 @@ function EmptyDictionaryState({
               Clear filters
             </button>
           ) : null}
+        </div>
+        </div>
+        <div className="grid min-h-20 min-w-24 place-items-center rounded-2xl border border-dashed border-white/70 bg-white/35 text-sm font-bold text-zinc-500 dark:border-white/12 dark:bg-white/5 dark:text-zinc-400">
+          0 shown
         </div>
       </div>
     </GlassCard>

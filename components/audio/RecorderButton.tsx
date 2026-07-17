@@ -312,7 +312,7 @@ export function RecorderButton({
               {Array.from({ length: 18 }).map((_, index) => (
                 <span
                   key={index}
-                  className="w-full rounded-full bg-rose-400/70 motion-safe:animate-scorePulse dark:bg-rose-300/80"
+                  className="w-full origin-bottom rounded-full bg-rose-400/70 motion-safe:animate-wave dark:bg-rose-300/80"
                   style={{
                     height: `${28 + ((index * 17) % 48)}%`,
                     animationDelay: `${index * 60}ms`,

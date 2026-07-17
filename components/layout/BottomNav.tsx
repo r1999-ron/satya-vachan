@@ -32,7 +32,7 @@ export function BottomNav() {
                 "flex min-h-14 flex-col items-center justify-center gap-1 rounded-xl px-1 text-[11px] font-semibold transition",
                 "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500",
                 active
-                  ? "bg-amber-500 text-white shadow-lg shadow-amber-500/25"
+                  ? "bg-amber-500 text-white shadow-lg shadow-amber-500/25 motion-safe:animate-savePop"
                   : "text-zinc-700 hover:bg-white/70 active:scale-95 dark:text-zinc-200 dark:hover:bg-white/10",
               )}
             >

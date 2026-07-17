@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useReducer, useState } from "react";
+import type { CSSProperties } from "react";
 import {
   AlertCircle,
   BookOpenCheck,
@@ -467,6 +468,10 @@ export default function ChallengePage() {
               className="mt-5 min-h-36 w-full resize-y rounded-2xl border border-white/60 bg-white/55 p-4 text-sm font-semibold leading-7 text-ink outline-none transition placeholder:text-zinc-400 focus:border-amber-300 focus:ring-2 focus:ring-amber-400/35 disabled:cursor-not-allowed disabled:opacity-70 dark:border-white/12 dark:bg-white/8 dark:text-white dark:placeholder:text-zinc-500"
             />
 
+            {!state.transcript.trim() && !isBusy ? (
+              <EmptyTranscriptNudge targetWord={todayWord.elevated} />
+            ) : null}
+
             <div className="mt-4">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
                 Starters
@@ -813,7 +818,7 @@ function LoadingState({ status }: { status: ChallengeStatus }) {
         };
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
       <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-amber-400/18 text-amber-700 shadow-glow dark:text-amber-200">
         <Sparkles
           className="motion-safe:animate-spin"
@@ -821,14 +826,43 @@ function LoadingState({ status }: { status: ChallengeStatus }) {
           aria-hidden="true"
         />
       </span>
-      <div className="min-w-0">
+      <div className="min-w-0 flex-1">
         <h2 className="text-lg font-bold text-ink dark:text-white">
           {copy.title}
         </h2>
         <p className="mt-1 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
           {copy.body}
         </p>
+        <LoadingMeter />
       </div>
+    </div>
+  );
+}
+
+function LoadingMeter() {
+  return (
+    <div className="mt-4 grid gap-2" aria-hidden="true">
+      {[0, 1, 2].map((index) => (
+        <span
+          key={index}
+          className="loading-sheen h-2 rounded-full bg-white/55 dark:bg-white/10"
+          style={{ "--sheen-delay": `${index * 120}ms` } as CSSProperties}
+        />
+      ))}
+    </div>
+  );
+}
+
+function EmptyTranscriptNudge({ targetWord }: { targetWord: string }) {
+  return (
+    <div className="mt-4 rounded-2xl border border-dashed border-sky-200/80 bg-sky-100/35 p-4 dark:border-sky-300/20 dark:bg-sky-300/10">
+      <p className="text-sm font-bold text-sky-950 dark:text-sky-100">
+        No challenge sentence yet
+      </p>
+      <p className="mt-1 text-sm leading-6 text-sky-950/80 dark:text-sky-100/85">
+        Pick a starter, type your own line, or record one. Just make sure{" "}
+        <span className="font-bold">{targetWord}</span> appears naturally.
+      </p>
     </div>
   );
 }
@@ -847,12 +881,13 @@ function ChallengeFeedback({
   return (
     <GlassCard
       className={cn(
-        "animate-floatIn",
+        "animate-floatIn relative",
         successful
-          ? "border-emerald-200/80 bg-emerald-100/45 dark:border-emerald-300/25 dark:bg-emerald-300/10"
+          ? "border-emerald-200/80 bg-emerald-100/45 motion-safe:animate-savePop dark:border-emerald-300/25 dark:bg-emerald-300/10"
           : "border-amber-200/80 bg-amber-100/45 dark:border-amber-300/25 dark:bg-amber-300/10",
       )}
     >
+      {successful ? <CompletionBurst /> : null}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex min-w-0 gap-3">
           <span
@@ -917,6 +952,27 @@ function ChallengeFeedback({
         </div>
       ) : null}
     </GlassCard>
+  );
+}
+
+function CompletionBurst() {
+  return (
+    <div
+      className="pointer-events-none absolute right-5 top-5 hidden h-16 w-20 overflow-hidden sm:block"
+      aria-hidden="true"
+    >
+      {[0, 1, 2, 3, 4].map((index) => (
+        <span
+          key={index}
+          className="absolute size-2 rounded-full bg-emerald-400/80 shadow-glow motion-safe:animate-savePop"
+          style={{
+            left: `${12 + index * 13}px`,
+            top: `${index % 2 === 0 ? 8 : 26}px`,
+            animationDelay: `${index * 70}ms`,
+          }}
+        />
+      ))}
+    </div>
   );
 }
 

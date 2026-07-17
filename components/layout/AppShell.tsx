@@ -16,7 +16,7 @@ export function AppShell({ children }: AppShellProps) {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.75),transparent_40%),linear-gradient(135deg,rgba(255,255,255,0.62),rgba(255,250,240,0.2))] dark:bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.08),transparent_38%)]" />
       </div>
       <Header />
-      <main className="mx-auto w-full max-w-6xl px-4 pb-28 pt-5 sm:px-6 md:pb-12 md:pt-8">
+      <main className="mx-auto w-full max-w-6xl px-4 pb-28 pt-5 motion-safe:animate-pageIn sm:px-6 md:pb-12 md:pt-8">
         {children}
       </main>
       <BottomNav />
