@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     template: "%s | Satya-Vachan",
   },
   description:
-    "An AI-powered Hindi expression coach for polished, graceful spoken Hindi.",
+    "Thoughtful Hindi practice, one sentence at a time.",
   applicationName: "Satya-Vachan",
   metadataBase: new URL("https://satya-vachan.vercel.app"),
 };

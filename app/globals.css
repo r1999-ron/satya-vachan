@@ -19,8 +19,14 @@ body {
   min-height: 100vh;
   margin: 0;
   overflow-x: hidden;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  letter-spacing: -0.01em;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgba(245, 158, 11, 0.24);
 }
 
 button,
@@ -42,30 +48,6 @@ a {
 .text-wrap-anywhere {
   overflow-wrap: anywhere;
   word-break: normal;
-}
-
-.glass-shine {
-  position: relative;
-  overflow: hidden;
-}
-
-.glass-shine::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  transform: translateX(-120%);
-  background: linear-gradient(
-    110deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.28) 46%,
-    transparent 58%
-  );
-}
-
-.glass-shine:hover::after,
-.glass-shine:focus-within::after {
-  animation: shimmer 1.35s ease-in-out;
 }
 
 .loading-sheen {

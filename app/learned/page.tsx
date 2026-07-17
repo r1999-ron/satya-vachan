@@ -13,14 +13,12 @@ import {
   X,
 } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { ProgressRing } from "@/components/ui/ProgressRing";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import { emptyStateExamples, getStarterWords } from "@/data/demo";
 import { wordCorpus } from "@/data/words";
 import { useLearnedWords } from "@/lib/storage";
 import type { LearnedWord, WordEntry } from "@/types";
 
-type SourceFilter = "all" | LearnedWord["source"];
+type SourceFilter = "all" | Exclude<LearnedWord["source"], "seed">;
 type DifficultyFilter = "all" | WordEntry["difficulty"] | "uncategorized";
 type RemovedWord = {
   word: LearnedWord;
@@ -29,7 +27,6 @@ type RemovedWord = {
 
 const sourceLabels: Record<SourceFilter, string> = {
   all: "All sources",
-  seed: "Seed",
   practice: "Practice",
   challenge: "Challenge",
   manual: "Manual",
@@ -52,9 +49,10 @@ export default function LearnedPage() {
   const [tagFilter, setTagFilter] = useState("all");
   const [removedWord, setRemovedWord] = useState<RemovedWord | null>(null);
 
-  const sortedWords = useMemo(() => sortLearnedWords(words), [words]);
-  const savedWords = sortedWords.filter((word) => word.source !== "seed");
-  const starterWords = getStarterWords(6);
+  const sortedWords = useMemo(
+    () => sortLearnedWords(words.filter((word) => word.source !== "seed")),
+    [words],
+  );
   const trimmedQuery = query.trim().toLocaleLowerCase();
 
   const tagOptions = useMemo(() => {
@@ -96,7 +94,6 @@ export default function LearnedPage() {
     [difficultyFilter, sourceFilter, sortedWords, tagFilter, trimmedQuery],
   );
 
-  const progressValue = Math.min(100, Math.round((savedWords.length / 12) * 100));
   const hasActiveFilters =
     Boolean(trimmedQuery) ||
     sourceFilter !== "all" ||
@@ -139,49 +136,20 @@ export default function LearnedPage() {
   return (
     <div className="space-y-5">
       <GlassCard className="animate-floatIn p-6 sm:p-8">
-        <StatusBadge tone="green">Learned Words</StatusBadge>
-        <div className="mt-5 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-2xl space-y-4">
-            <h1 className="text-balance text-3xl font-bold text-ink sm:text-4xl dark:text-white">
-              Your personal Hindi refinement list.
-            </h1>
-            <p className="text-sm leading-7 text-zinc-700 dark:text-zinc-300">
-              Search saved vocabulary, revisit examples, and start a focused
-              practice round from any word on this device.
-            </p>
-          </div>
-          <div className="flex items-center gap-4 rounded-2xl border border-white/60 bg-white/45 p-4 dark:border-white/12 dark:bg-white/5">
-            <ProgressRing
-              value={progressValue}
-              label="Saved word progress"
-              size={72}
-            />
-            <div>
-              <p className="text-sm font-bold text-ink dark:text-white">
-                {savedWords.length} saved
-              </p>
-              <p className="mt-1 text-xs leading-5 text-zinc-600 dark:text-zinc-400">
-                Goal: 12 words for a confident starter dictionary.
-              </p>
-            </div>
-          </div>
+        <p className="text-sm font-bold text-amber-700 dark:text-amber-300">Vocabulary</p>
+        <div className="mt-5 flex items-end justify-between gap-4">
+          <h1 className="text-balance text-4xl font-bold tracking-[-0.035em] text-ink sm:text-5xl dark:text-white">
+            My Words
+          </h1>
+          <p className="pb-1 text-sm font-bold text-zinc-500 dark:text-zinc-400">
+            {sortedWords.length} saved
+          </p>
         </div>
-        {savedWords.length === 0 ? (
-          <div className="mt-5 rounded-2xl border border-dashed border-amber-200/80 bg-amber-100/35 p-4 dark:border-amber-300/20 dark:bg-amber-300/10">
-            <p className="text-sm font-bold text-amber-950 dark:text-amber-100">
-              Starter words are visible for now.
-            </p>
-            <p className="mt-1 text-sm leading-6 text-amber-950/80 dark:text-amber-100/85">
-              Words saved from Practice or Daily Challenge will rise to the top
-              with a saved source badge.
-            </p>
-          </div>
-        ) : null}
       </GlassCard>
 
       <GlassCard className="animate-floatIn [animation-delay:80ms]">
-        <div className="grid gap-3 lg:grid-cols-[1.4fr_0.8fr_0.8fr_0.8fr_auto] lg:items-end">
-          <label className="block">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-[1.4fr_0.8fr_0.8fr_0.8fr_auto] lg:items-end">
+          <label className="col-span-2 block lg:col-span-1">
             <span className="text-xs font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
               Search
             </span>
@@ -190,7 +158,7 @@ export default function LearnedPage() {
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search word, meaning, alternative, or example"
+                placeholder="Search your words"
                 className="min-w-0 flex-1 bg-transparent text-sm font-semibold text-ink outline-none placeholder:text-zinc-400 dark:text-white dark:placeholder:text-zinc-500"
               />
               {query ? (
@@ -245,17 +213,11 @@ export default function LearnedPage() {
           </button>
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center gap-2">
-          <StatusBadge tone="blue">
-            {filteredWords.length} shown
-          </StatusBadge>
-          <StatusBadge tone="gold">
-            {sortedWords.length} total
-          </StatusBadge>
-          <StatusBadge tone="green">
-            Newest saved first
-          </StatusBadge>
-        </div>
+        {hasActiveFilters ? (
+          <p className="mt-4 text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+            {filteredWords.length} {filteredWords.length === 1 ? "match" : "matches"}
+          </p>
+        ) : null}
       </GlassCard>
 
       {removedWord ? (
@@ -296,33 +258,6 @@ export default function LearnedPage() {
         />
       )}
 
-      {sortedWords.length === 0 ? (
-        <GlassCard>
-          <StatusBadge tone="blue">Starter Words</StatusBadge>
-          <p className="mt-3 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
-            Your saved list is empty right now. These corpus words are here as a
-            gentle reference until you save your own.
-          </p>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {starterWords.map((word) => (
-              <StarterWordCard key={word.id} word={word} />
-            ))}
-          </div>
-        </GlassCard>
-      ) : null}
-
-      <div className="grid gap-5 md:grid-cols-2">
-        {emptyStateExamples.map((example) => (
-          <GlassCard key={example.title}>
-            <h2 className="text-lg font-bold text-ink dark:text-white">
-              {example.title}
-            </h2>
-            <p className="mt-2 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
-              {example.body}
-            </p>
-          </GlassCard>
-        ))}
-      </div>
     </div>
   );
 }
@@ -381,7 +316,7 @@ function LearnedWordCard({
             <InfoLine label="Instead of" value={word.simpleAlternative} />
           ) : null}
           <InfoLine label="Example" value={word.exampleSentence} />
-          <InfoLine label="Saved" value={formatSavedDate(word.savedAt)} />
+          <InfoLine label="Added" value={formatSavedDate(word.savedAt)} />
         </div>
 
         {meta ? (
@@ -468,9 +403,8 @@ function EmptyDictionaryState({
   onClear: () => void;
 }) {
   return (
-    <GlassCard className="animate-floatIn">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex items-start gap-3">
+    <GlassCard className="animate-floatIn p-7 sm:p-8">
+      <div className="flex items-start gap-4">
         <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-sky-400/16 text-sky-800 dark:text-sky-200">
           <BookOpen size={19} aria-hidden="true" />
         </span>
@@ -480,8 +414,8 @@ function EmptyDictionaryState({
           </h2>
           <p className="mt-2 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
             {hasActiveFilters && hasWords
-              ? "Try a broader search or remove one of the filters."
-              : "Practice and challenge vocabulary will appear here once you save it."}
+              ? "Try a broader search or clear the filters."
+              : "Words you save while practicing will appear here."}
           </p>
           {hasActiveFilters ? (
             <button
@@ -492,42 +426,18 @@ function EmptyDictionaryState({
               <RotateCcw size={15} aria-hidden="true" />
               Clear filters
             </button>
-          ) : null}
-        </div>
-        </div>
-        <div className="grid min-h-20 min-w-24 place-items-center rounded-2xl border border-dashed border-white/70 bg-white/35 text-sm font-bold text-zinc-500 dark:border-white/12 dark:bg-white/5 dark:text-zinc-400">
-          0 shown
+          ) : (
+            <Link
+              href="/practice"
+              className="mt-4 inline-flex min-h-10 items-center justify-center gap-2 rounded-2xl bg-ink px-4 py-2 text-xs font-bold text-white transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ink/40 focus:ring-offset-2 active:translate-y-0 dark:bg-white dark:text-zinc-950"
+            >
+              Start practicing
+              <ArrowRight size={15} aria-hidden="true" />
+            </Link>
+          )}
         </div>
       </div>
     </GlassCard>
-  );
-}
-
-function StarterWordCard({ word }: { word: WordEntry }) {
-  return (
-    <div className="min-w-0 rounded-2xl border border-white/60 bg-white/35 p-4 dark:border-white/12 dark:bg-white/5">
-      <div className="flex items-center gap-2 text-sm font-bold">
-        <span className="text-wrap-anywhere text-zinc-600 dark:text-zinc-300">
-          {word.common}
-        </span>
-        <span className="text-amber-600" aria-hidden="true">
-          -
-        </span>
-        <span className="text-wrap-anywhere text-ink dark:text-white">
-          {word.elevated}
-        </span>
-      </div>
-      <p className="mt-2 text-wrap-anywhere text-xs leading-6 text-zinc-600 dark:text-zinc-400">
-        {word.englishMeaning}
-      </p>
-      <Link
-        href={`/practice?word=${encodeURIComponent(word.elevated)}`}
-        className="mt-3 inline-flex min-h-9 items-center gap-2 rounded-2xl bg-white/60 px-3 py-2 text-xs font-bold text-ink transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-amber-400/45 dark:bg-white/10 dark:text-white"
-      >
-        Practice
-        <ArrowRight size={14} aria-hidden="true" />
-      </Link>
-    </div>
   );
 }
 

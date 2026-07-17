@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "r
 import type { CSSProperties } from "react";
 import {
   ArrowRight,
-  CheckCircle2,
   Clock3,
   Keyboard,
   RotateCcw,
@@ -97,7 +96,7 @@ const initialPracticeState: PracticeState = {
 };
 
 export default function PracticePage() {
-  const hints = getDemoHints(6);
+  const hints = getDemoHints(3);
   const resultRef = useRef<HTMLDivElement | null>(null);
   const { saveWord, words } = useLearnedWords();
   const { history, saveHistory } = usePracticeHistory();
@@ -362,27 +361,20 @@ export default function PracticePage() {
   return (
     <div className="space-y-5">
       <GlassCard className="animate-floatIn p-6 sm:p-8">
-        <div className="flex flex-wrap items-center gap-2">
-          <StatusBadge tone="blue">Practice</StatusBadge>
-          <StatusBadge tone={state.status === "resultReady" ? "green" : "gold"}>
-            {statusLabel(state.status)}
-          </StatusBadge>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="text-sm font-bold text-amber-700 dark:text-amber-300">Practice</p>
+          {state.status !== "idle" ? (
+            <StatusBadge tone={state.status === "resultReady" ? "green" : "gold"}>
+              {statusLabel(state.status)}
+            </StatusBadge>
+          ) : null}
         </div>
-        <PracticeSteps
-          failedStep={state.lastFailedStep}
-          hasTranscript={Boolean(state.transcript.trim())}
-          status={state.status}
-        />
 
         <div className="mt-6 grid gap-5 lg:grid-cols-[1fr_19rem]">
           <div className="min-w-0 space-y-4">
-            <h1 className="text-balance text-3xl font-bold text-ink sm:text-4xl dark:text-white">
-              Refine an everyday Hindi sentence.
+            <h1 className="text-balance text-4xl font-bold tracking-[-0.035em] text-ink sm:text-5xl dark:text-white">
+              Say it your way.
             </h1>
-            <p className="max-w-2xl text-sm leading-7 text-zinc-700 dark:text-zinc-300">
-              Record or type a line, confirm the transcript, then let the coach
-              polish the same meaning into clearer Hindi.
-            </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 type="button"
@@ -391,18 +383,20 @@ export default function PracticePage() {
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-ink px-5 py-3 text-sm font-bold text-white shadow-lg shadow-zinc-900/15 transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ink/40 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:bg-zinc-500 disabled:shadow-none dark:bg-white dark:text-zinc-950 dark:focus:ring-white/40 dark:focus:ring-offset-zinc-950"
               >
                 <WandSparkles size={18} aria-hidden="true" />
-                Try demo sentence
+                Load an example
                 <ArrowRight size={17} aria-hidden="true" />
               </button>
-              <button
-                type="button"
-                onClick={handleReset}
-                disabled={isBusy && !state.result}
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-white/60 bg-white/55 px-5 py-3 text-sm font-bold text-ink shadow-sm backdrop-blur-md transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/12 dark:bg-white/10 dark:text-white dark:focus:ring-offset-zinc-950"
-              >
-                <RotateCcw size={17} aria-hidden="true" />
-                New practice
-              </button>
+              {state.status !== "idle" || state.transcript.trim() ? (
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  disabled={isBusy && !state.result}
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-white/60 bg-white/55 px-5 py-3 text-sm font-bold text-ink shadow-sm backdrop-blur-md transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/12 dark:bg-white/10 dark:text-white dark:focus:ring-offset-zinc-950"
+                >
+                  <RotateCcw size={17} aria-hidden="true" />
+                  New practice
+                </button>
+              ) : null}
             </div>
           </div>
 
@@ -451,13 +445,7 @@ export default function PracticePage() {
               aria-hidden="true"
             />
             <div className="min-w-0">
-              <h2 className="text-xl font-bold text-ink dark:text-white">
-                Hint prompts
-              </h2>
-              <p className="mt-2 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
-                Tap a prompt to fill the transcript, then polish it with the
-                transformer.
-              </p>
+              <h2 className="text-xl font-bold text-ink dark:text-white">Quick starts</h2>
             </div>
           </div>
           <div className="mt-5">
@@ -484,17 +472,9 @@ export default function PracticePage() {
                 <Keyboard size={19} aria-hidden="true" />
               </span>
               <div>
-                <h2 className="text-xl font-bold text-ink dark:text-white">
-                  Editable transcript
-                </h2>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Confirm or revise before polishing.
-                </p>
+                <h2 className="text-xl font-bold text-ink dark:text-white">Your sentence</h2>
               </div>
             </div>
-            <StatusBadge tone={canTransform ? "green" : "rose"}>
-              {state.transcript.trim().length} chars
-            </StatusBadge>
           </div>
 
           <textarea
@@ -504,10 +484,6 @@ export default function PracticePage() {
             placeholder="Type your Hindi sentence here..."
             className="mt-5 min-h-36 w-full resize-y rounded-2xl border border-white/60 bg-white/55 p-4 text-sm font-semibold leading-7 text-ink outline-none transition placeholder:text-zinc-400 focus:border-amber-300 focus:ring-2 focus:ring-amber-400/35 disabled:cursor-not-allowed disabled:opacity-70 dark:border-white/12 dark:bg-white/8 dark:text-white dark:placeholder:text-zinc-500"
           />
-
-          {!state.transcript.trim() && !isBusy ? (
-            <EmptyTranscriptNudge />
-          ) : null}
 
           {state.transformError ? (
             <ErrorNotice
@@ -701,56 +677,6 @@ function practiceReducer(
   }
 }
 
-function PracticeSteps({
-  failedStep,
-  hasTranscript,
-  status,
-}: {
-  failedStep: FailedStep;
-  hasTranscript: boolean;
-  status: PracticeStatus;
-}) {
-  const steps = [
-    { key: "capture", label: "Capture" },
-    { key: "transcript", label: "Confirm" },
-    { key: "transform", label: "Polish" },
-    { key: "listen", label: "Listen & save" },
-  ] as const;
-  const activeIndex = getStepIndex(status, failedStep, hasTranscript);
-
-  return (
-    <div className="mt-5 grid gap-2 sm:grid-cols-4">
-      {steps.map((step, index) => {
-        const isComplete = activeIndex > index;
-        const isActive = activeIndex === index;
-
-        return (
-          <div
-            key={step.key}
-            className={cn(
-              "flex min-h-12 items-center gap-2 rounded-2xl border px-3 py-2 text-xs font-bold transition",
-              isActive
-                ? "border-amber-300/70 bg-amber-100/60 text-amber-950 shadow-glow dark:border-amber-300/25 dark:bg-amber-300/12 dark:text-amber-100"
-                : isComplete
-                  ? "border-emerald-200/70 bg-emerald-100/55 text-emerald-950 dark:border-emerald-300/25 dark:bg-emerald-300/12 dark:text-emerald-100"
-                  : "border-white/55 bg-white/35 text-zinc-600 dark:border-white/12 dark:bg-white/5 dark:text-zinc-400",
-            )}
-          >
-            <span className="grid size-7 shrink-0 place-items-center rounded-full bg-white/55 dark:bg-white/10">
-              {isComplete ? (
-                <CheckCircle2 size={15} aria-hidden="true" />
-              ) : (
-                index + 1
-              )}
-            </span>
-            <span>{step.label}</span>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
 function LoadingState({ status }: { status: PracticeStatus }) {
   const copy =
     status === "transcribing"
@@ -800,20 +726,6 @@ function LoadingMeter() {
           style={{ "--sheen-delay": `${index * 120}ms` } as CSSProperties}
         />
       ))}
-    </div>
-  );
-}
-
-function EmptyTranscriptNudge() {
-  return (
-    <div className="mt-4 rounded-2xl border border-dashed border-sky-200/80 bg-sky-100/35 p-4 dark:border-sky-300/20 dark:bg-sky-300/10">
-      <p className="text-sm font-bold text-sky-950 dark:text-sky-100">
-        No transcript yet
-      </p>
-      <p className="mt-1 text-sm leading-6 text-sky-950/80 dark:text-sky-100/85">
-        Choose a hint, type a sentence, or record one above. Your text will stay
-        editable before polishing.
-      </p>
     </div>
   );
 }
@@ -877,7 +789,7 @@ function RecentPracticeHistory({
   history: PracticeHistoryItem[];
   onUse: (item: PracticeHistoryItem) => void;
 }) {
-  const compactHistory = history.slice(0, 3);
+  const compactHistory = history.slice(0, 2);
 
   if (compactHistory.length === 0) {
     return null;
@@ -894,9 +806,6 @@ function RecentPracticeHistory({
             <h2 className="text-lg font-bold text-ink dark:text-white">
               Recent practice
             </h2>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              Reuse a previous sentence as your next starting point.
-            </p>
           </div>
         </div>
         <StatusBadge tone="blue">{history.length} saved</StatusBadge>
@@ -932,39 +841,6 @@ function RecentPracticeHistory({
       </div>
     </GlassCard>
   );
-}
-
-function getStepIndex(
-  status: PracticeStatus,
-  failedStep: FailedStep,
-  hasTranscript: boolean,
-) {
-  switch (status) {
-    case "transcriptReady":
-      return 1;
-    case "transforming":
-      return 2;
-    case "resultReady":
-    case "ttsLoading":
-      return 3;
-    case "recording":
-    case "recorded":
-    case "transcribing":
-      return 0;
-    case "error":
-      if (failedStep === "transformation") {
-        return 2;
-      }
-
-      if (hasTranscript) {
-        return 1;
-      }
-
-      return 0;
-    case "idle":
-    default:
-      return 0;
-  }
 }
 
 function statusLabel(status: PracticeStatus) {

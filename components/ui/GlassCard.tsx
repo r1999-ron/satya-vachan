@@ -13,11 +13,11 @@ export function GlassCard({
   return (
     <div
       className={cn(
-        "glass-shine rounded-2xl border border-white/60 bg-white/62 p-5 shadow-glass backdrop-blur-xl motion-safe:animate-cardIn",
-        "dark:border-white/12 dark:bg-zinc-950/48",
-        "supports-[backdrop-filter]:bg-white/48 dark:supports-[backdrop-filter]:bg-zinc-950/42",
+        "rounded-[1.75rem] border border-zinc-900/[0.07] bg-white/72 p-5 shadow-[0_18px_55px_rgba(36,29,20,0.07)] backdrop-blur-xl motion-safe:animate-cardIn",
+        "dark:border-white/12 dark:bg-zinc-950/58",
+        "supports-[backdrop-filter]:bg-white/64 dark:supports-[backdrop-filter]:bg-zinc-950/50",
         interactive &&
-          "transition duration-200 hover:-translate-y-0.5 hover:border-amber-200 hover:shadow-glow active:translate-y-0 active:scale-[0.995]",
+          "transition duration-200 hover:-translate-y-0.5 hover:border-amber-300/70 hover:shadow-[0_22px_60px_rgba(36,29,20,0.11)] active:translate-y-0 active:scale-[0.995]",
         className,
       )}
       {...props}

@@ -56,9 +56,6 @@ export function TransformationResult({
           <h2 className="text-xl font-bold text-ink dark:text-white">
             Word upgrades
           </h2>
-          <p className="mt-1 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
-            Save the replacements you want to keep in your personal list.
-          </p>
         </div>
         <div className="grid gap-3">
           {result.replacements.length > 0 ? result.replacements.map((replacement) => {
