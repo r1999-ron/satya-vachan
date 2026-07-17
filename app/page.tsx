@@ -236,7 +236,7 @@ function Word({ value, featured = false }: { value: string; featured?: boolean }
           : "rounded-2xl bg-zinc-900/[0.035] px-4 py-4 ring-1 ring-zinc-900/[0.06] [@media(max-width:767px)_and_(max-height:720px)]:px-3 [@media(max-width:767px)_and_(max-height:720px)]:py-3 sm:px-5 sm:py-5 dark:bg-white/5 dark:ring-white/10"
       }
     >
-      <p className="text-wrap-anywhere text-[1.35rem] font-bold leading-tight text-ink [@media(max-width:767px)_and_(max-height:720px)]:text-lg sm:text-3xl dark:text-white">
+      <p lang="hi" className="text-wrap-anywhere text-[1.35rem] font-bold leading-tight text-ink [@media(max-width:767px)_and_(max-height:720px)]:text-lg sm:text-3xl dark:text-white">
         {value}
       </p>
     </div>
@@ -257,7 +257,7 @@ function Example({
       <p className={featured ? "text-xs font-bold text-amber-700 dark:text-amber-300" : "text-xs font-bold text-zinc-500 dark:text-zinc-400"}>
         {label}
       </p>
-      <p className="mt-1 text-wrap-anywhere text-sm font-semibold leading-7 text-zinc-700 dark:text-zinc-200">
+      <p lang="hi" className="mt-1 text-wrap-anywhere text-sm font-semibold leading-7 text-zinc-700 dark:text-zinc-200">
         {value}
       </p>
     </div>

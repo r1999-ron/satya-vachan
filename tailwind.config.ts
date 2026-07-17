@@ -25,6 +25,7 @@ const config: Config = {
         glow: "0 0 32px rgba(245, 158, 11, 0.24)",
       },
       fontFamily: {
+        hindi: ["var(--font-martel)", "var(--font-noto-sans)", "system-ui", "sans-serif"],
         sans: ["var(--font-noto-sans)", "system-ui", "sans-serif"],
         mono: [
           "var(--font-noto-sans-mono)",

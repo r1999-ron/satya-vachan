@@ -478,6 +478,7 @@ export default function PracticePage() {
           </div>
 
           <textarea
+            lang="hi"
             value={state.transcript}
             disabled={isBusy}
             onChange={(event) => handleTranscriptChange(event.target.value)}
@@ -755,14 +756,14 @@ function PracticeContextPrompt({
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <StatusBadge tone="green">Practice word</StatusBadge>
-            <span className="text-wrap-anywhere text-lg font-bold text-ink dark:text-white">
+            <span lang="hi" className="text-wrap-anywhere text-lg font-bold text-ink dark:text-white">
               {word}
             </span>
           </div>
-          <p className="mt-2 text-wrap-anywhere text-sm font-semibold leading-6 text-emerald-950 dark:text-emerald-100">
+          <p lang="hi" className="mt-2 text-wrap-anywhere text-sm font-semibold leading-6 text-emerald-950 dark:text-emerald-100">
             {meaning}
           </p>
-          <p className="mt-1 text-wrap-anywhere text-xs leading-5 text-emerald-900 dark:text-emerald-100">
+          <p lang="hi" className="mt-1 text-wrap-anywhere text-xs leading-5 text-emerald-900 dark:text-emerald-100">
             {note}
           </p>
         </div>
@@ -819,10 +820,10 @@ function RecentPracticeHistory({
           >
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0">
-                <p className="text-wrap-anywhere text-sm font-bold leading-6 text-ink dark:text-white">
+                <p lang="hi" className="text-wrap-anywhere text-sm font-bold leading-6 text-ink dark:text-white">
                   {item.transcript}
                 </p>
-                <p className="mt-1 line-clamp-2 text-wrap-anywhere text-xs leading-5 text-zinc-600 dark:text-zinc-400">
+                <p lang="hi" className="mt-1 line-clamp-2 text-wrap-anywhere text-xs leading-5 text-zinc-600 dark:text-zinc-400">
                   {item.naturalPolishedVersion}
                 </p>
               </div>

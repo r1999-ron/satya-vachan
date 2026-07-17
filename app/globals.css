@@ -38,6 +38,11 @@ nav,
   font-family: var(--font-noto-sans), system-ui, sans-serif;
 }
 
+[lang="hi"],
+.font-hindi {
+  font-family: var(--font-martel), var(--font-noto-sans), system-ui, sans-serif;
+}
+
 ::selection {
   background: rgba(245, 158, 11, 0.24);
 }
