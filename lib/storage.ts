@@ -212,7 +212,9 @@ export function loadLearnedWords(): LearnedWord[] {
     return getSeedLearnedWords();
   }
 
-  return loadStoredLearnedWords();
+  const storedWords = loadStoredLearnedWords();
+
+  return storedWords.length > 0 ? storedWords : getSeedLearnedWords();
 }
 
 export function saveLearnedWord(
@@ -226,13 +228,19 @@ export function saveLearnedWord(
     return loadLearnedWords();
   }
 
-  const existingWords = loadStoredLearnedWords();
-  const duplicateIndex = existingWords.findIndex(
+  const storedWords = loadStoredLearnedWords();
+  const duplicateCheckWords =
+    storedWords.length > 0 ? storedWords : getSeedLearnedWords();
+  const duplicateIndex = duplicateCheckWords.findIndex(
     (existing) => existing.word.trim().toLocaleLowerCase() === word.toLocaleLowerCase(),
   );
 
   if (duplicateIndex >= 0) {
-    const nextWords = [...existingWords];
+    if (storedWords.length === 0) {
+      return getSeedLearnedWords();
+    }
+
+    const nextWords = [...storedWords];
     const existing = nextWords[duplicateIndex];
     nextWords[duplicateIndex] = {
       ...existing,
@@ -253,7 +261,7 @@ export function saveLearnedWord(
     savedAt: getTodayKey(),
     source,
   };
-  const nextWords = [newWord, ...existingWords];
+  const nextWords = [newWord, ...storedWords];
 
   writeJson(STORAGE_KEYS.learnedWords, nextWords);
   return nextWords;

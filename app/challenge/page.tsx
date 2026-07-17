@@ -115,7 +115,6 @@ export default function ChallengePage() {
     () =>
       words.some(
         (word) =>
-          word.source !== "seed" &&
           word.word.trim().toLocaleLowerCase() ===
             todayWord.elevated.toLocaleLowerCase(),
       ),

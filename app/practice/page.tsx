@@ -108,9 +108,7 @@ export default function PracticePage() {
   const savedWordKeys = useMemo(
     () =>
       new Set(
-        words
-          .filter((word) => word.source !== "seed")
-          .map((word) => word.word.trim().toLocaleLowerCase()),
+        words.map((word) => word.word.trim().toLocaleLowerCase()),
       ),
     [words],
   );
@@ -286,7 +284,11 @@ export default function PracticePage() {
       transcript: demoTranscript,
       selectedHint: demoTranscript,
     });
-    void runTransformation(demoTranscript);
+    saveHistory(defaultTransformationExample);
+    dispatch({
+      type: "transformation_succeeded",
+      result: defaultTransformationExample,
+    });
   };
 
   const handleUsePracticeContext = () => {
