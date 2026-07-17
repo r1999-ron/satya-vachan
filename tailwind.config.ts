@@ -6,7 +6,10 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./lib/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  darkMode: "media",
+  // Keep the current product theme consistently light across browsers.
+  // Dark variants are only enabled if a future theme control adds a `.dark`
+  // class explicitly, rather than following the browser/OS preference.
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
