@@ -1,4 +1,6 @@
-import { Volume2 } from "lucide-react";
+"use client";
+
+import { AudioPlayer } from "@/components/audio/AudioPlayer";
 import { EleganceScore } from "@/components/practice/EleganceScore";
 import { WordReplacementCard } from "@/components/practice/WordReplacementCard";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -27,11 +29,14 @@ export function TransformationResult({
           label="Natural polished"
           text={result.naturalPolishedVersion}
           tone="primary"
+          variant="natural"
+          autoPrepare
         />
         <VersionPanel
           label="More elevated"
           text={result.elevatedVersion}
           tone="secondary"
+          variant="elevated"
         />
       </div>
 
@@ -75,10 +80,14 @@ function VersionPanel({
   label,
   text,
   tone,
+  variant,
+  autoPrepare = false,
 }: {
+  autoPrepare?: boolean;
   label: string;
   text: string;
   tone: "primary" | "secondary";
+  variant: "natural" | "elevated";
 }) {
   const primary = tone === "primary";
 
@@ -100,15 +109,13 @@ function VersionPanel({
         >
           {label}
         </p>
-        <button
-          type="button"
-          disabled
-          className="inline-flex min-h-10 items-center gap-2 rounded-2xl border border-white/60 bg-white/45 px-3 py-2 text-xs font-bold text-zinc-500 opacity-75 dark:border-white/12 dark:bg-white/8 dark:text-zinc-400"
-          title="Audio playback arrives in the TTS module"
-        >
-          <Volume2 size={16} aria-hidden="true" />
-          Listen soon
-        </button>
+        <AudioPlayer
+          autoPrepare={autoPrepare}
+          key={`${variant}-${text}`}
+          label="Listen"
+          text={text}
+          variant={variant}
+        />
       </div>
       <p
         className={
