@@ -33,6 +33,12 @@ export type PracticeResponse = {
   saveableWords: LearnedWordInput[];
 };
 
+export type RecordingResult = {
+  blob: Blob;
+  mimeType: string;
+  durationMs: number;
+};
+
 export type LearnedWord = {
   id: string;
   word: string;

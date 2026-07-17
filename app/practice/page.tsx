@@ -5,10 +5,13 @@ import {
   AlertCircle,
   ArrowRight,
   Keyboard,
-  Mic2,
   RotateCcw,
   WandSparkles,
 } from "lucide-react";
+import {
+  RecorderButton,
+  type RecorderState,
+} from "@/components/audio/RecorderButton";
 import { HintPromptList } from "@/components/practice/HintPromptList";
 import { TransformationResult } from "@/components/practice/TransformationResult";
 import { GlassCard } from "@/components/ui/GlassCard";
@@ -18,9 +21,14 @@ import {
   getDemoHints,
   getMockPracticeResponse,
 } from "@/data/demo";
+import { formatRecordingDuration } from "@/lib/audio";
 import { useLearnedWords } from "@/lib/storage";
 import { cn } from "@/lib/utils";
-import type { LearnedWordInput, PracticeResponse } from "@/types";
+import type {
+  LearnedWordInput,
+  PracticeResponse,
+  RecordingResult,
+} from "@/types";
 
 type PracticeStatus = "idle" | "ready" | "processing" | "completed" | "error";
 
@@ -33,6 +41,11 @@ export default function PracticePage() {
   const [status, setStatus] = useState<PracticeStatus>("idle");
   const [selectedHint, setSelectedHint] = useState("");
   const [transcript, setTranscript] = useState("");
+  const [recordedAudio, setRecordedAudio] = useState<RecordingResult | null>(
+    null,
+  );
+  const [recordingNotice, setRecordingNotice] = useState("");
+  const [recorderResetKey, setRecorderResetKey] = useState(0);
   const [result, setResult] = useState<PracticeResponse | null>(null);
   const [error, setError] = useState("");
 
@@ -94,6 +107,7 @@ export default function PracticePage() {
       setSelectedHint(hint);
       setTranscript(hint);
       setResult(null);
+      setRecordingNotice("");
       setError("");
       setStatus("ready");
     },
@@ -108,6 +122,7 @@ export default function PracticePage() {
     setTranscript(value);
     setSelectedHint(hints.includes(value) ? value : "");
     setResult(null);
+    setRecordingNotice("");
     setError("");
     setStatus(value.trim() ? "ready" : "idle");
   };
@@ -120,6 +135,7 @@ export default function PracticePage() {
     const demoTranscript = defaultTransformationExample.transcript;
     setSelectedHint(demoTranscript);
     setTranscript(demoTranscript);
+    setRecordingNotice("");
     runMockTransformation(demoTranscript);
   };
 
@@ -128,8 +144,49 @@ export default function PracticePage() {
     setStatus("idle");
     setSelectedHint("");
     setTranscript("");
+    setRecordedAudio(null);
+    setRecordingNotice("");
+    setRecorderResetKey((key) => key + 1);
     setResult(null);
     setError("");
+  };
+
+  const handleRecordingComplete = (recording: RecordingResult) => {
+    setRecordedAudio(recording);
+    setRecordingNotice(
+      `Recording saved locally (${formatRecordingDuration(
+        recording.durationMs,
+      )}). Transcription connects in Module 7; type or edit the transcript below for now.`,
+    );
+    setError("");
+  };
+
+  const handleRecorderStateChange = (nextState: RecorderState) => {
+    if (nextState === "recording") {
+      setRecordedAudio(null);
+      setRecordingNotice("");
+      setError("");
+    }
+  };
+
+  const handleDiscardRecording = () => {
+    setRecordedAudio(null);
+    setRecordingNotice("");
+  };
+
+  const handleUseRecording = (recording: RecordingResult) => {
+    setRecordedAudio(recording);
+
+    if (transcript.trim()) {
+      runMockTransformation();
+      return;
+    }
+
+    setStatus("ready");
+    setError("");
+    setRecordingNotice(
+      "Recording is ready for upload. Until transcription arrives, type the spoken sentence below to polish it.",
+    );
   };
 
   const handleSaveWord = (word: LearnedWordInput) => {
@@ -187,20 +244,32 @@ export default function PracticePage() {
           </div>
 
           <div className="rounded-2xl border border-dashed border-white/70 bg-white/35 p-5 dark:border-white/15 dark:bg-white/5">
-            <div className="flex items-center gap-3">
-              <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-amber-400/18 text-amber-700 shadow-glow dark:text-amber-200">
-                <Mic2 size={21} aria-hidden="true" />
-              </span>
-              <div className="min-w-0">
-                <p className="text-sm font-bold text-ink dark:text-white">
-                  Recording placeholder
-                </p>
-                <p className="mt-1 text-xs leading-5 text-zinc-600 dark:text-zinc-400">
-                  Microphone recording arrives in Module 6. This screen uses
-                  typed text and mock transformations.
-                </p>
+            <RecorderButton
+              key={recorderResetKey}
+              disabled={isProcessing}
+              onDiscard={handleDiscardRecording}
+              onProcess={handleUseRecording}
+              onRecordingComplete={handleRecordingComplete}
+              onStateChange={handleRecorderStateChange}
+            />
+            {recordedAudio ? (
+              <div className="mt-3 flex flex-wrap gap-2">
+                <StatusBadge tone="green">
+                  Audio ready
+                </StatusBadge>
+                <StatusBadge tone="blue">
+                  {formatRecordingDuration(recordedAudio.durationMs)}
+                </StatusBadge>
+                <StatusBadge tone="gold">
+                  {recordedAudio.mimeType}
+                </StatusBadge>
               </div>
-            </div>
+            ) : null}
+            {recordingNotice ? (
+              <p className="mt-3 text-xs leading-5 text-zinc-600 dark:text-zinc-400">
+                {recordingNotice}
+              </p>
+            ) : null}
           </div>
         </div>
       </GlassCard>
