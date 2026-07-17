@@ -70,10 +70,13 @@ export async function requestJson<T>(
 
     if (!response.ok) {
       const errorPayload = getApiErrorPayload(payload);
-      throw new ApiRequestError(errorPayload?.error ?? fallbackMessage, {
-        code: errorPayload?.code,
-        status: response.status,
-      });
+      throw new ApiRequestError(
+        getClientSafeErrorMessage(errorPayload) ?? fallbackMessage,
+        {
+          code: errorPayload?.code,
+          status: response.status,
+        },
+      );
     }
 
     if (validate) {
@@ -138,4 +141,16 @@ function getApiErrorPayload(value: unknown): ApiErrorPayload | null {
   }
 
   return null;
+}
+
+function getClientSafeErrorMessage(payload: ApiErrorPayload | null) {
+  if (!payload) {
+    return null;
+  }
+
+  if (payload.code === "MISSING_API_KEY") {
+    return "AI service is unavailable right now. Static screens, typed practice, saved words, and local progress still work.";
+  }
+
+  return payload.error;
 }

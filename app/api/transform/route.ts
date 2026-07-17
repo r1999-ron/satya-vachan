@@ -73,7 +73,7 @@ export async function POST(request: Request) {
     }
 
     return jsonApiError(
-      "Transformation is unavailable because OPENAI_API_KEY is not configured.",
+      "AI service is unavailable. Static screens, saved words, and local progress still work.",
       "MISSING_API_KEY",
       503,
     );

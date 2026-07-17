@@ -22,7 +22,7 @@ function getDurationMs(formData: FormData) {
 export async function POST(request: Request) {
   if (!isOpenAIConfigured()) {
     return jsonApiError(
-      "Transcription is unavailable because OPENAI_API_KEY is not configured.",
+      "AI service is unavailable. Type your sentence to keep practicing.",
       "MISSING_API_KEY",
       503,
     );

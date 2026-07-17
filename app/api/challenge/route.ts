@@ -74,7 +74,7 @@ export async function POST(request: Request) {
     }
 
     return jsonApiError(
-      "Challenge validation is unavailable because OPENAI_API_KEY is not configured.",
+      "AI challenge validation is unavailable. Use the typed local fallback to keep practicing.",
       "MISSING_API_KEY",
       503,
     );

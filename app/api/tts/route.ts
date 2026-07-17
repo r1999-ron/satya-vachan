@@ -48,7 +48,7 @@ export async function POST(request: Request) {
 
   if (!isOpenAIConfigured()) {
     return jsonApiError(
-      "Text-to-speech is unavailable because OPENAI_API_KEY is not configured.",
+      "AI audio is unavailable. Your polished text is still available.",
       "MISSING_API_KEY",
       503,
     );
