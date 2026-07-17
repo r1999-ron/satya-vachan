@@ -27,7 +27,7 @@ const EMPTY_STREAK: StreakState = {
 
 const PRACTICE_HISTORY_LIMIT = 10;
 
-function canUseLocalStorage() {
+export function canUseLocalStorage() {
   if (typeof window === "undefined") {
     return false;
   }

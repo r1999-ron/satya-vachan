@@ -6,7 +6,6 @@ import {
   BookOpenCheck,
   CheckCircle2,
   Keyboard,
-  RefreshCw,
   RotateCcw,
   Sparkles,
   Trophy,
@@ -16,14 +15,21 @@ import {
   RecorderButton,
   type RecorderState,
 } from "@/components/audio/RecorderButton";
+import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ProgressRing } from "@/components/ui/ProgressRing";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { getWordOfTheDay } from "@/data/words";
+import { requestJson } from "@/lib/api-client";
 import { formatRecordingDuration, recordingToFile } from "@/lib/audio";
 import { getTodayKey } from "@/lib/dates";
 import { useLearnedWords, useStreak } from "@/lib/storage";
 import { cn } from "@/lib/utils";
+import {
+  isRecord,
+  normalizeChallengeResponse,
+  validateTranscript,
+} from "@/lib/validators";
 import type { ChallengeResponse, RecordingResult, WordEntry } from "@/types";
 
 type ChallengeStatus =
@@ -138,29 +144,22 @@ export default function ChallengePage() {
       formData.append("file", recordingToFile(recording));
       formData.append("durationMs", String(recording.durationMs));
 
-      const response = await fetch("/api/transcribe", {
+      const payload = await requestJson<{ transcript: string }>("/api/transcribe", {
         method: "POST",
         body: formData,
+        fallbackMessage: "Transcription failed. Please type your sentence.",
+        timeoutMs: 30_000,
+        validate: (value) => {
+          const transcript =
+            isRecord(value) && typeof value.transcript === "string"
+              ? value.transcript.trim()
+              : "";
+
+          return transcript ? { transcript } : null;
+        },
       });
-      const payload = await readJsonResponse<{
-        transcript?: string;
-        error?: string;
-        code?: string;
-      }>(response);
 
-      if (!response.ok) {
-        throw new Error(
-          payload.error ?? "Transcription failed. Please type your sentence.",
-        );
-      }
-
-      const nextTranscript = payload.transcript?.trim();
-
-      if (!nextTranscript) {
-        throw new Error(
-          "No speech was detected. Please try again or type your sentence.",
-        );
-      }
+      const nextTranscript = payload.transcript;
 
       dispatch({
         type: "transcription_succeeded",
@@ -183,45 +182,43 @@ export default function ChallengePage() {
   const validateChallenge = useCallback(
     async (nextTranscript = state.transcript) => {
       const cleanedTranscript = nextTranscript.trim();
+      const transcriptResult = validateTranscript(
+        cleanedTranscript,
+        800,
+      );
 
-      if (!cleanedTranscript) {
+      if (!transcriptResult.ok) {
         dispatch({
           type: "validation_failed",
-          error: "Add a sentence using today's word before checking it.",
+          error: transcriptResult.message,
         });
         return;
       }
 
       dispatch({
         type: "validation_started",
-        transcript: cleanedTranscript,
+        transcript: transcriptResult.value,
       });
 
       try {
-        const response = await fetch("/api/challenge", {
+        const payload = await requestJson<ChallengeResponse>("/api/challenge", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            transcript: cleanedTranscript,
+          body: {
+            transcript: transcriptResult.value,
             targetWord: todayWord.elevated,
             wordEntry: todayWord,
-          }),
+          },
+          fallbackMessage:
+            "Challenge validation is unavailable. Using a careful local check.",
+          timeoutMs: 30_000,
+          validate: (value) =>
+            normalizeChallengeResponse(value, transcriptResult.value),
         });
-        const payload = await readJsonResponse<
-          ChallengeResponse & { error?: string; code?: string }
-        >(response);
-
-        if (!response.ok) {
-          throw new Error(
-            payload.error ??
-              "Challenge validation is unavailable. Using a careful local check.",
-          );
-        }
 
         finishValidation(payload);
       } catch {
         finishValidation(
-          evaluateChallengeLocally(cleanedTranscript, todayWord),
+          evaluateChallengeLocally(transcriptResult.value, todayWord),
           "AI validation was unavailable, so this attempt used the local target-word check.",
         );
       }
@@ -424,7 +421,7 @@ export default function ChallengePage() {
             ) : null}
 
             {state.transcriptionError ? (
-              <InlineError
+              <ErrorNotice
                 actionLabel={
                   canRetryTranscription ? "Retry transcription" : undefined
                 }
@@ -499,7 +496,7 @@ export default function ChallengePage() {
             </div>
 
             {state.validationError ? (
-              <InlineError
+              <ErrorNotice
                 actionLabel={canRetryValidation ? "Retry check" : undefined}
                 message={state.validationError}
                 onAction={
@@ -952,35 +949,6 @@ function StatusTile({
   );
 }
 
-function InlineError({
-  actionLabel,
-  message,
-  onAction,
-}: {
-  actionLabel?: string;
-  message: string;
-  onAction?: () => void;
-}) {
-  return (
-    <div className="mt-4 rounded-2xl border border-rose-300/60 bg-rose-100/55 p-4 text-sm leading-6 text-rose-950 dark:border-rose-300/25 dark:bg-rose-300/12 dark:text-rose-100">
-      <div className="flex items-start gap-3">
-        <AlertCircle className="mt-0.5 shrink-0" size={18} aria-hidden="true" />
-        <p className="min-w-0 flex-1">{message}</p>
-      </div>
-      {actionLabel && onAction ? (
-        <button
-          type="button"
-          onClick={onAction}
-          className="mt-3 inline-flex min-h-10 items-center justify-center gap-2 rounded-2xl bg-rose-700 px-4 py-2 text-xs font-bold text-white transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-rose-400/45 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 dark:bg-rose-200 dark:text-rose-950 dark:focus:ring-offset-zinc-950"
-        >
-          <RefreshCw size={15} aria-hidden="true" />
-          {actionLabel}
-        </button>
-      ) : null}
-    </div>
-  );
-}
-
 function getSentenceStarters(wordEntry: WordEntry) {
   return [
     `Mera aaj ka ${wordEntry.elevated} hai...`,
@@ -1088,13 +1056,5 @@ function statusLabel(status: ChallengeStatus) {
     case "idle":
     default:
       return "Ready";
-  }
-}
-
-async function readJsonResponse<T>(response: Response): Promise<T> {
-  try {
-    return (await response.json()) as T;
-  } catch {
-    return {} as T;
   }
 }

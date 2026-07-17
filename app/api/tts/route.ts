@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
+import { jsonApiError } from "@/lib/api-errors";
 import { getOpenAIClient, isOpenAIConfigured } from "@/lib/openai";
+import { validateTtsText } from "@/lib/validators";
 import type { TtsResponse } from "@/types";
 
 export const runtime = "nodejs";
 
-const MAX_TTS_CHARS = 800;
 const TTS_MODEL = "gpt-4o-mini-tts";
 const TTS_VOICE = "sage";
 const TTS_INSTRUCTIONS =
@@ -17,17 +18,7 @@ type TtsRequestBody = {
   variant?: unknown;
 };
 
-type TtsErrorCode =
-  | "EMPTY_TEXT"
-  | "TEXT_TOO_LONG"
-  | "MISSING_API_KEY"
-  | "TTS_FAILED";
-
 const TTS_VARIANTS = new Set<TtsVariant>(["natural", "elevated"]);
-
-function errorResponse(error: string, code: TtsErrorCode, status: number) {
-  return NextResponse.json({ error, code }, { status });
-}
 
 export async function POST(request: Request) {
   let body: TtsRequestBody;
@@ -35,31 +26,28 @@ export async function POST(request: Request) {
   try {
     body = (await request.json()) as TtsRequestBody;
   } catch {
-    return errorResponse("Send a JSON body with text to speak.", "EMPTY_TEXT", 400);
+    return jsonApiError("Send a JSON body with text to speak.", "EMPTY_TEXT", 400);
   }
 
-  const text = typeof body.text === "string" ? body.text.trim() : "";
+  const textResult = validateTtsText(body.text);
 
-  if (!text) {
-    return errorResponse("Please add text before requesting audio.", "EMPTY_TEXT", 400);
-  }
-
-  if (text.length > MAX_TTS_CHARS) {
-    return errorResponse(
-      `Please keep TTS text under ${MAX_TTS_CHARS} characters.`,
-      "TEXT_TOO_LONG",
-      413,
+  if (!textResult.ok) {
+    return jsonApiError(
+      textResult.message,
+      textResult.message.includes("under") ? "TEXT_TOO_LONG" : "EMPTY_TEXT",
+      textResult.message.includes("under") ? 413 : 400,
     );
   }
 
+  const text = textResult.value;
   const variant = getVariant(body.variant);
 
   if (!variant) {
-    return errorResponse("Choose a recognized audio variant.", "TTS_FAILED", 400);
+    return jsonApiError("Choose a recognized audio variant.", "INVALID_REQUEST", 400);
   }
 
   if (!isOpenAIConfigured()) {
-    return errorResponse(
+    return jsonApiError(
       "Text-to-speech is unavailable because OPENAI_API_KEY is not configured.",
       "MISSING_API_KEY",
       503,
@@ -84,7 +72,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Satya-Vachan TTS failed", error);
 
-    return errorResponse(
+    return jsonApiError(
       "Audio generation failed. Your polished text is still available.",
       "TTS_FAILED",
       502,

@@ -2,12 +2,10 @@
 
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import {
-  AlertCircle,
   ArrowRight,
   CheckCircle2,
   Clock3,
   Keyboard,
-  RefreshCw,
   RotateCcw,
   WandSparkles,
 } from "lucide-react";
@@ -17,6 +15,7 @@ import {
 } from "@/components/audio/RecorderButton";
 import { HintPromptList } from "@/components/practice/HintPromptList";
 import { TransformationResult } from "@/components/practice/TransformationResult";
+import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import {
@@ -24,6 +23,7 @@ import {
   getDemoHints,
 } from "@/data/demo";
 import { wordCorpus } from "@/data/words";
+import { requestJson } from "@/lib/api-client";
 import { formatRecordingDuration, recordingToFile } from "@/lib/audio";
 import {
   type PracticeHistoryItem,
@@ -31,6 +31,11 @@ import {
   usePracticeHistory,
 } from "@/lib/storage";
 import { cn } from "@/lib/utils";
+import {
+  isRecord,
+  normalizePracticeResponse,
+  validateTranscript,
+} from "@/lib/validators";
 import type {
   LearnedWordInput,
   PracticeResponse,
@@ -158,36 +163,31 @@ export default function PracticePage() {
   const runTransformation = useCallback(
     async (nextTranscript = state.transcript) => {
       const cleanedTranscript = nextTranscript.trim();
+      const transcriptResult = validateTranscript(cleanedTranscript);
 
-      if (!cleanedTranscript) {
+      if (!transcriptResult.ok) {
         dispatch({
           type: "transformation_failed",
-          error: "Add a sentence first, then polish it.",
+          error: transcriptResult.message,
         });
         return;
       }
 
       dispatch({
         type: "transformation_started",
-        transcript: cleanedTranscript,
+        transcript: transcriptResult.value,
       });
 
       try {
-        const response = await fetch("/api/transform", {
+        const payload = await requestJson<PracticeResponse>("/api/transform", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ transcript: cleanedTranscript }),
+          body: { transcript: transcriptResult.value },
+          fallbackMessage:
+            "Transformation failed. Please retry with the same transcript.",
+          timeoutMs: 30_000,
+          validate: (value) =>
+            normalizePracticeResponse(value, transcriptResult.value),
         });
-        const payload = await readJsonResponse<
-          PracticeResponse & { error?: string; code?: string }
-        >(response);
-
-        if (!response.ok) {
-          throw new Error(
-            payload.error ??
-              "Transformation failed. Please retry with the same transcript.",
-          );
-        }
 
         saveHistory(payload);
         dispatch({ type: "transformation_succeeded", result: payload });
@@ -212,29 +212,22 @@ export default function PracticePage() {
       formData.append("file", recordingToFile(recording));
       formData.append("durationMs", String(recording.durationMs));
 
-      const response = await fetch("/api/transcribe", {
+      const payload = await requestJson<{ transcript: string }>("/api/transcribe", {
         method: "POST",
         body: formData,
+        fallbackMessage: "Transcription failed. Please type your sentence.",
+        timeoutMs: 30_000,
+        validate: (value) => {
+          const transcript =
+            isRecord(value) && typeof value.transcript === "string"
+              ? value.transcript.trim()
+              : "";
+
+          return transcript ? { transcript } : null;
+        },
       });
-      const payload = await readJsonResponse<{
-        transcript?: string;
-        error?: string;
-        code?: string;
-      }>(response);
 
-      if (!response.ok) {
-        throw new Error(
-          payload.error ?? "Transcription failed. Please type your sentence.",
-        );
-      }
-
-      const nextTranscript = payload.transcript?.trim();
-
-      if (!nextTranscript) {
-        throw new Error(
-          "No speech was detected. Please try again or type your sentence.",
-        );
-      }
+      const nextTranscript = payload.transcript;
 
       dispatch({
         type: "transcription_succeeded",
@@ -436,7 +429,7 @@ export default function PracticePage() {
               </p>
             ) : null}
             {state.transcriptionError ? (
-              <InlineError
+              <ErrorNotice
                 actionLabel={canRetryTranscription ? "Retry transcription" : undefined}
                 message={state.transcriptionError}
                 onAction={canRetryTranscription ? handleRetryTranscription : undefined}
@@ -510,7 +503,7 @@ export default function PracticePage() {
           />
 
           {state.transformError ? (
-            <InlineError
+            <ErrorNotice
               actionLabel={canRetryTransformation ? "Retry polish" : undefined}
               message={state.transformError}
               onAction={canRetryTransformation ? handleRetryTransformation : undefined}
@@ -839,35 +832,6 @@ function PracticeContextPrompt({
   );
 }
 
-function InlineError({
-  actionLabel,
-  message,
-  onAction,
-}: {
-  actionLabel?: string;
-  message: string;
-  onAction?: () => void;
-}) {
-  return (
-    <div className="mt-4 rounded-2xl border border-rose-300/60 bg-rose-100/55 p-4 text-sm leading-6 text-rose-950 dark:border-rose-300/25 dark:bg-rose-300/12 dark:text-rose-100">
-      <div className="flex items-start gap-3">
-        <AlertCircle className="mt-0.5 shrink-0" size={18} aria-hidden="true" />
-        <p className="min-w-0 flex-1">{message}</p>
-      </div>
-      {actionLabel && onAction ? (
-        <button
-          type="button"
-          onClick={onAction}
-          className="mt-3 inline-flex min-h-10 items-center justify-center gap-2 rounded-2xl bg-rose-700 px-4 py-2 text-xs font-bold text-white transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-rose-400/45 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 dark:bg-rose-200 dark:text-rose-950 dark:focus:ring-offset-zinc-950"
-        >
-          <RefreshCw size={15} aria-hidden="true" />
-          {actionLabel}
-        </button>
-      ) : null}
-    </div>
-  );
-}
-
 function RecentPracticeHistory({
   disabled,
   history,
@@ -988,13 +952,5 @@ function statusLabel(status: PracticeStatus) {
     case "idle":
     default:
       return "Idle";
-  }
-}
-
-async function readJsonResponse<T>(response: Response): Promise<T> {
-  try {
-    return (await response.json()) as T;
-  } catch {
-    return {} as T;
   }
 }

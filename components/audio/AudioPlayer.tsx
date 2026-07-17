@@ -9,7 +9,9 @@ import {
   RefreshCw,
   Volume2,
 } from "lucide-react";
+import { requestJson } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
+import { normalizeTtsResponse } from "@/lib/validators";
 import type { TtsResponse } from "@/types";
 
 type AudioVariant = "natural" | "elevated";
@@ -74,21 +76,14 @@ export function AudioPlayer({
     setError("");
 
     try {
-      const response = await fetch("/api/tts", {
+      const payload = await requestJson<TtsResponse>("/api/tts", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: trimmedText, variant }),
+        body: { text: trimmedText, variant },
         signal: controller.signal,
+        fallbackMessage: "Audio generation failed. Please try again.",
+        timeoutMs: 20_000,
+        validate: normalizeTtsResponse,
       });
-      const payload = await readJsonResponse<
-        TtsResponse & { error?: string; code?: string }
-      >(response);
-
-      if (!response.ok) {
-        throw new Error(
-          payload.error ?? "Audio generation failed. Please try again.",
-        );
-      }
 
       const blob = base64ToAudioBlob(payload.audioBase64, payload.mimeType);
       const nextUrl = URL.createObjectURL(blob);
@@ -251,14 +246,6 @@ function buttonLabel(status: PlayerStatus, label: string) {
     case "idle":
     default:
       return label;
-  }
-}
-
-async function readJsonResponse<T>(response: Response): Promise<T> {
-  try {
-    return (await response.json()) as T;
-  } catch {
-    return {} as T;
   }
 }
 

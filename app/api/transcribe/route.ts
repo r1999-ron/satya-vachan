@@ -1,47 +1,13 @@
 import { NextResponse } from "next/server";
+import { jsonApiError } from "@/lib/api-errors";
 import { getOpenAIClient, isOpenAIConfigured } from "@/lib/openai";
+import { validateAudioFile } from "@/lib/validators";
 
 export const runtime = "nodejs";
 
-const MAX_AUDIO_BYTES = 10 * 1024 * 1024;
 const TRANSCRIBE_MODEL = "gpt-4o-mini-transcribe";
 const HINDI_TRANSCRIPTION_PROMPT =
   "Yeh audio Hindi ya Hinglish mein ho sakta hai. Transcript ko natural Hindi, romanized Hindi, ya Devanagari mein wahi rakhein jo speaker ne kaha hai.";
-
-type TranscriptionErrorCode =
-  | "MISSING_FILE"
-  | "FILE_TOO_LARGE"
-  | "MISSING_API_KEY"
-  | "TRANSCRIPTION_FAILED";
-
-function errorResponse(
-  error: string,
-  code: TranscriptionErrorCode,
-  status: number,
-) {
-  return NextResponse.json({ error, code }, { status });
-}
-
-function isSupportedAudioFile(file: File) {
-  if (file.type.startsWith("audio/")) {
-    return true;
-  }
-
-  const lowerName = file.name.toLocaleLowerCase();
-  const supportedExtensions = [
-    ".flac",
-    ".m4a",
-    ".mp3",
-    ".mp4",
-    ".mpeg",
-    ".mpga",
-    ".ogg",
-    ".wav",
-    ".webm",
-  ];
-
-  return supportedExtensions.some((extension) => lowerName.endsWith(extension));
-}
 
 function getDurationMs(formData: FormData) {
   const rawDuration = formData.get("durationMs");
@@ -55,7 +21,7 @@ function getDurationMs(formData: FormData) {
 
 export async function POST(request: Request) {
   if (!isOpenAIConfigured()) {
-    return errorResponse(
+    return jsonApiError(
       "Transcription is unavailable because OPENAI_API_KEY is not configured.",
       "MISSING_API_KEY",
       503,
@@ -67,7 +33,7 @@ export async function POST(request: Request) {
   try {
     formData = await request.formData();
   } catch {
-    return errorResponse(
+    return jsonApiError(
       "Upload audio as multipart form data.",
       "MISSING_FILE",
       400,
@@ -75,34 +41,27 @@ export async function POST(request: Request) {
   }
 
   const file = formData.get("file");
+  const fileResult = validateAudioFile(file);
 
-  if (!(file instanceof File) || file.size === 0) {
-    return errorResponse(
-      "Please include a recorded audio file.",
-      "MISSING_FILE",
-      400,
-    );
-  }
-
-  if (file.size > MAX_AUDIO_BYTES) {
-    return errorResponse(
-      "Please keep recordings under 10 MB.",
-      "FILE_TOO_LARGE",
-      413,
-    );
-  }
-
-  if (!isSupportedAudioFile(file)) {
-    return errorResponse(
-      "Please upload a supported audio recording.",
-      "TRANSCRIPTION_FAILED",
-      415,
+  if (!fileResult.ok) {
+    return jsonApiError(
+      fileResult.message,
+      fileResult.message.includes("10 MB")
+        ? "FILE_TOO_LARGE"
+        : fileResult.message.includes("supported")
+          ? "TRANSCRIPTION_FAILED"
+          : "MISSING_FILE",
+      fileResult.message.includes("10 MB")
+        ? 413
+        : fileResult.message.includes("supported")
+          ? 415
+          : 400,
     );
   }
 
   try {
     const transcription = await getOpenAIClient().audio.transcriptions.create({
-      file,
+      file: fileResult.value,
       model: TRANSCRIBE_MODEL,
       language: "hi",
       response_format: "json",
@@ -111,7 +70,7 @@ export async function POST(request: Request) {
     const transcript = transcription.text.trim();
 
     if (!transcript) {
-      return errorResponse(
+      return jsonApiError(
         "No speech was detected. Please try again or type your sentence.",
         "TRANSCRIPTION_FAILED",
         422,
@@ -125,7 +84,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Satya-Vachan transcription failed", error);
 
-    return errorResponse(
+    return jsonApiError(
       "Transcription failed. Please try again or type your sentence.",
       "TRANSCRIPTION_FAILED",
       502,
