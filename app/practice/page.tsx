@@ -19,7 +19,6 @@ import { StatusBadge } from "@/components/ui/StatusBadge";
 import {
   defaultTransformationExample,
   getDemoHints,
-  getMockPracticeResponse,
 } from "@/data/demo";
 import { formatRecordingDuration, recordingToFile } from "@/lib/audio";
 import { useLearnedWords } from "@/lib/storage";
@@ -38,11 +37,9 @@ type PracticeStatus =
   | "completed"
   | "error";
 
-const PROCESSING_DELAY_MS = 650;
-
 export default function PracticePage() {
   const hints = getDemoHints(6);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const resultRef = useRef<HTMLDivElement | null>(null);
   const { saveWord, words } = useLearnedWords();
   const [status, setStatus] = useState<PracticeStatus>("idle");
   const [selectedHint, setSelectedHint] = useState("");
@@ -70,20 +67,18 @@ export default function PracticePage() {
   const isBusy = isProcessing || isTranscribing;
   const canSubmit = transcript.trim().length > 0 && !isBusy;
 
-  const clearPendingMock = useCallback(() => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
+  useEffect(() => {
+    if (result) {
+      resultRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }
-  }, []);
+  }, [result]);
 
-  useEffect(() => clearPendingMock, [clearPendingMock]);
-
-  const runMockTransformation = useCallback(
-    (nextTranscript = transcript) => {
+  const runTransformation = useCallback(
+    async (nextTranscript = transcript) => {
       const cleanedTranscript = nextTranscript.trim();
-
-      clearPendingMock();
 
       if (!cleanedTranscript) {
         setStatus("error");
@@ -93,16 +88,40 @@ export default function PracticePage() {
       }
 
       setTranscript(cleanedTranscript);
+      setResult(null);
       setError("");
       setStatus("processing");
 
-      timeoutRef.current = setTimeout(() => {
-        setResult(getMockPracticeResponse(cleanedTranscript));
+      try {
+        const response = await fetch("/api/transform", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ transcript: cleanedTranscript }),
+        });
+        const payload = await readJsonResponse<
+          PracticeResponse & { error?: string; code?: string }
+        >(response);
+
+        if (!response.ok) {
+          throw new Error(
+            payload.error ??
+              "Transformation failed. Please retry with the same transcript.",
+          );
+        }
+
+        setResult(payload);
         setStatus("completed");
-        timeoutRef.current = null;
-      }, PROCESSING_DELAY_MS);
+      } catch (caughtError) {
+        setStatus("error");
+        setResult(null);
+        setError(
+          caughtError instanceof Error
+            ? caughtError.message
+            : "Transformation failed. Please retry with the same transcript.",
+        );
+      }
     },
-    [clearPendingMock, transcript],
+    [transcript],
   );
 
   const handleSelectHint = useCallback(
@@ -111,7 +130,6 @@ export default function PracticePage() {
         return;
       }
 
-      clearPendingMock();
       setSelectedHint(hint);
       setTranscript(hint);
       setResult(null);
@@ -119,7 +137,7 @@ export default function PracticePage() {
       setError("");
       setStatus("ready");
     },
-    [clearPendingMock, isBusy],
+    [isBusy],
   );
 
   const handleTranscriptChange = (value: string) => {
@@ -144,11 +162,10 @@ export default function PracticePage() {
     setSelectedHint(demoTranscript);
     setTranscript(demoTranscript);
     setRecordingNotice("");
-    runMockTransformation(demoTranscript);
+    void runTransformation(demoTranscript);
   };
 
   const handleReset = () => {
-    clearPendingMock();
     setStatus("idle");
     setSelectedHint("");
     setTranscript("");
@@ -264,7 +281,7 @@ export default function PracticePage() {
             </h1>
             <p className="max-w-2xl text-sm leading-7 text-zinc-700 dark:text-zinc-300">
               Type a line, choose a hint, or launch the demo sentence to see the
-              full Satya-Vachan practice loop with mock data.
+              Satya-Vachan coach refine it in real time.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <button
@@ -342,7 +359,7 @@ export default function PracticePage() {
             <HintPromptList
               hints={hints}
               selectedHint={selectedHint}
-              disabled={isProcessing}
+              disabled={isBusy}
               onSelect={handleSelectHint}
             />
           </div>
@@ -386,7 +403,7 @@ export default function PracticePage() {
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             <button
               type="button"
-              onClick={() => runMockTransformation()}
+              onClick={() => void runTransformation()}
               disabled={!canSubmit}
               className={cn(
                 "inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-bold transition focus:outline-none focus:ring-2 focus:ring-ink/40 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:shadow-none dark:focus:ring-white/40 dark:focus:ring-offset-zinc-950",
@@ -420,12 +437,12 @@ export default function PracticePage() {
               <h2 className="text-lg font-bold text-ink dark:text-white">
                 {isTranscribing
                   ? "Listening carefully..."
-                  : "Creating a mock transformation"}
+                  : "Polishing your expression..."}
               </h2>
               <p className="mt-1 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
                 {isTranscribing
                   ? "Your recording is being transcribed into an editable sentence."
-                  : "The transformation step is still using deterministic demo data."}
+                  : "The AI coach is preserving your meaning while refining the wording."}
               </p>
             </div>
           </div>
@@ -433,13 +450,15 @@ export default function PracticePage() {
       ) : null}
 
       {result ? (
-        <GlassCard className="animate-floatIn">
-          <TransformationResult
-            result={result}
-            isWordSaved={isWordSaved}
-            onSaveWord={handleSaveWord}
-          />
-        </GlassCard>
+        <div ref={resultRef}>
+          <GlassCard className="animate-floatIn">
+            <TransformationResult
+              result={result}
+              isWordSaved={isWordSaved}
+              onSaveWord={handleSaveWord}
+            />
+          </GlassCard>
+        </div>
       ) : null}
     </div>
   );
@@ -452,7 +471,7 @@ function statusLabel(status: PracticeStatus) {
     case "transcribing":
       return "Transcribing";
     case "processing":
-      return "Mock processing";
+      return "Polishing";
     case "completed":
       return "Result ready";
     case "error":
