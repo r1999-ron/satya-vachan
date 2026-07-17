@@ -22,7 +22,7 @@ import { StatusBadge } from "@/components/ui/StatusBadge";
 import { getWordOfTheDay } from "@/data/words";
 import { formatRecordingDuration, recordingToFile } from "@/lib/audio";
 import { getTodayKey } from "@/lib/dates";
-import { useStreak } from "@/lib/storage";
+import { useLearnedWords, useStreak } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 import type { ChallengeResponse, RecordingResult, WordEntry } from "@/types";
 
@@ -85,6 +85,7 @@ export default function ChallengePage() {
   const todayWord = getWordOfTheDay();
   const starters = useMemo(() => getSentenceStarters(todayWord), [todayWord]);
   const { completedToday, completeToday, streak } = useStreak();
+  const { saveWord, words } = useLearnedWords();
   const [state, dispatch] = useReducer(
     challengeReducer,
     initialChallengeState,
@@ -103,6 +104,16 @@ export default function ChallengePage() {
     state.transcript.trim().length > 0 &&
     state.lastFailedStep === "validation" &&
     !isBusy;
+  const todayWordSaved = useMemo(
+    () =>
+      words.some(
+        (word) =>
+          word.source !== "seed" &&
+          word.word.trim().toLocaleLowerCase() ===
+            todayWord.elevated.toLocaleLowerCase(),
+      ),
+    [todayWord.elevated, words],
+  );
 
   const finishValidation = useCallback(
     (result: ChallengeResponse, fallbackNotice?: string) => {
@@ -261,6 +272,22 @@ export default function ChallengePage() {
   const handleReset = () => {
     dispatch({ type: "reset" });
     setRecorderResetKey((key) => key + 1);
+  };
+
+  const handleSaveTodayWord = () => {
+    if (todayWordSaved) {
+      return;
+    }
+
+    saveWord(
+      {
+        word: todayWord.elevated,
+        meaning: todayWord.englishMeaning,
+        simpleAlternative: todayWord.common,
+        exampleSentence: todayWord.elevatedExample,
+      },
+      "challenge",
+    );
   };
 
   const progressValue = completedToday
@@ -582,6 +609,19 @@ export default function ChallengePage() {
               </span>
             ))}
           </div>
+          <button
+            type="button"
+            disabled={todayWordSaved}
+            onClick={handleSaveTodayWord}
+            className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl bg-ink px-4 py-2 text-sm font-bold text-white shadow-lg shadow-zinc-900/15 transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ink/40 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:bg-emerald-700 disabled:shadow-none dark:bg-white dark:text-zinc-950 dark:focus:ring-white/40 dark:focus:ring-offset-zinc-950 dark:disabled:bg-emerald-200 dark:disabled:text-emerald-950"
+          >
+            {todayWordSaved ? (
+              <CheckCircle2 size={16} aria-hidden="true" />
+            ) : (
+              <BookOpenCheck size={16} aria-hidden="true" />
+            )}
+            {todayWordSaved ? "Saved to dictionary" : "Save today's word"}
+          </button>
         </GlassCard>
       </aside>
     </div>

@@ -23,6 +23,7 @@ import {
   defaultTransformationExample,
   getDemoHints,
 } from "@/data/demo";
+import { wordCorpus } from "@/data/words";
 import { formatRecordingDuration, recordingToFile } from "@/lib/audio";
 import {
   type PracticeHistoryItem,
@@ -34,6 +35,7 @@ import type {
   LearnedWordInput,
   PracticeResponse,
   RecordingResult,
+  WordEntry,
 } from "@/types";
 
 type PracticeStatus =
@@ -95,6 +97,7 @@ export default function PracticePage() {
   const { history, saveHistory } = usePracticeHistory();
   const [state, dispatch] = useReducer(practiceReducer, initialPracticeState);
   const [recorderResetKey, setRecorderResetKey] = useState(0);
+  const [practiceContext, setPracticeContext] = useState<WordEntry | string | null>(null);
 
   const savedWordKeys = useMemo(
     () =>
@@ -127,6 +130,25 @@ export default function PracticePage() {
       });
     }
   }, [state.result]);
+
+  useEffect(() => {
+    const wordParam = new URLSearchParams(window.location.search).get("word")?.trim();
+
+    if (!wordParam) {
+      return;
+    }
+
+    const normalizedWord = wordParam.toLocaleLowerCase();
+    const matchingEntry = wordCorpus.find((entry) =>
+      [entry.id, entry.common, entry.elevated, ...entry.synonyms]
+        .map((value) => value.toLocaleLowerCase())
+        .includes(normalizedWord),
+    );
+
+    queueMicrotask(() => {
+      setPracticeContext(matchingEntry ?? wordParam);
+    });
+  }, []);
 
   const isWordSaved = useCallback(
     (word: string) => savedWordKeys.has(word.trim().toLocaleLowerCase()),
@@ -271,6 +293,23 @@ export default function PracticePage() {
       selectedHint: demoTranscript,
     });
     void runTransformation(demoTranscript);
+  };
+
+  const handleUsePracticeContext = () => {
+    if (isBusy || !practiceContext) {
+      return;
+    }
+
+    const transcript =
+      typeof practiceContext === "string"
+        ? `Maine ${practiceContext} shabd ka prayog apne vaakya mein kiya.`
+        : practiceContext.elevatedExample;
+
+    dispatch({
+      type: "transcript_changed",
+      transcript,
+      selectedHint: "",
+    });
   };
 
   const handleReset = () => {
@@ -426,6 +465,13 @@ export default function PracticePage() {
             </div>
           </div>
           <div className="mt-5">
+            {practiceContext ? (
+              <PracticeContextPrompt
+                context={practiceContext}
+                disabled={isBusy}
+                onUse={handleUsePracticeContext}
+              />
+            ) : null}
             <HintPromptList
               hints={hints}
               selectedHint={state.selectedHint}
@@ -738,6 +784,56 @@ function LoadingState({ status }: { status: PracticeStatus }) {
         <p className="mt-1 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
           {copy.body}
         </p>
+      </div>
+    </div>
+  );
+}
+
+function PracticeContextPrompt({
+  context,
+  disabled,
+  onUse,
+}: {
+  context: WordEntry | string;
+  disabled: boolean;
+  onUse: () => void;
+}) {
+  const word = typeof context === "string" ? context : context.elevated;
+  const meaning =
+    typeof context === "string"
+      ? "Use this saved word in a fresh sentence."
+      : context.englishMeaning;
+  const note =
+    typeof context === "string"
+      ? "Start with a simple sentence, then polish it through the normal practice flow."
+      : context.usageNote;
+
+  return (
+    <div className="mb-4 rounded-2xl border border-emerald-200/70 bg-emerald-100/40 p-4 dark:border-emerald-300/20 dark:bg-emerald-300/10">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <StatusBadge tone="green">Practice word</StatusBadge>
+            <span className="text-wrap-anywhere text-lg font-bold text-ink dark:text-white">
+              {word}
+            </span>
+          </div>
+          <p className="mt-2 text-wrap-anywhere text-sm font-semibold leading-6 text-emerald-950 dark:text-emerald-100">
+            {meaning}
+          </p>
+          <p className="mt-1 text-wrap-anywhere text-xs leading-5 text-emerald-900 dark:text-emerald-100">
+            {note}
+          </p>
+        </div>
+        <button
+          type="button"
+          disabled={disabled}
+          onClick={onUse}
+          className="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-2xl bg-emerald-700 px-4 py-2 text-xs font-bold text-white transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-emerald-400/45 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-emerald-200 dark:text-emerald-950 dark:focus:ring-offset-zinc-950"
+        >
+          Use prompt
+          <ArrowRight size={14} aria-hidden="true" />
+        </button>
       </div>
     </div>
   );
