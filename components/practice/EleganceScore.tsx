@@ -24,7 +24,10 @@ export function EleganceScore({
     >
       <ScoreBlock label="Original" value={originalScore} tone="muted" />
       <div className="flex items-center justify-center">
-        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-300/60 bg-emerald-100/70 px-3 py-2 text-xs font-bold text-emerald-900 dark:border-emerald-300/25 dark:bg-emerald-300/12 dark:text-emerald-100">
+        <div
+          className="inline-flex items-center gap-2 rounded-full border border-emerald-300/60 bg-emerald-100/70 px-3 py-2 text-xs font-bold tabular-nums text-emerald-900 shadow-sm motion-safe:animate-savePop dark:border-emerald-300/25 dark:bg-emerald-300/12 dark:text-emerald-100"
+          aria-live="polite"
+        >
           <TrendingUp size={15} aria-hidden="true" />
           +{improvement}
         </div>
@@ -55,7 +58,7 @@ function ScoreBlock({
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
           {label}
         </p>
-        <p className="mt-1 text-2xl font-bold text-ink dark:text-white">
+        <p className="mt-1 text-2xl font-bold tabular-nums text-ink dark:text-white">
           {value}
         </p>
       </div>

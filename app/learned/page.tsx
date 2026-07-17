@@ -1,14 +1,140 @@
 "use client";
 
-import { BookOpen, Search, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import {
+  ArrowRight,
+  BookOpen,
+  Filter,
+  RotateCcw,
+  Search,
+  Trash2,
+  Undo2,
+  X,
+} from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { ProgressRing } from "@/components/ui/ProgressRing";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { emptyStateExamples, getStarterWords } from "@/data/demo";
+import { wordCorpus } from "@/data/words";
 import { useLearnedWords } from "@/lib/storage";
+import type { LearnedWord, WordEntry } from "@/types";
+
+type SourceFilter = "all" | LearnedWord["source"];
+type DifficultyFilter = "all" | WordEntry["difficulty"] | "uncategorized";
+type RemovedWord = {
+  word: LearnedWord;
+  index: number;
+};
+
+const sourceLabels: Record<SourceFilter, string> = {
+  all: "All sources",
+  seed: "Seed",
+  practice: "Practice",
+  challenge: "Challenge",
+  manual: "Manual",
+};
+
+const difficultyLabels: Record<DifficultyFilter, string> = {
+  all: "All levels",
+  easy: "Easy",
+  medium: "Medium",
+  advanced: "Advanced",
+  uncategorized: "Uncategorized",
+};
 
 export default function LearnedPage() {
-  const { removeWord, words } = useLearnedWords();
+  const { removeWord, saveWord, words } = useLearnedWords();
+  const [query, setQuery] = useState("");
+  const [sourceFilter, setSourceFilter] = useState<SourceFilter>("all");
+  const [difficultyFilter, setDifficultyFilter] =
+    useState<DifficultyFilter>("all");
+  const [tagFilter, setTagFilter] = useState("all");
+  const [removedWord, setRemovedWord] = useState<RemovedWord | null>(null);
+
+  const sortedWords = useMemo(() => sortLearnedWords(words), [words]);
+  const savedWords = sortedWords.filter((word) => word.source !== "seed");
   const starterWords = getStarterWords(6);
+  const trimmedQuery = query.trim().toLocaleLowerCase();
+
+  const tagOptions = useMemo(() => {
+    const tags = new Set<string>();
+
+    for (const word of sortedWords) {
+      const meta = getCorpusMeta(word);
+      meta?.tags.forEach((tag) => tags.add(tag));
+    }
+
+    return Array.from(tags).sort((a, b) => a.localeCompare(b));
+  }, [sortedWords]);
+
+  const filteredWords = useMemo(
+    () =>
+      sortedWords.filter((word) => {
+        const meta = getCorpusMeta(word);
+        const searchableText = [
+          word.word,
+          word.meaning,
+          word.simpleAlternative,
+          word.exampleSentence,
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLocaleLowerCase();
+        const matchesQuery =
+          !trimmedQuery || searchableText.includes(trimmedQuery);
+        const matchesSource =
+          sourceFilter === "all" || word.source === sourceFilter;
+        const matchesDifficulty =
+          difficultyFilter === "all" ||
+          (meta ? meta.difficulty === difficultyFilter : difficultyFilter === "uncategorized");
+        const matchesTag =
+          tagFilter === "all" || Boolean(meta?.tags.includes(tagFilter));
+
+        return matchesQuery && matchesSource && matchesDifficulty && matchesTag;
+      }),
+    [difficultyFilter, sourceFilter, sortedWords, tagFilter, trimmedQuery],
+  );
+
+  const progressValue = Math.min(100, Math.round((savedWords.length / 12) * 100));
+  const hasActiveFilters =
+    Boolean(trimmedQuery) ||
+    sourceFilter !== "all" ||
+    difficultyFilter !== "all" ||
+    tagFilter !== "all";
+
+  const handleRemove = (word: LearnedWord, index: number) => {
+    if (!word.id) {
+      return;
+    }
+
+    removeWord(word.id);
+    setRemovedWord({ word, index });
+  };
+
+  const handleUndoRemove = () => {
+    if (!removedWord) {
+      return;
+    }
+
+    saveWord(
+      {
+        word: removedWord.word.word,
+        meaning: removedWord.word.meaning,
+        simpleAlternative: removedWord.word.simpleAlternative,
+        exampleSentence: removedWord.word.exampleSentence,
+      },
+      removedWord.word.source,
+    );
+    setRemovedWord(null);
+  };
+
+  const clearFilters = () => {
+    setQuery("");
+    setSourceFilter("all");
+    setDifficultyFilter("all");
+    setTagFilter("all");
+  };
 
   return (
     <div className="space-y-5">
@@ -20,114 +146,170 @@ export default function LearnedPage() {
               Your personal Hindi refinement list.
             </h1>
             <p className="text-sm leading-7 text-zinc-700 dark:text-zinc-300">
-              Saved vocabulary stays on this device, with seed words shown until
-              you begin shaping your own list.
+              Search saved vocabulary, revisit examples, and start a focused
+              practice round from any word on this device.
             </p>
           </div>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <div className="flex min-h-12 items-center gap-3 rounded-2xl border border-white/60 bg-white/45 px-4 dark:border-white/12 dark:bg-white/5">
-              <BookOpen size={18} className="text-sky-700 dark:text-sky-200" aria-hidden="true" />
-              <span className="text-sm font-bold text-ink dark:text-white">
-                {words.length} {words.length === 1 ? "word" : "words"}
-              </span>
-            </div>
-            <div className="flex min-h-12 items-center gap-3 rounded-2xl border border-white/60 bg-white/45 px-4 dark:border-white/12 dark:bg-white/5">
-              <Search size={18} className="text-zinc-500" aria-hidden="true" />
-              <span className="text-sm font-semibold text-zinc-500">
-                Search arrives later
-              </span>
+          <div className="flex items-center gap-4 rounded-2xl border border-white/60 bg-white/45 p-4 dark:border-white/12 dark:bg-white/5">
+            <ProgressRing
+              value={progressValue}
+              label="Saved word progress"
+              size={72}
+            />
+            <div>
+              <p className="text-sm font-bold text-ink dark:text-white">
+                {savedWords.length} saved
+              </p>
+              <p className="mt-1 text-xs leading-5 text-zinc-600 dark:text-zinc-400">
+                Goal: 12 words for a confident starter dictionary.
+              </p>
             </div>
           </div>
         </div>
+        {savedWords.length === 0 ? (
+          <div className="mt-5 rounded-2xl border border-dashed border-amber-200/80 bg-amber-100/35 p-4 dark:border-amber-300/20 dark:bg-amber-300/10">
+            <p className="text-sm font-bold text-amber-950 dark:text-amber-100">
+              Starter words are visible for now.
+            </p>
+            <p className="mt-1 text-sm leading-6 text-amber-950/80 dark:text-amber-100/85">
+              Words saved from Practice or Daily Challenge will rise to the top
+              with a saved source badge.
+            </p>
+          </div>
+        ) : null}
       </GlassCard>
 
-      {words.length > 0 ? (
-        <div className="grid gap-5 md:grid-cols-2">
-          {words.map((word) => (
-          <GlassCard key={word.id} interactive>
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-wrap-anywhere text-2xl font-bold text-ink dark:text-white">
-                    {word.word}
-                  </h2>
-                  <StatusBadge tone="blue" className="shrink-0">
-                    {word.source}
-                  </StatusBadge>
-                </div>
-                <p className="mt-2 text-wrap-anywhere text-sm font-semibold text-zinc-700 dark:text-zinc-300">
-                  {word.meaning}
-                </p>
-                {word.simpleAlternative ? (
-                  <p className="mt-3 text-wrap-anywhere text-xs font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
-                    Instead of {word.simpleAlternative}
-                  </p>
-                ) : null}
-                <p className="mt-3 text-wrap-anywhere text-sm leading-7 text-zinc-600 dark:text-zinc-400">
-                  {word.exampleSentence}
-                </p>
-                <p className="mt-3 text-xs font-semibold text-zinc-500 dark:text-zinc-400">
-                  Saved {word.savedAt}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => removeWord(word.id)}
-                className="grid size-11 shrink-0 place-items-center rounded-2xl bg-rose-400/14 text-rose-800 transition hover:scale-105 active:scale-95 dark:text-rose-200"
-                aria-label={`Remove ${word.word}`}
-              >
-                <Trash2 size={18} aria-hidden="true" />
-              </button>
-            </div>
-          </GlassCard>
+      <GlassCard className="animate-floatIn [animation-delay:80ms]">
+        <div className="grid gap-3 lg:grid-cols-[1.4fr_0.8fr_0.8fr_0.8fr_auto] lg:items-end">
+          <label className="block">
+            <span className="text-xs font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
+              Search
+            </span>
+            <span className="mt-2 flex min-h-12 items-center gap-2 rounded-2xl border border-white/60 bg-white/55 px-4 dark:border-white/12 dark:bg-white/8">
+              <Search size={17} className="shrink-0 text-zinc-500" aria-hidden="true" />
+              <input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search word, meaning, alternative, or example"
+                className="min-w-0 flex-1 bg-transparent text-sm font-semibold text-ink outline-none placeholder:text-zinc-400 dark:text-white dark:placeholder:text-zinc-500"
+              />
+              {query ? (
+                <button
+                  type="button"
+                  onClick={() => setQuery("")}
+                  className="grid size-7 shrink-0 place-items-center rounded-full text-zinc-500 transition hover:bg-white/70 hover:text-ink dark:hover:bg-white/10 dark:hover:text-white"
+                  aria-label="Clear search"
+                >
+                  <X size={15} aria-hidden="true" />
+                </button>
+              ) : null}
+            </span>
+          </label>
+
+          <FilterSelect
+            label="Source"
+            value={sourceFilter}
+            onChange={(value) => setSourceFilter(value as SourceFilter)}
+            options={Object.entries(sourceLabels).map(([value, label]) => ({
+              value,
+              label,
+            }))}
+          />
+          <FilterSelect
+            label="Level"
+            value={difficultyFilter}
+            onChange={(value) => setDifficultyFilter(value as DifficultyFilter)}
+            options={Object.entries(difficultyLabels).map(([value, label]) => ({
+              value,
+              label,
+            }))}
+          />
+          <FilterSelect
+            label="Tag"
+            value={tagFilter}
+            onChange={setTagFilter}
+            options={[
+              { value: "all", label: "All tags" },
+              ...tagOptions.map((tag) => ({ value: tag, label: tag })),
+            ]}
+          />
+
+          <button
+            type="button"
+            onClick={clearFilters}
+            disabled={!hasActiveFilters}
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-white/60 bg-white/55 px-4 py-3 text-sm font-bold text-ink shadow-sm transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55 dark:border-white/12 dark:bg-white/10 dark:text-white dark:focus:ring-offset-zinc-950"
+          >
+            <RotateCcw size={16} aria-hidden="true" />
+            Reset
+          </button>
+        </div>
+
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          <StatusBadge tone="blue">
+            {filteredWords.length} shown
+          </StatusBadge>
+          <StatusBadge tone="gold">
+            {sortedWords.length} total
+          </StatusBadge>
+          <StatusBadge tone="green">
+            Newest saved first
+          </StatusBadge>
+        </div>
+      </GlassCard>
+
+      {removedWord ? (
+        <GlassCard className="animate-floatIn border-amber-200/80 bg-amber-100/45 dark:border-amber-300/25 dark:bg-amber-300/10">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm font-semibold leading-6 text-amber-950 dark:text-amber-100">
+              Removed <span className="font-bold">{removedWord.word.word}</span>
+              . You can undo this action now.
+            </p>
+            <button
+              type="button"
+              onClick={handleUndoRemove}
+              className="inline-flex min-h-10 items-center justify-center gap-2 rounded-2xl bg-amber-700 px-4 py-2 text-xs font-bold text-white transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-amber-400/45 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 dark:bg-amber-200 dark:text-amber-950 dark:focus:ring-offset-zinc-950"
+            >
+              <Undo2 size={15} aria-hidden="true" />
+              Undo remove
+            </button>
+          </div>
+        </GlassCard>
+      ) : null}
+
+      {filteredWords.length > 0 ? (
+        <div className="grid gap-4 md:grid-cols-2">
+          {filteredWords.map((word, index) => (
+            <LearnedWordCard
+              key={word.id}
+              index={index}
+              word={word}
+              onRemove={() => handleRemove(word, index)}
+            />
           ))}
         </div>
       ) : (
-        <GlassCard className="animate-floatIn">
-          <div className="flex items-start gap-3">
-            <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-sky-400/16 text-sky-800 dark:text-sky-200">
-              <BookOpen size={19} aria-hidden="true" />
-            </span>
-            <div className="min-w-0">
-              <h2 className="text-xl font-bold text-ink dark:text-white">
-                No saved words yet
-              </h2>
-              <p className="mt-2 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
-                Practice words will appear here when you save them in later
-                flows. For now, the starter corpus below gives you a useful
-                reference.
-              </p>
-            </div>
-          </div>
-        </GlassCard>
+        <EmptyDictionaryState
+          hasActiveFilters={hasActiveFilters}
+          hasWords={sortedWords.length > 0}
+          onClear={clearFilters}
+        />
       )}
 
-      <GlassCard>
-        <StatusBadge>Corpus Starters</StatusBadge>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {starterWords.map((word) => (
-            <div
-              key={word.id}
-              className="min-w-0 rounded-2xl border border-white/60 bg-white/35 p-4 dark:border-white/12 dark:bg-white/5"
-            >
-              <div className="flex items-center gap-2 text-sm font-bold">
-                <span className="text-wrap-anywhere text-zinc-600 dark:text-zinc-300">
-                  {word.common}
-                </span>
-                <span className="text-amber-600" aria-hidden="true">
-                  -
-                </span>
-                <span className="text-wrap-anywhere text-ink dark:text-white">
-                  {word.elevated}
-                </span>
-              </div>
-              <p className="mt-2 text-wrap-anywhere text-xs leading-6 text-zinc-600 dark:text-zinc-400">
-                {word.englishMeaning}
-              </p>
-            </div>
-          ))}
-        </div>
-      </GlassCard>
+      {sortedWords.length === 0 ? (
+        <GlassCard>
+          <StatusBadge tone="blue">Starter Words</StatusBadge>
+          <p className="mt-3 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
+            Your saved list is empty right now. These corpus words are here as a
+            gentle reference until you save your own.
+          </p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {starterWords.map((word) => (
+              <StarterWordCard key={word.id} word={word} />
+            ))}
+          </div>
+        </GlassCard>
+      ) : null}
 
       <div className="grid gap-5 md:grid-cols-2">
         {emptyStateExamples.map((example) => (
@@ -143,4 +325,278 @@ export default function LearnedPage() {
       </div>
     </div>
   );
+}
+
+function LearnedWordCard({
+  index,
+  onRemove,
+  word,
+}: {
+  index: number;
+  onRemove: () => void;
+  word: LearnedWord;
+}) {
+  const meta = getCorpusMeta(word);
+  const canRemove = Boolean(word.id);
+
+  return (
+    <GlassCard
+      interactive
+      className="p-5"
+      style={{ animationDelay: `${Math.min(index, 8) * 45}ms` }}
+    >
+      <div className="flex h-full flex-col gap-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-wrap-anywhere text-2xl font-bold text-ink dark:text-white">
+                {word.word}
+              </h2>
+              <StatusBadge tone={sourceTone(word.source)} className="shrink-0 capitalize">
+                {word.source}
+              </StatusBadge>
+              {meta ? (
+                <StatusBadge tone="gold" className="shrink-0 capitalize">
+                  {meta.difficulty}
+                </StatusBadge>
+              ) : null}
+            </div>
+            <p className="mt-2 text-wrap-anywhere text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+              {word.meaning}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onRemove}
+            disabled={!canRemove}
+            className="grid size-10 shrink-0 place-items-center rounded-2xl bg-rose-400/14 text-rose-800 transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-rose-400/45 focus:ring-offset-2 focus:ring-offset-paper active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 dark:text-rose-200 dark:focus:ring-offset-zinc-950"
+            aria-label={`Remove ${word.word}`}
+          >
+            <Trash2 size={17} aria-hidden="true" />
+          </button>
+        </div>
+
+        <div className="grid gap-3">
+          {word.simpleAlternative ? (
+            <InfoLine label="Instead of" value={word.simpleAlternative} />
+          ) : null}
+          <InfoLine label="Example" value={word.exampleSentence} />
+          <InfoLine label="Saved" value={formatSavedDate(word.savedAt)} />
+        </div>
+
+        {meta ? (
+          <div className="flex flex-wrap gap-2">
+            {meta.tags.slice(0, 4).map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full bg-white/45 px-3 py-1 text-xs font-bold text-zinc-600 dark:bg-white/8 dark:text-zinc-300"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        ) : null}
+
+        <div className="mt-auto flex flex-col gap-2 sm:flex-row">
+          <Link
+            href={`/practice?word=${encodeURIComponent(word.word)}`}
+            className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-2xl bg-ink px-4 py-2 text-sm font-bold text-white shadow-lg shadow-zinc-900/15 transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ink/40 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 dark:bg-white dark:text-zinc-950 dark:focus:ring-white/40 dark:focus:ring-offset-zinc-950"
+          >
+            Practice this word
+            <ArrowRight size={16} aria-hidden="true" />
+          </Link>
+        </div>
+      </div>
+    </GlassCard>
+  );
+}
+
+function FilterSelect({
+  label,
+  onChange,
+  options,
+  value,
+}: {
+  label: string;
+  onChange: (value: string) => void;
+  options: { value: string; label: string }[];
+  value: string;
+}) {
+  return (
+    <label className="block">
+      <span className="text-xs font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
+        {label}
+      </span>
+      <span className="mt-2 flex min-h-12 items-center gap-2 rounded-2xl border border-white/60 bg-white/55 px-3 dark:border-white/12 dark:bg-white/8">
+        <Filter size={16} className="shrink-0 text-zinc-500" aria-hidden="true" />
+        <select
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          className="min-w-0 flex-1 bg-transparent text-sm font-bold text-ink outline-none dark:text-white"
+        >
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </span>
+    </label>
+  );
+}
+
+function InfoLine({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-white/60 bg-white/35 p-3 dark:border-white/12 dark:bg-white/5">
+      <p className="text-xs font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
+        {label}
+      </p>
+      <p className="mt-1 text-wrap-anywhere text-sm font-semibold leading-6 text-zinc-700 dark:text-zinc-300">
+        {value}
+      </p>
+    </div>
+  );
+}
+
+function EmptyDictionaryState({
+  hasActiveFilters,
+  hasWords,
+  onClear,
+}: {
+  hasActiveFilters: boolean;
+  hasWords: boolean;
+  onClear: () => void;
+}) {
+  return (
+    <GlassCard className="animate-floatIn">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex items-start gap-3">
+        <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-sky-400/16 text-sky-800 dark:text-sky-200">
+          <BookOpen size={19} aria-hidden="true" />
+        </span>
+        <div className="min-w-0">
+          <h2 className="text-xl font-bold text-ink dark:text-white">
+            {hasActiveFilters ? "No matching words" : "No saved words yet"}
+          </h2>
+          <p className="mt-2 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
+            {hasActiveFilters && hasWords
+              ? "Try a broader search or remove one of the filters."
+              : "Practice and challenge vocabulary will appear here once you save it."}
+          </p>
+          {hasActiveFilters ? (
+            <button
+              type="button"
+              onClick={onClear}
+              className="mt-4 inline-flex min-h-10 items-center justify-center gap-2 rounded-2xl bg-ink px-4 py-2 text-xs font-bold text-white transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ink/40 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 dark:bg-white dark:text-zinc-950 dark:focus:ring-white/40 dark:focus:ring-offset-zinc-950"
+            >
+              <RotateCcw size={15} aria-hidden="true" />
+              Clear filters
+            </button>
+          ) : null}
+        </div>
+        </div>
+        <div className="grid min-h-20 min-w-24 place-items-center rounded-2xl border border-dashed border-white/70 bg-white/35 text-sm font-bold text-zinc-500 dark:border-white/12 dark:bg-white/5 dark:text-zinc-400">
+          0 shown
+        </div>
+      </div>
+    </GlassCard>
+  );
+}
+
+function StarterWordCard({ word }: { word: WordEntry }) {
+  return (
+    <div className="min-w-0 rounded-2xl border border-white/60 bg-white/35 p-4 dark:border-white/12 dark:bg-white/5">
+      <div className="flex items-center gap-2 text-sm font-bold">
+        <span className="text-wrap-anywhere text-zinc-600 dark:text-zinc-300">
+          {word.common}
+        </span>
+        <span className="text-amber-600" aria-hidden="true">
+          -
+        </span>
+        <span className="text-wrap-anywhere text-ink dark:text-white">
+          {word.elevated}
+        </span>
+      </div>
+      <p className="mt-2 text-wrap-anywhere text-xs leading-6 text-zinc-600 dark:text-zinc-400">
+        {word.englishMeaning}
+      </p>
+      <Link
+        href={`/practice?word=${encodeURIComponent(word.elevated)}`}
+        className="mt-3 inline-flex min-h-9 items-center gap-2 rounded-2xl bg-white/60 px-3 py-2 text-xs font-bold text-ink transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-amber-400/45 dark:bg-white/10 dark:text-white"
+      >
+        Practice
+        <ArrowRight size={14} aria-hidden="true" />
+      </Link>
+    </div>
+  );
+}
+
+function sortLearnedWords(words: LearnedWord[]) {
+  return [...words].sort((a, b) => {
+    if (a.source === "seed" && b.source !== "seed") {
+      return 1;
+    }
+
+    if (a.source !== "seed" && b.source === "seed") {
+      return -1;
+    }
+
+    return dateValue(b.savedAt) - dateValue(a.savedAt);
+  });
+}
+
+function getCorpusMeta(word: LearnedWord) {
+  const normalizedWord = normalizeForLookup(word.word);
+  const normalizedAlternative = normalizeForLookup(word.simpleAlternative ?? "");
+
+  return wordCorpus.find((entry) => {
+    const candidates = [
+      entry.id,
+      entry.common,
+      entry.elevated,
+      ...entry.synonyms,
+    ].map(normalizeForLookup);
+
+    return (
+      candidates.includes(normalizedWord) ||
+      Boolean(normalizedAlternative && candidates.includes(normalizedAlternative))
+    );
+  });
+}
+
+function normalizeForLookup(value: string) {
+  return value.trim().toLocaleLowerCase();
+}
+
+function dateValue(value: string) {
+  const timestamp = Date.parse(value);
+  return Number.isNaN(timestamp) ? 0 : timestamp;
+}
+
+function formatSavedDate(value: string) {
+  const timestamp = Date.parse(value);
+
+  if (Number.isNaN(timestamp)) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("en", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(timestamp));
+}
+
+function sourceTone(source: LearnedWord["source"]) {
+  switch (source) {
+    case "practice":
+      return "green";
+    case "challenge":
+      return "gold";
+    case "manual":
+      return "blue";
+    case "seed":
+    default:
+      return "blue";
+  }
 }

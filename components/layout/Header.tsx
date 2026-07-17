@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BookOpen, Home, Mic2, Sparkles } from "lucide-react";
+import { ResilienceStatus } from "@/components/ui/ResilienceStatus";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { cn } from "@/lib/utils";
 
@@ -59,7 +60,10 @@ export function Header() {
           })}
         </nav>
 
-        <StatusBadge tone="green">0 day streak</StatusBadge>
+        <div className="flex items-center gap-2">
+          <ResilienceStatus />
+          <StatusBadge tone="green">0 day streak</StatusBadge>
+        </div>
       </div>
     </header>
   );

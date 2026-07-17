@@ -1,4 +1,6 @@
-import { Volume2 } from "lucide-react";
+"use client";
+
+import { AudioPlayer } from "@/components/audio/AudioPlayer";
 import { EleganceScore } from "@/components/practice/EleganceScore";
 import { WordReplacementCard } from "@/components/practice/WordReplacementCard";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -6,12 +8,14 @@ import type { LearnedWordInput, PracticeResponse, WordReplacement } from "@/type
 
 type TransformationResultProps = {
   isWordSaved: (word: string) => boolean;
+  onAudioStatusChange?: (status: "idle" | "loading" | "ready" | "playing" | "error") => void;
   onSaveWord: (word: LearnedWordInput) => void;
   result: PracticeResponse;
 };
 
 export function TransformationResult({
   isWordSaved,
+  onAudioStatusChange,
   onSaveWord,
   result,
 }: TransformationResultProps) {
@@ -27,11 +31,16 @@ export function TransformationResult({
           label="Natural polished"
           text={result.naturalPolishedVersion}
           tone="primary"
+          variant="natural"
+          autoPrepare
+          onAudioStatusChange={onAudioStatusChange}
         />
         <VersionPanel
           label="More elevated"
           text={result.elevatedVersion}
           tone="secondary"
+          variant="elevated"
+          onAudioStatusChange={onAudioStatusChange}
         />
       </div>
 
@@ -52,7 +61,7 @@ export function TransformationResult({
           </p>
         </div>
         <div className="grid gap-3">
-          {result.replacements.map((replacement) => {
+          {result.replacements.length > 0 ? result.replacements.map((replacement) => {
             const saveableWord = getSaveableWord(result, replacement);
 
             return (
@@ -64,7 +73,12 @@ export function TransformationResult({
                 onSave={onSaveWord}
               />
             );
-          })}
+          }) : (
+            <div className="rounded-2xl border border-white/60 bg-white/36 p-4 text-sm font-semibold leading-7 text-zinc-600 dark:border-white/12 dark:bg-white/5 dark:text-zinc-300">
+              No specific word swaps were needed this time. The full sentence
+              polish is still ready above.
+            </div>
+          )}
         </div>
       </div>
     </section>
@@ -75,10 +89,16 @@ function VersionPanel({
   label,
   text,
   tone,
+  variant,
+  autoPrepare = false,
+  onAudioStatusChange,
 }: {
+  autoPrepare?: boolean;
   label: string;
+  onAudioStatusChange?: (status: "idle" | "loading" | "ready" | "playing" | "error") => void;
   text: string;
   tone: "primary" | "secondary";
+  variant: "natural" | "elevated";
 }) {
   const primary = tone === "primary";
 
@@ -86,8 +106,8 @@ function VersionPanel({
     <div
       className={
         primary
-          ? "rounded-2xl border border-emerald-200/75 bg-emerald-100/45 p-5 shadow-glow dark:border-emerald-300/20 dark:bg-emerald-300/10"
-          : "rounded-2xl border border-white/60 bg-white/34 p-5 dark:border-white/12 dark:bg-white/5"
+          ? "rounded-2xl border border-emerald-200/75 bg-emerald-100/45 p-5 shadow-glow transition duration-200 hover:-translate-y-0.5 dark:border-emerald-300/20 dark:bg-emerald-300/10"
+          : "rounded-2xl border border-white/60 bg-white/34 p-5 transition duration-200 hover:-translate-y-0.5 dark:border-white/12 dark:bg-white/5"
       }
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -100,15 +120,14 @@ function VersionPanel({
         >
           {label}
         </p>
-        <button
-          type="button"
-          disabled
-          className="inline-flex min-h-10 items-center gap-2 rounded-2xl border border-white/60 bg-white/45 px-3 py-2 text-xs font-bold text-zinc-500 opacity-75 dark:border-white/12 dark:bg-white/8 dark:text-zinc-400"
-          title="Audio playback arrives in the TTS module"
-        >
-          <Volume2 size={16} aria-hidden="true" />
-          Listen soon
-        </button>
+        <AudioPlayer
+          autoPrepare={autoPrepare}
+          key={`${variant}-${text}`}
+          label="Listen"
+          onStatusChange={onAudioStatusChange}
+          text={text}
+          variant={variant}
+        />
       </div>
       <p
         className={
