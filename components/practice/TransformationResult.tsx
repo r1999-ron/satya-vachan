@@ -32,7 +32,7 @@ export function TransformationResult({
           text={result.naturalPolishedVersion}
           tone="primary"
           variant="natural"
-          autoPrepare
+          autoPlay
           onAudioStatusChange={onAudioStatusChange}
         />
         <VersionPanel
@@ -87,10 +87,10 @@ function VersionPanel({
   text,
   tone,
   variant,
-  autoPrepare = false,
+  autoPlay = false,
   onAudioStatusChange,
 }: {
-  autoPrepare?: boolean;
+  autoPlay?: boolean;
   label: string;
   onAudioStatusChange?: (status: "idle" | "loading" | "ready" | "playing" | "error") => void;
   text: string;
@@ -118,7 +118,7 @@ function VersionPanel({
           {label}
         </p>
         <AudioPlayer
-          autoPrepare={autoPrepare}
+          autoPlay={autoPlay}
           key={`${variant}-${text}`}
           label="Listen"
           onStatusChange={onAudioStatusChange}

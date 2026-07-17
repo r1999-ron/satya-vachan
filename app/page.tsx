@@ -20,7 +20,7 @@ export default function HomePage() {
   const todayWord = getWordOfTheDay();
   const { words } = useLearnedWords();
   const { completedToday, streak } = useStreak();
-  const savedWordCount = words.filter((word) => word.source !== "seed").length;
+  const savedWordCount = words.length;
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -148,6 +148,39 @@ export default function HomePage() {
           </div>
         </div>
 
+        <div className="mt-5 grid gap-4 border-t border-zinc-900/8 pt-5 sm:mt-7 sm:grid-cols-2 dark:border-white/10">
+          <WordDetails label="Synonyms">
+            <div className="flex flex-wrap gap-2">
+              {todayWord.synonyms.map((synonym) => (
+                <span
+                  key={synonym}
+                  lang="hi"
+                  className="rounded-full bg-amber-100 px-3 py-1.5 text-xs font-bold text-amber-950 ring-1 ring-amber-200 dark:bg-amber-300/10 dark:text-amber-100 dark:ring-amber-300/20"
+                >
+                  {synonym}
+                </span>
+              ))}
+            </div>
+          </WordDetails>
+          <WordDetails label="Usage note">
+            <p lang="hi" className="text-sm font-semibold leading-6 text-zinc-700 dark:text-zinc-300">
+              {todayWord.usageNote}
+            </p>
+          </WordDetails>
+          <WordDetails label="Tags" className="sm:col-span-2">
+            <div className="flex flex-wrap gap-2">
+              {todayWord.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full bg-zinc-900/[0.045] px-3 py-1 text-xs font-bold text-zinc-600 dark:bg-white/8 dark:text-zinc-300"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </WordDetails>
+        </div>
+
         <div className="mt-5 flex items-center justify-between gap-3 rounded-2xl border border-zinc-900/8 bg-zinc-900/[0.025] p-4 [@media(max-width:767px)_and_(max-height:720px)]:mt-3 [@media(max-width:767px)_and_(max-height:720px)]:p-3 sm:mt-7 sm:border-t sm:bg-transparent sm:px-0 sm:pb-0 sm:pt-5 dark:border-white/10 dark:bg-white/[0.035] sm:dark:bg-transparent">
           <p className="min-w-0 text-xs font-semibold leading-5 text-zinc-600 sm:text-sm dark:text-zinc-300">
             {todayWord.challengePrompt}
@@ -260,6 +293,25 @@ function Example({
       <p lang="hi" className="mt-1 text-wrap-anywhere text-sm font-semibold leading-7 text-zinc-700 dark:text-zinc-200">
         {value}
       </p>
+    </div>
+  );
+}
+
+function WordDetails({
+  children,
+  className = "",
+  label,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  label: string;
+}) {
+  return (
+    <div className={className}>
+      <p className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
+        {label}
+      </p>
+      {children}
     </div>
   );
 }

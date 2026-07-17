@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { getSeedLearnedWords } from "@/data/demo";
 import { getTodayKey } from "@/lib/dates";
 import type { LearnedWord, LearnedWordInput, PracticeResponse, StreakState } from "@/types";
 
@@ -208,7 +209,9 @@ function loadStoredLearnedWords(): LearnedWord[] {
 
 export function loadLearnedWords(): LearnedWord[] {
   if (!hasStoredLearnedWords()) {
-    return [];
+    const seedWords = getSeedLearnedWords().map(normalizeLearnedWord);
+    writeJson(STORAGE_KEYS.learnedWords, seedWords);
+    return seedWords;
   }
 
   return loadStoredLearnedWords();
@@ -225,7 +228,7 @@ export function saveLearnedWord(
     return loadLearnedWords();
   }
 
-  const storedWords = loadStoredLearnedWords();
+  const storedWords = loadLearnedWords();
   const duplicateIndex = storedWords.findIndex(
     (existing) => existing.word.trim().toLocaleLowerCase() === word.toLocaleLowerCase(),
   );

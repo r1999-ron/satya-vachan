@@ -18,7 +18,7 @@ import { wordCorpus } from "@/data/words";
 import { useLearnedWords } from "@/lib/storage";
 import type { LearnedWord, WordEntry } from "@/types";
 
-type SourceFilter = "all" | Exclude<LearnedWord["source"], "seed">;
+type SourceFilter = "all" | LearnedWord["source"];
 type DifficultyFilter = "all" | WordEntry["difficulty"] | "uncategorized";
 type RemovedWord = {
   word: LearnedWord;
@@ -27,6 +27,7 @@ type RemovedWord = {
 
 const sourceLabels: Record<SourceFilter, string> = {
   all: "All sources",
+  seed: "Starter",
   practice: "Practice",
   challenge: "Challenge",
   manual: "Manual",
@@ -50,7 +51,7 @@ export default function LearnedPage() {
   const [removedWord, setRemovedWord] = useState<RemovedWord | null>(null);
 
   const sortedWords = useMemo(
-    () => sortLearnedWords(words.filter((word) => word.source !== "seed")),
+    () => sortLearnedWords(words),
     [words],
   );
   const trimmedQuery = query.trim().toLocaleLowerCase();

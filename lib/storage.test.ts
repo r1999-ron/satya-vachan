@@ -11,6 +11,7 @@ import {
   saveLearnedWord,
   savePracticeHistory,
 } from "@/lib/storage";
+import { seedLearnedWords } from "@/data/demo";
 import type { PracticeResponse } from "@/types";
 
 class MemoryStorage implements Storage {
@@ -85,8 +86,11 @@ describe("storage", () => {
     expect(canUseLocalStorage()).toBe(false);
   });
 
-  it("loads an empty word list until the learned-words key exists", () => {
-    expect(loadLearnedWords()).toEqual([]);
+  it("initializes learned words from the seed data when the key is missing", () => {
+    expect(loadLearnedWords()).toEqual(seedLearnedWords);
+    expect(JSON.parse(storage.getItem(STORAGE_KEYS.learnedWords) ?? "[]")).toEqual(
+      seedLearnedWords,
+    );
 
     storage.setItem(
       STORAGE_KEYS.learnedWords,
@@ -118,7 +122,27 @@ describe("storage", () => {
     expect(JSON.parse(storage.getItem(STORAGE_KEYS.learnedWords) ?? "[]")).toHaveLength(1);
   });
 
+  it("keeps starter words when the first user word is saved", () => {
+    const nextWords = saveLearnedWord({
+      word: "satya",
+      meaning: "truth",
+      exampleSentence: "Satya mahatvapurn hai.",
+    });
+
+    expect(nextWords).toHaveLength(seedLearnedWords.length + 1);
+    expect(nextWords.slice(1)).toEqual(seedLearnedWords);
+  });
+
+  it("does not restore starter words after the user removes every word", () => {
+    for (const word of loadLearnedWords()) {
+      removeLearnedWord(word.id);
+    }
+
+    expect(loadLearnedWords()).toEqual([]);
+  });
+
   it("saves new words and updates duplicates case-insensitively", () => {
+    storage.setItem(STORAGE_KEYS.learnedWords, "[]");
     const firstSave = saveLearnedWord(
       {
         word: "  Satya  ",
@@ -154,6 +178,7 @@ describe("storage", () => {
   });
 
   it("ignores invalid learned-word input and removes by trimmed id", () => {
+    storage.setItem(STORAGE_KEYS.learnedWords, "[]");
     expect(saveLearnedWord({ word: "  ", meaning: "meaning", exampleSentence: "example" })).toEqual(
       [],
     );

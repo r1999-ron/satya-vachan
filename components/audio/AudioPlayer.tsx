@@ -17,7 +17,7 @@ import type { TtsResponse } from "@/types";
 type AudioVariant = "natural" | "elevated";
 
 type AudioPlayerProps = {
-  autoPrepare?: boolean;
+  autoPlay?: boolean;
   className?: string;
   label?: string;
   onStatusChange?: (status: PlayerStatus) => void;
@@ -28,7 +28,7 @@ type AudioPlayerProps = {
 type PlayerStatus = "idle" | "loading" | "ready" | "playing" | "error";
 
 export function AudioPlayer({
-  autoPrepare = false,
+  autoPlay = false,
   className,
   label = "Listen",
   onStatusChange,
@@ -60,12 +60,12 @@ export function AudioPlayer({
     }
   }, []);
 
-  const loadAudio = useCallback(async () => {
+  const loadAudio = useCallback(async (force = false) => {
     if (!trimmedText || isLoading) {
       return null;
     }
 
-    if (audioUrl) {
+    if (audioUrl && !force) {
       return audioUrl;
     }
 
@@ -120,15 +120,38 @@ export function AudioPlayer({
     };
   }, [clearGeneratedUrl]);
 
+  const playAudio = useCallback(async (nextUrl: string) => {
+    const audioElement = audioRef.current;
+
+    if (!audioElement) {
+      return;
+    }
+
+    setError("");
+
+    try {
+      audioElement.src = nextUrl;
+      await audioElement.play();
+      setStatus("playing");
+    } catch {
+      setStatus("ready");
+      setError("Playback is ready. Press Play to start listening.");
+    }
+  }, []);
+
   useEffect(() => {
-    if (autoPrepare && trimmedText && status === "idle" && !audioUrl) {
-      const prepareTimer = window.setTimeout(() => {
-        void loadAudio();
+    if (autoPlay && trimmedText && status === "idle" && !audioUrl) {
+      const playTimer = window.setTimeout(() => {
+        void loadAudio().then((nextUrl) => {
+          if (nextUrl) {
+            void playAudio(nextUrl);
+          }
+        });
       }, 0);
 
-      return () => window.clearTimeout(prepareTimer);
+      return () => window.clearTimeout(playTimer);
     }
-  }, [audioUrl, autoPrepare, loadAudio, status, trimmedText]);
+  }, [audioUrl, autoPlay, loadAudio, playAudio, status, trimmedText]);
 
   const handleTogglePlayback = async () => {
     if (!trimmedText || isLoading) {
@@ -145,26 +168,23 @@ export function AudioPlayer({
 
     const nextUrl = await loadAudio();
 
-    if (!nextUrl || !audioRef.current) {
+    if (!nextUrl) {
       return;
     }
 
-    try {
-      audioRef.current.src = nextUrl;
-      await audioRef.current.play();
-      setStatus("playing");
-    } catch {
-      setStatus("ready");
-      setError("Playback is ready. Use the audio controls to start listening.");
-    }
+    await playAudio(nextUrl);
   };
 
-  const handleRetry = () => {
+  const handleRetry = async () => {
     setAudioUrl("");
     setError("");
     setStatus("idle");
     clearGeneratedUrl();
-    void loadAudio();
+    const nextUrl = await loadAudio(true);
+
+    if (nextUrl && autoPlay) {
+      await playAudio(nextUrl);
+    }
   };
 
   return (
