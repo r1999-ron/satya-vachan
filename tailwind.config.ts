@@ -6,7 +6,10 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./lib/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  darkMode: "media",
+  // Keep the current product theme consistently light across browsers.
+  // Dark variants are only enabled if a future theme control adds a `.dark`
+  // class explicitly, rather than following the browser/OS preference.
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
@@ -22,7 +25,15 @@ const config: Config = {
         glow: "0 0 32px rgba(245, 158, 11, 0.24)",
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
+        sans: ["var(--font-noto-sans)", "system-ui", "sans-serif"],
+        mono: [
+          "var(--font-noto-sans-mono)",
+          "ui-monospace",
+          "SFMono-Regular",
+          "Consolas",
+          "Liberation Mono",
+          "monospace",
+        ],
       },
       keyframes: {
         aurora: {

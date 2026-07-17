@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { getSeedLearnedWords } from "@/data/demo";
 import { getTodayKey } from "@/lib/dates";
 import type { LearnedWord, LearnedWordInput, PracticeResponse, StreakState } from "@/types";
 
@@ -209,12 +208,10 @@ function loadStoredLearnedWords(): LearnedWord[] {
 
 export function loadLearnedWords(): LearnedWord[] {
   if (!hasStoredLearnedWords()) {
-    return getSeedLearnedWords();
+    return [];
   }
 
-  const storedWords = loadStoredLearnedWords();
-
-  return storedWords.length > 0 ? storedWords : getSeedLearnedWords();
+  return loadStoredLearnedWords();
 }
 
 export function saveLearnedWord(
@@ -229,17 +226,11 @@ export function saveLearnedWord(
   }
 
   const storedWords = loadStoredLearnedWords();
-  const duplicateCheckWords =
-    storedWords.length > 0 ? storedWords : getSeedLearnedWords();
-  const duplicateIndex = duplicateCheckWords.findIndex(
+  const duplicateIndex = storedWords.findIndex(
     (existing) => existing.word.trim().toLocaleLowerCase() === word.toLocaleLowerCase(),
   );
 
   if (duplicateIndex >= 0) {
-    if (storedWords.length === 0) {
-      return getSeedLearnedWords();
-    }
-
     const nextWords = [...storedWords];
     const existing = nextWords[duplicateIndex];
     nextWords[duplicateIndex] = {
@@ -269,7 +260,7 @@ export function saveLearnedWord(
 
 export function removeLearnedWord(id: string): LearnedWord[] {
   const trimmedId = id.trim();
-  const currentWords = hasStoredLearnedWords() ? loadStoredLearnedWords() : getSeedLearnedWords();
+  const currentWords = loadLearnedWords();
   const nextWords = currentWords.filter((word) => word.id !== trimmedId);
 
   writeJson(STORAGE_KEYS.learnedWords, nextWords);
@@ -368,7 +359,7 @@ export function savePracticeHistory(response: PracticeResponse): PracticeHistory
 }
 
 export function useLearnedWords() {
-  const [words, setWords] = useState<LearnedWord[]>(() => getSeedLearnedWords());
+  const [words, setWords] = useState<LearnedWord[]>([]);
 
   useEffect(() => {
     let isActive = true;

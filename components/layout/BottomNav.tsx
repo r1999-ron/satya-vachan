@@ -8,8 +8,8 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { href: "/", label: "Home", icon: Home },
   { href: "/practice", label: "Practice", icon: Mic2 },
-  { href: "/challenge", label: "Challenge", icon: Sparkles },
-  { href: "/learned", label: "Learned", icon: BookOpen },
+  { href: "/challenge", label: "Today", icon: Sparkles },
+  { href: "/learned", label: "My Words", icon: BookOpen },
 ];
 
 export function BottomNav() {
@@ -17,7 +17,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed inset-x-3 bottom-3 z-40 rounded-2xl border border-white/55 bg-white/70 p-1.5 shadow-glass backdrop-blur-2xl md:hidden dark:border-white/12 dark:bg-zinc-950/72"
+      className="fixed inset-x-3 bottom-3 z-40 rounded-[1.4rem] border border-zinc-900/8 bg-white/88 p-1.5 shadow-[0_16px_45px_rgba(24,20,16,0.16)] backdrop-blur-2xl md:hidden dark:border-white/12 dark:bg-zinc-950/88"
       aria-label="Primary navigation"
     >
       <div className="grid grid-cols-4 gap-1">
@@ -32,8 +32,8 @@ export function BottomNav() {
                 "flex min-h-14 flex-col items-center justify-center gap-1 rounded-xl px-1 text-[11px] font-semibold transition",
                 "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500",
                 active
-                  ? "bg-amber-500 text-white shadow-lg shadow-amber-500/25 motion-safe:animate-savePop"
-                  : "text-zinc-700 hover:bg-white/70 active:scale-95 dark:text-zinc-200 dark:hover:bg-white/10",
+                  ? "bg-zinc-900 text-white shadow-sm motion-safe:animate-savePop dark:bg-white dark:text-zinc-950"
+                  : "text-zinc-600 hover:bg-black/5 active:scale-95 dark:text-zinc-300 dark:hover:bg-white/10",
               )}
             >
               <Icon size={19} aria-hidden="true" />

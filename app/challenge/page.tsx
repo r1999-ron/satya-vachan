@@ -23,7 +23,7 @@ import { StatusBadge } from "@/components/ui/StatusBadge";
 import { getWordOfTheDay } from "@/data/words";
 import { requestJson } from "@/lib/api-client";
 import { formatRecordingDuration, recordingToFile } from "@/lib/audio";
-import { getTodayKey } from "@/lib/dates";
+import { formatReadableDate } from "@/lib/dates";
 import { useLearnedWords, useStreak } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 import {
@@ -299,47 +299,20 @@ export default function ChallengePage() {
     <div className="grid gap-5 lg:grid-cols-[1fr_22rem]">
       <section className="space-y-5">
         <GlassCard className="animate-floatIn p-6 sm:p-8">
-          <div className="flex flex-wrap items-center gap-2">
-            <StatusBadge>Daily Challenge</StatusBadge>
-            <StatusBadge tone={completedToday ? "green" : "blue"}>
-              {completedToday ? "Completed today" : statusLabel(state.status)}
-            </StatusBadge>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-sm font-bold text-amber-700 dark:text-amber-300">Today</p>
+            {completedToday || state.status !== "idle" ? (
+              <StatusBadge tone={completedToday ? "green" : "blue"}>
+                {completedToday ? "Completed" : statusLabel(state.status)}
+              </StatusBadge>
+            ) : null}
           </div>
 
-          <div className="mt-5 space-y-4">
-            <h1 className="text-balance text-3xl font-bold text-ink sm:text-4xl dark:text-white">
-              Use today&apos;s refined word in your own sentence.
+          <div className="mt-6">
+            <h1 className="text-balance text-4xl font-bold tracking-[-0.035em] text-ink sm:text-5xl dark:text-white">
+              Use <span className="text-amber-700 dark:text-amber-300">{todayWord.elevated}</span> in a sentence.
             </h1>
-            <p className="max-w-2xl text-sm leading-7 text-zinc-700 dark:text-zinc-300">
-              Speak or type one original sentence with{" "}
-              <span className="font-bold text-amber-800 dark:text-amber-200">
-                {todayWord.elevated}
-              </span>
-              . The coach checks whether it sounds natural, then updates your
-              streak when the usage is acceptable.
-            </p>
           </div>
-
-          {completedToday ? (
-            <div className="mt-6 rounded-2xl border border-emerald-200/70 bg-emerald-100/45 p-4 dark:border-emerald-300/20 dark:bg-emerald-300/10">
-              <div className="flex items-start gap-3">
-                <CheckCircle2
-                  className="mt-1 shrink-0 text-emerald-700 dark:text-emerald-200"
-                  size={20}
-                  aria-hidden="true"
-                />
-                <div className="min-w-0">
-                  <p className="text-sm font-bold text-emerald-950 dark:text-emerald-100">
-                    Your streak is safe for today.
-                  </p>
-                  <p className="mt-1 text-sm leading-6 text-emerald-950 dark:text-emerald-100">
-                    You can re-practice this word as much as you like. The
-                    streak will not increase again until tomorrow.
-                  </p>
-                </div>
-              </div>
-            </div>
-          ) : null}
 
           <div className="mt-7 grid gap-4 md:grid-cols-[1fr_auto_1fr] md:items-stretch">
             <WordPanel label="Common" value={todayWord.common} />
@@ -357,24 +330,6 @@ export default function ChallengePage() {
             <InfoPanel title="Meaning">{todayWord.englishMeaning}</InfoPanel>
             <InfoPanel title="Usage note">{todayWord.usageNote}</InfoPanel>
           </div>
-
-          <div className="mt-5 rounded-2xl border border-emerald-200/70 bg-emerald-100/35 p-5 dark:border-emerald-300/20 dark:bg-emerald-300/10">
-            <div className="flex items-start gap-3">
-              <BookOpenCheck
-                className="mt-1 shrink-0 text-emerald-700 dark:text-emerald-200"
-                size={20}
-                aria-hidden="true"
-              />
-              <div className="min-w-0">
-                <p className="text-sm font-bold text-emerald-950 dark:text-emerald-100">
-                  Prompt
-                </p>
-                <p className="mt-2 text-wrap-anywhere text-sm leading-7 text-emerald-950 dark:text-emerald-100">
-                  {todayWord.challengePrompt}
-                </p>
-              </div>
-            </div>
-          </div>
         </GlassCard>
 
         <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
@@ -384,13 +339,7 @@ export default function ChallengePage() {
                 <Upload size={19} aria-hidden="true" />
               </span>
               <div className="min-w-0">
-                <h2 className="text-xl font-bold text-ink dark:text-white">
-                  Record your sentence
-                </h2>
-                <p className="mt-2 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
-                  Keep it natural. One clear sentence is enough for today&apos;s
-                  challenge.
-                </p>
+                <h2 className="text-xl font-bold text-ink dark:text-white">Record</h2>
               </div>
             </div>
 
@@ -446,17 +395,9 @@ export default function ChallengePage() {
                   <Keyboard size={19} aria-hidden="true" />
                 </span>
                 <div>
-                  <h2 className="text-xl font-bold text-ink dark:text-white">
-                    Transcript
-                  </h2>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                    Type directly, or edit the recording transcript.
-                  </p>
+                  <h2 className="text-xl font-bold text-ink dark:text-white">Your sentence</h2>
                 </div>
               </div>
-              <StatusBadge tone={canValidate ? "green" : "rose"}>
-                {state.transcript.trim().length} chars
-              </StatusBadge>
             </div>
 
             <textarea
@@ -466,10 +407,6 @@ export default function ChallengePage() {
               placeholder={`Use "${todayWord.elevated}" in one Hindi sentence...`}
               className="mt-5 min-h-36 w-full resize-y rounded-2xl border border-white/60 bg-white/55 p-4 text-sm font-semibold leading-7 text-ink outline-none transition placeholder:text-zinc-400 focus:border-amber-300 focus:ring-2 focus:ring-amber-400/35 disabled:cursor-not-allowed disabled:opacity-70 dark:border-white/12 dark:bg-white/8 dark:text-white dark:placeholder:text-zinc-500"
             />
-
-            {!state.transcript.trim() && !isBusy ? (
-              <EmptyTranscriptNudge targetWord={todayWord.elevated} />
-            ) : null}
 
             <div className="mt-4">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
@@ -530,15 +467,17 @@ export default function ChallengePage() {
                 />
                 {isValidating ? "Checking..." : "Check challenge"}
               </button>
-              <button
-                type="button"
-                disabled={isBusy}
-                onClick={handleReset}
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-white/60 bg-white/55 px-5 py-3 text-sm font-bold text-ink shadow-sm backdrop-blur-md transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/12 dark:bg-white/10 dark:text-white dark:focus:ring-offset-zinc-950"
-              >
-                <RotateCcw size={17} aria-hidden="true" />
-                New attempt
-              </button>
+              {state.status !== "idle" || state.transcript.trim() ? (
+                <button
+                  type="button"
+                  disabled={isBusy}
+                  onClick={handleReset}
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-white/60 bg-white/55 px-5 py-3 text-sm font-bold text-ink shadow-sm backdrop-blur-md transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/12 dark:bg-white/10 dark:text-white dark:focus:ring-offset-zinc-950"
+                >
+                  <RotateCcw size={17} aria-hidden="true" />
+                  New attempt
+                </button>
+              ) : null}
             </div>
           </GlassCard>
         </div>
@@ -562,11 +501,9 @@ export default function ChallengePage() {
         <GlassCard className="animate-floatIn [animation-delay:100ms]">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
-                Challenge date
-              </p>
+              <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">Challenge</p>
               <p className="mt-1 text-2xl font-bold text-ink dark:text-white">
-                {getTodayKey()}
+                {formatReadableDate()}
               </p>
             </div>
             <ProgressRing
@@ -581,13 +518,10 @@ export default function ChallengePage() {
               ? `Complete. Current streak: ${streak.currentStreak}`
               : `Current streak: ${streak.currentStreak}`}
           </div>
-          <p className="mt-3 text-xs leading-6 text-zinc-500 dark:text-zinc-400">
-            Streaks update only after acceptable usage, and only once per date.
-          </p>
         </GlassCard>
 
         <GlassCard className="animate-floatIn [animation-delay:150ms]">
-          <StatusBadge tone="blue">Examples</StatusBadge>
+          <p className="text-sm font-bold text-zinc-500 dark:text-zinc-400">Examples</p>
           <div className="mt-4 space-y-3 text-sm leading-7">
             <p className="text-wrap-anywhere text-zinc-600 dark:text-zinc-300">
               <span className="font-bold text-zinc-800 dark:text-zinc-100">
@@ -621,7 +555,7 @@ export default function ChallengePage() {
             ) : (
               <BookOpenCheck size={16} aria-hidden="true" />
             )}
-            {todayWordSaved ? "Saved to dictionary" : "Save today's word"}
+            {todayWordSaved ? "Saved" : "Save word"}
           </button>
         </GlassCard>
       </aside>
@@ -848,20 +782,6 @@ function LoadingMeter() {
           style={{ "--sheen-delay": `${index * 120}ms` } as CSSProperties}
         />
       ))}
-    </div>
-  );
-}
-
-function EmptyTranscriptNudge({ targetWord }: { targetWord: string }) {
-  return (
-    <div className="mt-4 rounded-2xl border border-dashed border-sky-200/80 bg-sky-100/35 p-4 dark:border-sky-300/20 dark:bg-sky-300/10">
-      <p className="text-sm font-bold text-sky-950 dark:text-sky-100">
-        No challenge sentence yet
-      </p>
-      <p className="mt-1 text-sm leading-6 text-sky-950/80 dark:text-sky-100/85">
-        Pick a starter, type your own line, or record one. Just make sure{" "}
-        <span className="font-bold">{targetWord}</span> appears naturally.
-      </p>
     </div>
   );
 }
