@@ -404,9 +404,9 @@ function getDescription(state: RecorderState, maxDurationLabel: string) {
     case "recording":
       return `Speak naturally. Recording stops automatically at ${maxDurationLabel}.`;
     case "stopping":
-      return "Preparing the audio for a later transcription step.";
+      return "Preparing the audio for transcription.";
     case "recorded":
-      return "This recording is ready for upload when transcription arrives.";
+      return "This recording is ready to transcribe.";
     case "error":
       return "Try again, or continue with the typed transcript fallback.";
     case "permission-needed":

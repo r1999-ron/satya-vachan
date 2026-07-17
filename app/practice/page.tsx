@@ -21,7 +21,7 @@ import {
   getDemoHints,
   getMockPracticeResponse,
 } from "@/data/demo";
-import { formatRecordingDuration } from "@/lib/audio";
+import { formatRecordingDuration, recordingToFile } from "@/lib/audio";
 import { useLearnedWords } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 import type {
@@ -30,7 +30,13 @@ import type {
   RecordingResult,
 } from "@/types";
 
-type PracticeStatus = "idle" | "ready" | "processing" | "completed" | "error";
+type PracticeStatus =
+  | "idle"
+  | "ready"
+  | "transcribing"
+  | "processing"
+  | "completed"
+  | "error";
 
 const PROCESSING_DELAY_MS = 650;
 
@@ -59,8 +65,10 @@ export default function PracticePage() {
     [words],
   );
 
+  const isTranscribing = status === "transcribing";
   const isProcessing = status === "processing";
-  const canSubmit = transcript.trim().length > 0 && !isProcessing;
+  const isBusy = isProcessing || isTranscribing;
+  const canSubmit = transcript.trim().length > 0 && !isBusy;
 
   const clearPendingMock = useCallback(() => {
     if (timeoutRef.current) {
@@ -99,7 +107,7 @@ export default function PracticePage() {
 
   const handleSelectHint = useCallback(
     (hint: string) => {
-      if (isProcessing) {
+      if (isBusy) {
         return;
       }
 
@@ -111,11 +119,11 @@ export default function PracticePage() {
       setError("");
       setStatus("ready");
     },
-    [clearPendingMock, isProcessing],
+    [clearPendingMock, isBusy],
   );
 
   const handleTranscriptChange = (value: string) => {
-    if (isProcessing) {
+    if (isBusy) {
       return;
     }
 
@@ -128,7 +136,7 @@ export default function PracticePage() {
   };
 
   const handleTryDemo = () => {
-    if (isProcessing) {
+    if (isBusy) {
       return;
     }
 
@@ -156,7 +164,7 @@ export default function PracticePage() {
     setRecordingNotice(
       `Recording saved locally (${formatRecordingDuration(
         recording.durationMs,
-      )}). Transcription connects in Module 7; type or edit the transcript below for now.`,
+      )}). Use it to create an editable transcript, or type below.`,
     );
     setError("");
   };
@@ -174,19 +182,57 @@ export default function PracticePage() {
     setRecordingNotice("");
   };
 
-  const handleUseRecording = (recording: RecordingResult) => {
+  const handleUseRecording = async (recording: RecordingResult) => {
     setRecordedAudio(recording);
-
-    if (transcript.trim()) {
-      runMockTransformation();
-      return;
-    }
-
-    setStatus("ready");
+    setStatus("transcribing");
+    setResult(null);
     setError("");
-    setRecordingNotice(
-      "Recording is ready for upload. Until transcription arrives, type the spoken sentence below to polish it.",
-    );
+    setRecordingNotice("Listening carefully...");
+
+    try {
+      const formData = new FormData();
+      formData.append("file", recordingToFile(recording));
+      formData.append("durationMs", String(recording.durationMs));
+
+      const response = await fetch("/api/transcribe", {
+        method: "POST",
+        body: formData,
+      });
+      const payload = await readJsonResponse<{
+        transcript?: string;
+        error?: string;
+        code?: string;
+      }>(response);
+
+      if (!response.ok) {
+        throw new Error(
+          payload.error ?? "Transcription failed. Please type your sentence.",
+        );
+      }
+
+      const nextTranscript = payload.transcript?.trim();
+
+      if (!nextTranscript) {
+        throw new Error(
+          "No speech was detected. Please try again or type your sentence.",
+        );
+      }
+
+      setTranscript(nextTranscript);
+      setSelectedHint("");
+      setStatus("ready");
+      setRecordingNotice("Transcript ready. Edit it, then polish the sentence.");
+    } catch (caughtError) {
+      setStatus("error");
+      setError(
+        caughtError instanceof Error
+          ? caughtError.message
+          : "Transcription failed. Please type your sentence.",
+      );
+      setRecordingNotice(
+        "The recording is still available. You can retry upload or type the sentence below.",
+      );
+    }
   };
 
   const handleSaveWord = (word: LearnedWordInput) => {
@@ -224,7 +270,7 @@ export default function PracticePage() {
               <button
                 type="button"
                 onClick={handleTryDemo}
-                disabled={isProcessing}
+                disabled={isBusy}
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-ink px-5 py-3 text-sm font-bold text-white shadow-lg shadow-zinc-900/15 transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ink/40 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:bg-zinc-500 disabled:shadow-none dark:bg-white dark:text-zinc-950 dark:focus:ring-white/40 dark:focus:ring-offset-zinc-950"
               >
                 <WandSparkles size={18} aria-hidden="true" />
@@ -234,7 +280,7 @@ export default function PracticePage() {
               <button
                 type="button"
                 onClick={handleReset}
-                disabled={isProcessing && !result}
+                disabled={isBusy && !result}
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-white/60 bg-white/55 px-5 py-3 text-sm font-bold text-ink shadow-sm backdrop-blur-md transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/12 dark:bg-white/10 dark:text-white dark:focus:ring-offset-zinc-950"
               >
                 <RotateCcw size={17} aria-hidden="true" />
@@ -246,7 +292,7 @@ export default function PracticePage() {
           <div className="rounded-2xl border border-dashed border-white/70 bg-white/35 p-5 dark:border-white/15 dark:bg-white/5">
             <RecorderButton
               key={recorderResetKey}
-              disabled={isProcessing}
+              disabled={isBusy}
               onDiscard={handleDiscardRecording}
               onProcess={handleUseRecording}
               onRecordingComplete={handleRecordingComplete}
@@ -288,7 +334,7 @@ export default function PracticePage() {
               </h2>
               <p className="mt-2 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
                 Tap a prompt to fill the transcript, then polish it with the
-                mock transformer.
+                transformer.
               </p>
             </div>
           </div>
@@ -324,7 +370,7 @@ export default function PracticePage() {
 
           <textarea
             value={transcript}
-            disabled={isProcessing}
+            disabled={isBusy}
             onChange={(event) => handleTranscriptChange(event.target.value)}
             placeholder="Type your Hindi sentence here..."
             className="mt-5 min-h-36 w-full resize-y rounded-2xl border border-white/60 bg-white/55 p-4 text-sm font-semibold leading-7 text-ink outline-none transition placeholder:text-zinc-400 focus:border-amber-300 focus:ring-2 focus:ring-amber-400/35 disabled:cursor-not-allowed disabled:opacity-70 dark:border-white/12 dark:bg-white/8 dark:text-white dark:placeholder:text-zinc-500"
@@ -360,7 +406,7 @@ export default function PracticePage() {
         </GlassCard>
       </div>
 
-      {status === "processing" ? (
+      {status === "transcribing" || status === "processing" ? (
         <GlassCard className="animate-floatIn">
           <div className="flex items-center gap-4">
             <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-amber-400/18 text-amber-700 shadow-glow dark:text-amber-200">
@@ -372,11 +418,14 @@ export default function PracticePage() {
             </span>
             <div className="min-w-0">
               <h2 className="text-lg font-bold text-ink dark:text-white">
-                Creating a mock transformation
+                {isTranscribing
+                  ? "Listening carefully..."
+                  : "Creating a mock transformation"}
               </h2>
               <p className="mt-1 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-                No AI call is happening yet. This pause previews the future
-                processing state.
+                {isTranscribing
+                  ? "Your recording is being transcribed into an editable sentence."
+                  : "The transformation step is still using deterministic demo data."}
               </p>
             </div>
           </div>
@@ -400,6 +449,8 @@ function statusLabel(status: PracticeStatus) {
   switch (status) {
     case "ready":
       return "Ready";
+    case "transcribing":
+      return "Transcribing";
     case "processing":
       return "Mock processing";
     case "completed":
@@ -409,5 +460,13 @@ function statusLabel(status: PracticeStatus) {
     case "idle":
     default:
       return "Idle";
+  }
+}
+
+async function readJsonResponse<T>(response: Response): Promise<T> {
+  try {
+    return (await response.json()) as T;
+  } catch {
+    return {} as T;
   }
 }
