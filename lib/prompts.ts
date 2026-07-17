@@ -105,3 +105,80 @@ export const transformationResponseFormat = {
 export function buildTransformationUserPrompt(transcript: string) {
   return TRANSFORMATION_USER_PROMPT.replace("{{TRANSCRIPT}}", transcript);
 }
+
+export const CHALLENGE_SYSTEM_PROMPT = `You are Satya-Vachan, a supportive Hindi expression coach.
+Validate a daily vocabulary challenge for fluent Hindi speakers.
+The user must use the target elevated word naturally in their own sentence.
+Accept romanized Hindi, Devanagari Hindi, and reasonable transliteration variants.
+Do not require perfect grammar.
+If the target word is missing, mark usedTargetWord false and acceptableUsage false.
+If the target word appears but usage is awkward, mark usedTargetWord true and acceptableUsage false, then suggest a better version.
+Keep feedback short, warm, and action-oriented.
+Return only valid JSON matching the schema.`;
+
+export const CHALLENGE_USER_PROMPT = `Validate this daily challenge attempt.
+
+Target word: {{TARGET_WORD}}
+Common alternative: {{COMMON_WORD}}
+Meaning: {{MEANING}}
+Usage note: {{USAGE_NOTE}}
+Challenge prompt: {{CHALLENGE_PROMPT}}
+Example with target word: {{ELEVATED_EXAMPLE}}
+
+User transcript:
+{{TRANSCRIPT}}`;
+
+export const challengeResponseFormat = {
+  type: "json_schema",
+  json_schema: {
+    name: "satya_vachan_challenge_response",
+    description: "A structured Satya-Vachan daily challenge validation response.",
+    strict: true,
+    schema: {
+      type: "object",
+      additionalProperties: false,
+      required: [
+        "transcript",
+        "usedTargetWord",
+        "acceptableUsage",
+        "feedback",
+        "suggestedImprovement",
+        "completed",
+      ],
+      properties: {
+        transcript: { type: "string" },
+        usedTargetWord: { type: "boolean" },
+        acceptableUsage: { type: "boolean" },
+        feedback: { type: "string" },
+        suggestedImprovement: { type: "string" },
+        completed: { type: "boolean" },
+      },
+    },
+  },
+} satisfies ResponseFormatJSONSchema;
+
+export function buildChallengeUserPrompt({
+  transcript,
+  targetWord,
+  commonWord,
+  meaning,
+  usageNote,
+  challengePrompt,
+  elevatedExample,
+}: {
+  transcript: string;
+  targetWord: string;
+  commonWord: string;
+  meaning: string;
+  usageNote: string;
+  challengePrompt: string;
+  elevatedExample: string;
+}) {
+  return CHALLENGE_USER_PROMPT.replace("{{TARGET_WORD}}", targetWord)
+    .replace("{{COMMON_WORD}}", commonWord)
+    .replace("{{MEANING}}", meaning)
+    .replace("{{USAGE_NOTE}}", usageNote)
+    .replace("{{CHALLENGE_PROMPT}}", challengePrompt)
+    .replace("{{ELEVATED_EXAMPLE}}", elevatedExample)
+    .replace("{{TRANSCRIPT}}", transcript);
+}
