@@ -8,12 +8,14 @@ import type { LearnedWordInput, PracticeResponse, WordReplacement } from "@/type
 
 type TransformationResultProps = {
   isWordSaved: (word: string) => boolean;
+  onAudioStatusChange?: (status: "idle" | "loading" | "ready" | "playing" | "error") => void;
   onSaveWord: (word: LearnedWordInput) => void;
   result: PracticeResponse;
 };
 
 export function TransformationResult({
   isWordSaved,
+  onAudioStatusChange,
   onSaveWord,
   result,
 }: TransformationResultProps) {
@@ -31,12 +33,14 @@ export function TransformationResult({
           tone="primary"
           variant="natural"
           autoPrepare
+          onAudioStatusChange={onAudioStatusChange}
         />
         <VersionPanel
           label="More elevated"
           text={result.elevatedVersion}
           tone="secondary"
           variant="elevated"
+          onAudioStatusChange={onAudioStatusChange}
         />
       </div>
 
@@ -82,9 +86,11 @@ function VersionPanel({
   tone,
   variant,
   autoPrepare = false,
+  onAudioStatusChange,
 }: {
   autoPrepare?: boolean;
   label: string;
+  onAudioStatusChange?: (status: "idle" | "loading" | "ready" | "playing" | "error") => void;
   text: string;
   tone: "primary" | "secondary";
   variant: "natural" | "elevated";
@@ -113,6 +119,7 @@ function VersionPanel({
           autoPrepare={autoPrepare}
           key={`${variant}-${text}`}
           label="Listen"
+          onStatusChange={onAudioStatusChange}
           text={text}
           variant={variant}
         />

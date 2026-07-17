@@ -18,6 +18,7 @@ type AudioPlayerProps = {
   autoPrepare?: boolean;
   className?: string;
   label?: string;
+  onStatusChange?: (status: PlayerStatus) => void;
   text: string;
   variant?: AudioVariant;
 };
@@ -28,6 +29,7 @@ export function AudioPlayer({
   autoPrepare = false,
   className,
   label = "Listen",
+  onStatusChange,
   text,
   variant = "natural",
 }: AudioPlayerProps) {
@@ -42,6 +44,12 @@ export function AudioPlayer({
   const isLoading = status === "loading";
   const isPlaying = status === "playing";
   const hasAudio = Boolean(audioUrl);
+
+  useEffect(() => {
+    if (status !== "idle") {
+      onStatusChange?.(status);
+    }
+  }, [onStatusChange, status]);
 
   const clearGeneratedUrl = useCallback(() => {
     if (generatedUrlRef.current) {
