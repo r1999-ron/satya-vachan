@@ -1,10 +1,13 @@
-import { BookOpen, Search } from "lucide-react";
+"use client";
+
+import { BookOpen, Search, Trash2 } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import { emptyStateExamples, getSeedLearnedWords, getStarterWords } from "@/data/demo";
+import { emptyStateExamples, getStarterWords } from "@/data/demo";
+import { useLearnedWords } from "@/lib/storage";
 
 export default function LearnedPage() {
-  const seedWords = getSeedLearnedWords();
+  const { removeWord, words } = useLearnedWords();
   const starterWords = getStarterWords(6);
 
   return (
@@ -17,21 +20,30 @@ export default function LearnedPage() {
               Your personal Hindi refinement list.
             </h1>
             <p className="text-sm leading-7 text-zinc-700 dark:text-zinc-300">
-              Seed vocabulary is available from the start, so the dictionary
-              feels useful before local saving arrives in Module 3.
+              Saved vocabulary stays on this device, with seed words shown until
+              you begin shaping your own list.
             </p>
           </div>
-          <div className="flex min-h-12 items-center gap-3 rounded-2xl border border-white/60 bg-white/45 px-4 dark:border-white/12 dark:bg-white/5">
-            <Search size={18} className="text-zinc-500" aria-hidden="true" />
-            <span className="text-sm font-semibold text-zinc-500">
-              Search arrives later
-            </span>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="flex min-h-12 items-center gap-3 rounded-2xl border border-white/60 bg-white/45 px-4 dark:border-white/12 dark:bg-white/5">
+              <BookOpen size={18} className="text-sky-700 dark:text-sky-200" aria-hidden="true" />
+              <span className="text-sm font-bold text-ink dark:text-white">
+                {words.length} {words.length === 1 ? "word" : "words"}
+              </span>
+            </div>
+            <div className="flex min-h-12 items-center gap-3 rounded-2xl border border-white/60 bg-white/45 px-4 dark:border-white/12 dark:bg-white/5">
+              <Search size={18} className="text-zinc-500" aria-hidden="true" />
+              <span className="text-sm font-semibold text-zinc-500">
+                Search arrives later
+              </span>
+            </div>
           </div>
         </div>
       </GlassCard>
 
-      <div className="grid gap-5 md:grid-cols-2">
-        {seedWords.map((word) => (
+      {words.length > 0 ? (
+        <div className="grid gap-5 md:grid-cols-2">
+          {words.map((word) => (
           <GlassCard key={word.id} interactive>
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
@@ -54,14 +66,41 @@ export default function LearnedPage() {
                 <p className="mt-3 text-wrap-anywhere text-sm leading-7 text-zinc-600 dark:text-zinc-400">
                   {word.exampleSentence}
                 </p>
+                <p className="mt-3 text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+                  Saved {word.savedAt}
+                </p>
               </div>
-              <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-sky-400/16 text-sky-800 dark:text-sky-200">
-                <BookOpen size={19} aria-hidden="true" />
-              </span>
+              <button
+                type="button"
+                onClick={() => removeWord(word.id)}
+                className="grid size-11 shrink-0 place-items-center rounded-2xl bg-rose-400/14 text-rose-800 transition hover:scale-105 active:scale-95 dark:text-rose-200"
+                aria-label={`Remove ${word.word}`}
+              >
+                <Trash2 size={18} aria-hidden="true" />
+              </button>
             </div>
           </GlassCard>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <GlassCard className="animate-floatIn">
+          <div className="flex items-start gap-3">
+            <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-sky-400/16 text-sky-800 dark:text-sky-200">
+              <BookOpen size={19} aria-hidden="true" />
+            </span>
+            <div className="min-w-0">
+              <h2 className="text-xl font-bold text-ink dark:text-white">
+                No saved words yet
+              </h2>
+              <p className="mt-2 text-sm leading-7 text-zinc-600 dark:text-zinc-400">
+                Practice words will appear here when you save them in later
+                flows. For now, the starter corpus below gives you a useful
+                reference.
+              </p>
+            </div>
+          </div>
+        </GlassCard>
+      )}
 
       <GlassCard>
         <StatusBadge>Corpus Starters</StatusBadge>

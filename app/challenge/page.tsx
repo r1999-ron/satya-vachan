@@ -1,12 +1,16 @@
+"use client";
+
 import { BookOpenCheck, Sparkles, Trophy } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ProgressRing } from "@/components/ui/ProgressRing";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { getWordOfTheDay } from "@/data/words";
 import { getTodayKey } from "@/lib/dates";
+import { useStreak } from "@/lib/storage";
 
 export default function ChallengePage() {
   const todayWord = getWordOfTheDay();
+  const { completedToday, completeToday, streak } = useStreak();
 
   return (
     <div className="grid gap-5 lg:grid-cols-[1fr_22rem]">
@@ -18,8 +22,8 @@ export default function ChallengePage() {
           </h1>
           <p className="max-w-2xl text-sm leading-7 text-zinc-700 dark:text-zinc-300">
             Today&apos;s challenge is static for now: read the word, study the
-            examples, and try saying a sentence aloud. Recording and validation
-            arrive in later modules.
+            examples, and mark it complete once you have tried a sentence aloud.
+            Recording and validation arrive in later modules.
           </p>
         </div>
 
@@ -94,12 +98,29 @@ export default function ChallengePage() {
                 {getTodayKey()}
               </p>
             </div>
-            <ProgressRing value={0} label="Challenge completion" />
+            <ProgressRing
+              value={completedToday ? 100 : 0}
+              label="Challenge completion"
+            />
           </div>
           <div className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-emerald-400/14 px-4 py-3 text-sm font-bold text-emerald-900 dark:text-emerald-100">
             <Trophy size={18} aria-hidden="true" />
-            Streak logic arrives in Module 3
+            {completedToday
+              ? `Complete. Current streak: ${streak.currentStreak}`
+              : `Current streak: ${streak.currentStreak}`}
           </div>
+          <button
+            type="button"
+            onClick={completeToday}
+            disabled={completedToday}
+            className="mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-ink px-5 py-3 text-sm font-bold text-white shadow-lg shadow-zinc-900/15 transition hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:bg-zinc-500 disabled:shadow-none dark:bg-white dark:text-zinc-950 dark:disabled:bg-zinc-700 dark:disabled:text-zinc-300"
+          >
+            <Trophy size={18} aria-hidden="true" />
+            {completedToday ? "Completed for today" : "Mark today complete"}
+          </button>
+          <p className="mt-3 text-xs leading-6 text-zinc-500 dark:text-zinc-400">
+            Completing the same date again will not increase the streak.
+          </p>
         </GlassCard>
 
         <GlassCard className="animate-floatIn [animation-delay:150ms]">

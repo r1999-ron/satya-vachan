@@ -1,15 +1,19 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowRight, BookOpen, Mic2, Sparkles } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ProgressRing } from "@/components/ui/ProgressRing";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import { defaultTransformationExample, getSeedLearnedWords } from "@/data/demo";
+import { defaultTransformationExample } from "@/data/demo";
 import { getWordOfTheDay } from "@/data/words";
 import { formatReadableDate } from "@/lib/dates";
+import { useLearnedWords, useStreak } from "@/lib/storage";
 
 export default function HomePage() {
   const todayWord = getWordOfTheDay();
-  const seedWords = getSeedLearnedWords();
+  const { words } = useLearnedWords();
+  const { completedToday, streak } = useStreak();
 
   return (
     <div className="grid gap-5 md:grid-cols-[1.35fr_0.85fr] md:items-start">
@@ -120,7 +124,11 @@ export default function HomePage() {
                 Current streak
               </p>
               <p className="mt-1 text-3xl font-bold text-ink dark:text-white">
-                0 days
+                {streak.currentStreak} {streak.currentStreak === 1 ? "day" : "days"}
+              </p>
+              <p className="mt-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+                Longest: {streak.longestStreak}{" "}
+                {streak.longestStreak === 1 ? "day" : "days"}
               </p>
             </div>
             <span className="grid size-12 place-items-center rounded-2xl bg-amber-400/20 text-amber-700 shadow-glow dark:text-amber-200">
@@ -133,10 +141,10 @@ export default function HomePage() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
-                Seed words ready
+                Learned words
               </p>
               <p className="mt-1 text-3xl font-bold text-ink dark:text-white">
-                {seedWords.length} words
+                {words.length} {words.length === 1 ? "word" : "words"}
               </p>
             </div>
             <Link
@@ -150,7 +158,9 @@ export default function HomePage() {
         </GlassCard>
 
         <GlassCard className="animate-floatIn [animation-delay:230ms]">
-          <StatusBadge tone="rose">Challenge Preview</StatusBadge>
+          <StatusBadge tone={completedToday ? "green" : "rose"}>
+            {completedToday ? "Completed Today" : "Challenge Preview"}
+          </StatusBadge>
           <p className="mt-3 text-wrap-anywhere text-sm font-semibold leading-7 text-zinc-700 dark:text-zinc-300">
             {todayWord.challengePrompt}
           </p>
