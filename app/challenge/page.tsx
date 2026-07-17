@@ -401,6 +401,7 @@ export default function ChallengePage() {
             </div>
 
             <textarea
+              lang="hi"
               value={state.transcript}
               disabled={isBusy}
               onChange={(event) => handleTranscriptChange(event.target.value)}
@@ -527,17 +528,18 @@ export default function ChallengePage() {
               <span className="font-bold text-zinc-800 dark:text-zinc-100">
                 Simple:
               </span>{" "}
-              {todayWord.simpleExample}
+              <span lang="hi">{todayWord.simpleExample}</span>
             </p>
             <p className="text-wrap-anywhere text-amber-900 dark:text-amber-100">
               <span className="font-bold">Polished:</span>{" "}
-              {todayWord.elevatedExample}
+              <span lang="hi">{todayWord.elevatedExample}</span>
             </p>
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
             {todayWord.synonyms.map((synonym) => (
               <span
                 key={synonym}
+                lang="hi"
                 className="rounded-full bg-white/45 px-3 py-1 text-xs font-bold text-zinc-600 dark:bg-white/8 dark:text-zinc-300"
               >
                 {synonym}
@@ -708,6 +710,7 @@ function WordPanel({
         {label}
       </p>
       <p
+        lang="hi"
         className={cn(
           "mt-2 text-wrap-anywhere text-3xl font-bold",
           featured ? "text-ink dark:text-white" : "text-zinc-700 dark:text-zinc-200",
@@ -731,7 +734,7 @@ function InfoPanel({
       <p className="text-sm font-bold text-zinc-800 dark:text-zinc-100">
         {title}
       </p>
-      <p className="mt-2 text-wrap-anywhere text-sm leading-7 text-zinc-700 dark:text-zinc-300">
+      <p lang="hi" className="mt-2 text-wrap-anywhere text-sm leading-7 text-zinc-700 dark:text-zinc-300">
         {children}
       </p>
     </div>
@@ -834,7 +837,7 @@ function ChallengeFeedback({
                 ? "That usage works nicely."
                 : `Use ${targetWord} a little more directly.`}
             </h2>
-            <p className="mt-2 text-wrap-anywhere text-sm leading-7 text-zinc-700 dark:text-zinc-300">
+            <p lang="hi" className="mt-2 text-wrap-anywhere text-sm leading-7 text-zinc-700 dark:text-zinc-300">
               {result.feedback}
             </p>
           </div>
@@ -865,7 +868,7 @@ function ChallengeFeedback({
           <p className="text-xs font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
             Suggested version
           </p>
-          <p className="mt-2 text-wrap-anywhere text-sm font-semibold leading-7 text-ink dark:text-white">
+          <p lang="hi" className="mt-2 text-wrap-anywhere text-sm font-semibold leading-7 text-ink dark:text-white">
             {result.suggestedImprovement}
           </p>
         </div>

@@ -46,7 +46,7 @@ export function TransformationResult({
 
       <div className="rounded-2xl border border-sky-200/70 bg-sky-100/40 p-4 dark:border-sky-300/20 dark:bg-sky-300/10">
         <StatusBadge tone="blue">Feedback</StatusBadge>
-        <p className="mt-3 text-wrap-anywhere text-sm leading-7 text-sky-950 dark:text-sky-100">
+        <p lang="hi" className="mt-3 text-wrap-anywhere text-sm leading-7 text-sky-950 dark:text-sky-100">
           {result.feedback}
         </p>
       </div>
@@ -127,6 +127,7 @@ function VersionPanel({
         />
       </div>
       <p
+        lang="hi"
         className={
           primary
             ? "mt-3 text-wrap-anywhere text-lg font-bold leading-8 text-emerald-950 dark:text-emerald-100"

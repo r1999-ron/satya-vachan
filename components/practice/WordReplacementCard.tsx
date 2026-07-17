@@ -30,7 +30,7 @@ export function WordReplacementCard({
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 space-y-3">
           <div className="flex flex-wrap items-center gap-2 text-lg font-bold">
-            <span className="text-wrap-anywhere text-zinc-600 line-through decoration-zinc-400/70 decoration-2 dark:text-zinc-400">
+            <span lang="hi" className="text-wrap-anywhere text-zinc-600 line-through decoration-zinc-400/70 decoration-2 dark:text-zinc-400">
               {replacement.original}
             </span>
             <ArrowRight
@@ -38,15 +38,15 @@ export function WordReplacementCard({
               size={18}
               aria-hidden="true"
             />
-            <span className="text-wrap-anywhere text-ink dark:text-white">
+            <span lang="hi" className="text-wrap-anywhere text-ink dark:text-white">
               {replacement.replacement}
             </span>
             <StatusBadge tone="blue">{replacement.naturalness}</StatusBadge>
           </div>
-          <p className="text-wrap-anywhere text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+          <p lang="hi" className="text-wrap-anywhere text-sm font-semibold text-zinc-700 dark:text-zinc-300">
             {replacement.meaning}
           </p>
-          <p className="text-wrap-anywhere text-sm leading-7 text-zinc-600 dark:text-zinc-400">
+          <p lang="hi" className="text-wrap-anywhere text-sm leading-7 text-zinc-600 dark:text-zinc-400">
             {replacement.whyBetter}
           </p>
         </div>

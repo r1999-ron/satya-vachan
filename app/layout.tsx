@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Sans, Noto_Sans_Mono } from "next/font/google";
+import { Martel, Noto_Sans, Noto_Sans_Mono } from "next/font/google";
 import { AppShell } from "@/components/layout/AppShell";
 import "./globals.css";
 
@@ -11,6 +11,12 @@ const notoSans = Noto_Sans({
 const notoSansMono = Noto_Sans_Mono({
   variable: "--font-noto-sans-mono",
   subsets: ["latin"],
+});
+
+const martel = Martel({
+  variable: "--font-martel",
+  subsets: ["devanagari", "latin"],
+  weight: ["200", "300", "400", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -31,7 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
-      <body className={`${notoSans.variable} ${notoSansMono.variable}`}>
+      <body className={`${notoSans.variable} ${notoSansMono.variable} ${martel.variable}`}>
         <AppShell>{children}</AppShell>
       </body>
     </html>
