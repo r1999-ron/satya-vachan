@@ -17,7 +17,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed inset-x-3 bottom-3 z-40 rounded-[1.4rem] border border-zinc-900/8 bg-white/88 p-1.5 shadow-[0_16px_45px_rgba(24,20,16,0.16)] backdrop-blur-2xl md:hidden dark:border-white/12 dark:bg-zinc-950/88"
+      className="fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-40 rounded-[1.2rem] border border-zinc-900/8 bg-white/88 p-1.5 shadow-[0_12px_34px_rgba(24,20,16,0.14)] backdrop-blur-2xl md:hidden dark:border-white/12 dark:bg-zinc-950/88"
       aria-label="Primary navigation"
     >
       <div className="grid grid-cols-4 gap-1">
@@ -29,14 +29,14 @@ export function BottomNav() {
               key={href}
               href={href}
               className={cn(
-                "flex min-h-14 flex-col items-center justify-center gap-1 rounded-xl px-1 text-[11px] font-semibold transition",
+                "flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-xl px-1 text-[11px] font-semibold transition",
                 "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500",
                 active
                   ? "bg-zinc-900 text-white shadow-sm motion-safe:animate-savePop dark:bg-white dark:text-zinc-950"
                   : "text-zinc-600 hover:bg-black/5 active:scale-95 dark:text-zinc-300 dark:hover:bg-white/10",
               )}
             >
-              <Icon size={19} aria-hidden="true" />
+              <Icon size={18} aria-hidden="true" />
               <span className="max-w-full truncate">{label}</span>
             </Link>
           );
