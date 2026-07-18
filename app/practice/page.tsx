@@ -307,7 +307,7 @@ function PracticeContent() {
           />
           {state.transcriptionError ? (
             <ErrorNotice
-              actionLabel={canRetryTranscription ? "Retry transcription" : undefined}
+              actionLabel={canRetryTranscription ? "Retry" : undefined}
               message={state.transcriptionError}
               onAction={
                 canRetryTranscription && state.recordedAudio

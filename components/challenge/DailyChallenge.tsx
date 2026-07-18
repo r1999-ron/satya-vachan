@@ -203,17 +203,6 @@ export function DailyChallenge({ word }: { word: WordEntry }) {
               Say or type a sentence, then check how naturally you used it.
             </p>
           </div>
-          {state.status !== "idle" || state.transcript.trim() ? (
-            <button
-              type="button"
-              onClick={handleReset}
-              disabled={isBusy && !state.result}
-              className="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-zinc-600 transition hover:bg-zinc-900/5 hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/55 disabled:cursor-not-allowed disabled:opacity-60 dark:text-zinc-300 dark:hover:bg-white/8 dark:hover:text-white"
-            >
-              <RotateCcw size={15} aria-hidden="true" />
-              <span className="hidden sm:inline">Start over</span>
-            </button>
-          ) : null}
         </div>
 
         <div className="mt-5">
@@ -233,6 +222,7 @@ export function DailyChallenge({ word }: { word: WordEntry }) {
             className="border-0 bg-transparent p-0 dark:bg-transparent"
             disabled={isBusy}
             hideDuration
+            variant="continuation"
             onRecordingComplete={(recording) => void transcribeRecording(recording)}
             onStateChange={(nextState: RecorderState) => {
               if (nextState === "recording") {
@@ -242,7 +232,7 @@ export function DailyChallenge({ word }: { word: WordEntry }) {
           />
           {state.transcriptionError ? (
             <ErrorNotice
-              actionLabel={canRetryTranscription ? "Retry transcription" : undefined}
+              actionLabel={canRetryTranscription ? "Retry" : undefined}
               message={state.transcriptionError}
               onAction={
                 canRetryTranscription && state.recordedAudio
@@ -275,20 +265,34 @@ export function DailyChallenge({ word }: { word: WordEntry }) {
           />
         ) : null}
 
-        <button
-          type="button"
-          onClick={() => void runValidation()}
-          disabled={!canValidate}
-          className={cn(
-            "mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/35 focus-visible:ring-offset-2 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:shadow-none dark:focus-visible:ring-white/40 dark:focus-visible:ring-offset-zinc-950",
-            canValidate
-              ? "bg-ink text-white shadow-lg shadow-zinc-900/15 hover:-translate-y-0.5 dark:bg-white dark:text-zinc-950"
-              : "bg-zinc-400/70 text-white dark:bg-zinc-700 dark:text-zinc-300",
-          )}
-        >
-          <WandSparkles size={18} aria-hidden="true" />
-          {isValidating ? "Checking..." : "Check My Answer"}
-        </button>
+        <div className="mt-5 grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={handleReset}
+            disabled={
+              (state.status === "idle" && !state.transcript.trim()) ||
+              (isBusy && !state.result)
+            }
+            className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-zinc-900/12 bg-white/55 px-4 py-3 text-sm font-bold text-zinc-700 transition hover:-translate-y-0.5 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/25 focus-visible:ring-offset-2 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:bg-white/8 dark:text-zinc-200 dark:hover:bg-white/12 dark:focus-visible:ring-white/30 dark:focus-visible:ring-offset-zinc-950"
+          >
+            <RotateCcw size={17} aria-hidden="true" />
+            Start Over
+          </button>
+          <button
+            type="button"
+            onClick={() => void runValidation()}
+            disabled={!canValidate}
+            className={cn(
+              "inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/35 focus-visible:ring-offset-2 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:shadow-none dark:focus-visible:ring-white/40 dark:focus-visible:ring-offset-zinc-950",
+              canValidate
+                ? "bg-ink text-white shadow-lg shadow-zinc-900/15 hover:-translate-y-0.5 dark:bg-white dark:text-zinc-950"
+                : "bg-zinc-400/70 text-white dark:bg-zinc-700 dark:text-zinc-300",
+            )}
+          >
+            <WandSparkles size={18} aria-hidden="true" />
+            {isValidating ? "Checking..." : "Check My Answer"}
+          </button>
+        </div>
       </GlassCard>
 
       {isTranscribing || isValidating ? (
