@@ -232,6 +232,7 @@ export function DailyChallenge({ word }: { word: WordEntry }) {
             key={recorderResetKey}
             className="border-0 bg-transparent p-0 dark:bg-transparent"
             disabled={isBusy}
+            hideDuration
             onRecordingComplete={(recording) => void transcribeRecording(recording)}
             onStateChange={(nextState: RecorderState) => {
               if (nextState === "recording") {
@@ -286,7 +287,7 @@ export function DailyChallenge({ word }: { word: WordEntry }) {
           )}
         >
           <WandSparkles size={18} aria-hidden="true" />
-          {isValidating ? "Checking..." : "Check challenge"}
+          {isValidating ? "Checking..." : "Check My Answer"}
         </button>
       </GlassCard>
 

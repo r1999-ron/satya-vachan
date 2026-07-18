@@ -47,6 +47,7 @@ export type RecorderState =
 type RecorderButtonProps = {
   className?: string;
   disabled?: boolean;
+  hideDuration?: boolean;
   maxDurationMs?: number;
   variant?: "default" | "continuation";
   onRecordingComplete?: (recording: RecordingResult) => void;
@@ -56,6 +57,7 @@ type RecorderButtonProps = {
 export function RecorderButton({
   className,
   disabled = false,
+  hideDuration = false,
   maxDurationMs = DEFAULT_MAX_RECORDING_MS,
   variant = "default",
   onRecordingComplete,
@@ -463,7 +465,7 @@ export function RecorderButton({
                 ) : null}
               </div>
             ) : null}
-            {!isContinuationVariant ? (
+            {!hideDuration && !isContinuationVariant ? (
               <span className="mt-2 inline-flex rounded-full bg-zinc-900/[0.045] px-3 py-1 text-xs font-bold text-zinc-700 dark:bg-white/8 dark:text-zinc-200">
                 {formatRecordingDuration(durationMs)}
               </span>
