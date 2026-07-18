@@ -234,7 +234,7 @@ export default function PracticePage() {
       dispatch({
         type: "transcription_succeeded",
         transcript: nextTranscript,
-        notice: "Transcript ready. Edit it, then polish the sentence.",
+        notice: "Review the transcript, then polish the sentence.",
       });
     } catch (caughtError) {
       dispatch({
@@ -320,9 +320,7 @@ export default function PracticePage() {
     dispatch({
       type: "recording_complete",
       recording,
-      notice: `Recording saved locally (${formatRecordingDuration(
-        recording.durationMs,
-      )}). Use it to create an editable transcript, or type below.`,
+      notice: "",
     });
   };
 
@@ -365,19 +363,14 @@ export default function PracticePage() {
   return (
     <div className="space-y-5">
       <GlassCard className="animate-floatIn p-6 sm:p-8">
-        <div className="flex flex-wrap items-center justify-between gap-2">
+        <div>
           <p className="text-sm font-bold text-amber-700 dark:text-amber-300">Practice</p>
-          {state.status !== "idle" ? (
-            <StatusBadge tone={state.status === "resultReady" ? "green" : "gold"}>
-              {statusLabel(state.status)}
-            </StatusBadge>
-          ) : null}
         </div>
 
         <div className="mt-6 grid gap-5 lg:grid-cols-[1fr_19rem]">
           <div className="min-w-0 space-y-4">
-            <h1 className="text-balance text-4xl font-bold tracking-[-0.035em] text-ink sm:text-5xl dark:text-white">
-              Say it your way.
+            <h1 lang="hi" className="text-balance font-hindi text-4xl font-bold leading-[1.3] tracking-[-0.035em] text-ink sm:text-5xl dark:text-white">
+              अपनी बात को निखारें।
             </h1>
             <div className="flex flex-col gap-3 sm:flex-row">
               <button
@@ -414,15 +407,9 @@ export default function PracticePage() {
               onStateChange={handleRecorderStateChange}
             />
             {state.recordedAudio ? (
-              <div className="mt-3 flex flex-wrap gap-2">
-                <StatusBadge tone="green">Audio ready</StatusBadge>
-                <StatusBadge tone="blue">
-                  {formatRecordingDuration(state.recordedAudio.durationMs)}
-                </StatusBadge>
-                <StatusBadge tone="gold">
-                  {state.recordedAudio.mimeType}
-                </StatusBadge>
-              </div>
+              <p className="mt-3 text-xs font-normal text-zinc-600 dark:text-zinc-400">
+                Saved · {formatRecordingDuration(state.recordedAudio.durationMs)}
+              </p>
             ) : null}
             {state.recordingNotice ? (
               <p className="mt-3 text-xs leading-5 text-zinc-600 dark:text-zinc-400">
@@ -440,36 +427,7 @@ export default function PracticePage() {
         </div>
       </GlassCard>
 
-      <div className="grid gap-5 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
-        <GlassCard className="animate-floatIn [animation-delay:80ms]">
-          <div className="flex items-start gap-3">
-            <WandSparkles
-              className="mt-1 shrink-0 text-amber-600"
-              size={20}
-              aria-hidden="true"
-            />
-            <div className="min-w-0">
-              <h2 className="text-xl font-bold text-ink dark:text-white">Quick starts</h2>
-            </div>
-          </div>
-          <div className="mt-5">
-            {practiceContext ? (
-              <PracticeContextPrompt
-                context={practiceContext}
-                disabled={isBusy}
-                onUse={handleUsePracticeContext}
-              />
-            ) : null}
-            <HintPromptList
-              hints={hints}
-              selectedHint={state.selectedHint}
-              disabled={isBusy}
-              onSelect={handleSelectHint}
-            />
-          </div>
-        </GlassCard>
-
-        <GlassCard className="animate-floatIn [animation-delay:120ms]">
+      <GlassCard className="animate-floatIn [animation-delay:80ms]">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-sky-400/16 text-sky-800 dark:text-sky-200">
@@ -481,12 +439,32 @@ export default function PracticePage() {
             </div>
           </div>
 
+          {practiceContext ? (
+            <div className="mt-5">
+              <PracticeContextPrompt
+                context={practiceContext}
+                disabled={isBusy}
+                onUse={handleUsePracticeContext}
+              />
+            </div>
+          ) : null}
+
+          <div className="mt-5">
+            <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Try a prompt</p>
+            <HintPromptList
+              hints={hints}
+              selectedHint={state.selectedHint}
+              disabled={isBusy}
+              onSelect={handleSelectHint}
+            />
+          </div>
+
           <textarea
             value={state.transcript}
             disabled={isBusy}
             onChange={(event) => handleTranscriptChange(event.target.value)}
             placeholder="Type your Hindi sentence here..."
-            className="mt-5 min-h-36 w-full resize-y rounded-2xl border border-white/60 bg-white/55 p-4 text-sm font-semibold leading-7 text-ink outline-none transition placeholder:text-zinc-400 focus:border-amber-300 focus:ring-2 focus:ring-amber-400/35 disabled:cursor-not-allowed disabled:opacity-70 dark:border-white/12 dark:bg-white/8 dark:text-white dark:placeholder:text-zinc-500"
+            className="mt-4 min-h-36 w-full resize-y rounded-2xl border border-white/60 bg-white/55 p-4 text-sm font-normal leading-7 text-ink outline-none transition placeholder:text-zinc-400 focus:border-amber-300 focus:ring-2 focus:ring-amber-400/35 disabled:cursor-not-allowed disabled:opacity-70 dark:border-white/12 dark:bg-white/8 dark:text-white dark:placeholder:text-zinc-500"
           />
 
           {state.transformError ? (
@@ -509,16 +487,11 @@ export default function PracticePage() {
                   : "bg-zinc-400/70 text-white dark:bg-zinc-700 dark:text-zinc-300",
               )}
             >
-              <WandSparkles
-                className={cn(isTransforming && "motion-safe:animate-spin")}
-                size={18}
-                aria-hidden="true"
-              />
+              <WandSparkles size={18} aria-hidden="true" />
               {isTransforming ? "Polishing..." : "Polish sentence"}
             </button>
           </div>
-        </GlassCard>
-      </div>
+      </GlassCard>
 
       {isTranscribing || isTransforming || state.status === "ttsLoading" ? (
         <GlassCard className="animate-floatIn">
@@ -701,11 +674,7 @@ function LoadingState({ status }: { status: PracticeStatus }) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
       <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-amber-400/18 text-amber-700 shadow-glow dark:text-amber-200">
-        <WandSparkles
-          className="motion-safe:animate-spin"
-          size={20}
-          aria-hidden="true"
-        />
+        <WandSparkles size={20} aria-hidden="true" />
       </span>
       <div className="min-w-0 flex-1">
         <h2 className="text-lg font-bold text-ink dark:text-white">
@@ -843,28 +812,4 @@ function RecentPracticeHistory({
       </div>
     </GlassCard>
   );
-}
-
-function statusLabel(status: PracticeStatus) {
-  switch (status) {
-    case "recording":
-      return "Recording";
-    case "recorded":
-      return "Audio ready";
-    case "transcribing":
-      return "Transcribing";
-    case "transcriptReady":
-      return "Transcript ready";
-    case "transforming":
-      return "Polishing";
-    case "resultReady":
-      return "Result ready";
-    case "ttsLoading":
-      return "Preparing audio";
-    case "error":
-      return "Needs attention";
-    case "idle":
-    default:
-      return "Idle";
-  }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { AudioPlayer } from "@/components/audio/AudioPlayer";
 import { HindiText } from "@/components/hindi/HindiText";
 import { EleganceScore } from "@/components/practice/EleganceScore";
@@ -20,6 +21,12 @@ export function TransformationResult({
   onSaveWord,
   result,
 }: TransformationResultProps) {
+  const [showAllUpgrades, setShowAllUpgrades] = useState(false);
+  const visibleReplacements = showAllUpgrades
+    ? result.replacements
+    : result.replacements.slice(0, 2);
+  const hiddenUpgradeCount = result.replacements.length - visibleReplacements.length;
+
   return (
     <section className="animate-floatIn space-y-5">
       <EleganceScore
@@ -59,7 +66,7 @@ export function TransformationResult({
           </h2>
         </div>
         <div className="grid gap-3">
-          {result.replacements.length > 0 ? result.replacements.map((replacement) => {
+          {result.replacements.length > 0 ? visibleReplacements.map((replacement) => {
             const saveableWord = getSaveableWord(result, replacement);
 
             return (
@@ -72,12 +79,21 @@ export function TransformationResult({
               />
             );
           }) : (
-            <div className="rounded-2xl border border-white/60 bg-white/36 p-4 text-sm font-semibold leading-7 text-zinc-600 dark:border-white/12 dark:bg-white/5 dark:text-zinc-300">
+            <div className="rounded-2xl border border-white/60 bg-white/36 p-4 text-sm font-normal leading-7 text-zinc-600 dark:border-white/12 dark:bg-white/5 dark:text-zinc-300">
               No specific word swaps were needed this time. The full sentence
               polish is still ready above.
             </div>
           )}
         </div>
+        {hiddenUpgradeCount > 0 ? (
+          <button
+            type="button"
+            onClick={() => setShowAllUpgrades(true)}
+            className="mt-3 text-sm font-semibold text-amber-800 transition hover:text-amber-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50 dark:text-amber-200 dark:hover:text-amber-100"
+          >
+            +{hiddenUpgradeCount} more upgrade{hiddenUpgradeCount === 1 ? "" : "s"}
+          </button>
+        ) : null}
       </div>
     </section>
   );
@@ -130,7 +146,7 @@ function VersionPanel({
       <HindiText
         text={text}
         className="mt-3"
-        devClassName={primary ? "text-lg font-bold leading-8 text-emerald-950 dark:text-emerald-100" : "text-sm font-semibold leading-7 text-zinc-700 dark:text-zinc-300"}
+        devClassName={primary ? "text-3xl font-bold leading-[1.55] text-emerald-950 sm:text-4xl dark:text-emerald-100" : "text-xl font-semibold leading-8 text-zinc-700 dark:text-zinc-300"}
       />
     </div>
   );

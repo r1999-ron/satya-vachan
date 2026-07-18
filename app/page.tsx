@@ -26,7 +26,7 @@ export default function HomePage() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <section className="grid gap-4 md:grid-cols-[minmax(0,1.15fr)_minmax(16rem,0.85fr)] lg:grid-cols-[1.25fr_0.75fr]">
-        <GlassCard className="relative overflow-hidden bg-zinc-950 p-5 text-white [@media(max-width:767px)_and_(max-height:720px)]:p-4 sm:p-8 lg:p-10 dark:bg-white dark:text-zinc-950">
+        <GlassCard className="relative overflow-hidden bg-zinc-950 p-5 text-white compact:p-4 sm:p-8 lg:p-10 dark:bg-white dark:text-zinc-950">
           <div className="pointer-events-none absolute -right-16 -top-24 size-64 rounded-full bg-amber-400/25 blur-3xl" />
           <div className="relative max-w-2xl">
             <div className="flex items-center justify-between gap-3">
@@ -34,7 +34,7 @@ export default function HomePage() {
                 {formatReadableDate()}
               </p>
               <div className="flex items-center gap-2">
-                <span className="hidden text-xs font-bold text-zinc-300 [@media(max-width:767px)_and_(max-height:720px)]:inline dark:text-zinc-700">
+                <span className="hidden text-xs font-bold text-zinc-300 compact:inline dark:text-zinc-700">
                   {streak.currentStreak} streak / {savedWordCount} saved
                 </span>
                 {completedToday ? (
@@ -44,10 +44,10 @@ export default function HomePage() {
                 ) : null}
               </div>
             </div>
-            <h1 className="mt-4 text-balance text-[2.45rem] font-bold leading-[1.02] [@media(max-width:767px)_and_(max-height:720px)]:mt-3 [@media(max-width:767px)_and_(max-height:720px)]:text-[2.1rem] sm:mt-7 sm:text-5xl lg:text-6xl">
-              Better words.<br />Clearer Hindi.
+            <h1 lang="hi" className="mt-4 text-balance font-hindi text-[2.35rem] font-bold leading-[1.2] compact:mt-3 compact:text-[2rem] sm:mt-7 sm:text-5xl lg:text-6xl">
+              अपनी हिंदी को निखारें।
             </h1>
-            <div className="mt-5 grid grid-cols-2 gap-2.5 [@media(max-width:767px)_and_(max-height:720px)]:mt-4 sm:mt-8 sm:flex sm:flex-row sm:gap-3">
+            <div className="mt-5 grid grid-cols-2 gap-2.5 compact:mt-4 sm:mt-8 sm:flex sm:flex-row sm:gap-3">
               <Link
                 href="/practice"
                 className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-amber-400 px-3 py-2 text-[13px] font-bold text-zinc-950 transition hover:-translate-y-0.5 hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2 focus:ring-offset-zinc-950 active:translate-y-0 sm:min-h-12 sm:px-5 sm:py-3 sm:text-sm"
@@ -66,7 +66,7 @@ export default function HomePage() {
                 <span className="hidden sm:inline">Today&apos;s challenge</span>
               </Link>
             </div>
-            <dl className="mt-4 grid grid-cols-2 gap-2 [@media(max-width:767px)_and_(max-height:720px)]:hidden md:hidden">
+            <dl className="mt-4 grid grid-cols-2 gap-2 compact:hidden md:hidden">
               <MobileMetric
                 icon={<Flame size={17} aria-hidden="true" />}
                 label="Streak"
@@ -114,7 +114,7 @@ export default function HomePage() {
         </GlassCard>
       </section>
 
-      <GlassCard interactive className="p-5 [@media(max-width:767px)_and_(max-height:720px)]:p-4 sm:p-8">
+      <GlassCard interactive className="p-5 compact:p-4 sm:p-8">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="text-sm font-bold text-amber-700 dark:text-amber-300">
@@ -129,7 +129,7 @@ export default function HomePage() {
           </StatusBadge>
         </div>
 
-        <div className="mt-5 grid gap-5 [@media(max-width:767px)_and_(max-height:720px)]:mt-3 [@media(max-width:767px)_and_(max-height:720px)]:gap-3 sm:mt-7 lg:grid-cols-[1.1fr_0.9fr] lg:gap-10">
+        <div className="mt-5 grid gap-5 compact:mt-3 compact:gap-3 sm:mt-7 lg:grid-cols-[1.1fr_0.9fr] lg:gap-10">
           <div>
             <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-stretch gap-2 sm:gap-3">
               <Word value={todayWord.common} />
@@ -138,7 +138,7 @@ export default function HomePage() {
               </div>
               <Word value={todayWord.elevated} featured />
             </div>
-            <p className="mt-3 text-sm font-semibold text-zinc-600 [@media(max-width:767px)_and_(max-height:720px)]:text-xs sm:mt-5 dark:text-zinc-300">
+            <p className="mt-3 text-sm font-normal text-zinc-600 compact:text-xs sm:mt-5 dark:text-zinc-300">
               {todayWord.englishMeaning}
             </p>
           </div>
@@ -181,7 +181,7 @@ export default function HomePage() {
           </WordDetails>
         </div>
 
-        <div className="mt-5 grid items-center gap-4 rounded-2xl border border-zinc-900/8 bg-zinc-900/[0.025] p-4 [@media(max-width:767px)_and_(max-height:720px)]:mt-3 [@media(max-width:767px)_and_(max-height:720px)]:p-3 sm:mt-7 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-5 sm:p-5 dark:border-white/10 dark:bg-white/[0.035]">
+        <div className="mt-5 grid items-center gap-4 rounded-2xl border border-zinc-900/8 bg-zinc-900/[0.025] p-4 compact:mt-3 compact:p-3 sm:mt-7 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-5 sm:p-5 dark:border-white/10 dark:bg-white/[0.035]">
           <p className="max-w-3xl text-sm font-semibold leading-6 text-zinc-600 sm:text-[15px] dark:text-zinc-300">
             {todayWord.challengePrompt}
           </p>
@@ -265,14 +265,14 @@ function Word({ value, featured = false }: { value: import("@/types").HindiText;
     <div
       className={
         featured
-          ? "rounded-2xl bg-amber-100 px-4 py-4 ring-1 ring-amber-200 [@media(max-width:767px)_and_(max-height:720px)]:px-3 [@media(max-width:767px)_and_(max-height:720px)]:py-3 sm:px-5 sm:py-5 dark:bg-amber-300/10 dark:ring-amber-300/20"
-          : "rounded-2xl bg-zinc-900/[0.035] px-4 py-4 ring-1 ring-zinc-900/[0.06] [@media(max-width:767px)_and_(max-height:720px)]:px-3 [@media(max-width:767px)_and_(max-height:720px)]:py-3 sm:px-5 sm:py-5 dark:bg-white/5 dark:ring-white/10"
+          ? "rounded-2xl bg-amber-100 px-4 py-4 ring-1 ring-amber-200 compact:px-3 compact:py-3 sm:px-5 sm:py-5 dark:bg-amber-300/10 dark:ring-amber-300/20"
+          : "rounded-2xl bg-zinc-900/[0.035] px-4 py-4 ring-1 ring-zinc-900/[0.06] compact:px-3 compact:py-3 sm:px-5 sm:py-5 dark:bg-white/5 dark:ring-white/10"
       }
     >
       <HindiText
         text={value}
         kind="word"
-        devClassName="text-[1.35rem] leading-relaxed text-ink [@media(max-width:767px)_and_(max-height:720px)]:text-lg sm:text-3xl dark:text-white"
+        devClassName="text-[1.55rem] leading-relaxed text-ink compact:text-lg sm:text-3xl dark:text-white"
       />
     </div>
   );
