@@ -44,7 +44,7 @@ export function HindiText({
           lang="hi"
           className={cn(
             "block text-wrap-anywhere font-hindi",
-            kind === "word" ? "text-2xl font-bold leading-relaxed" : "text-sm font-semibold leading-7",
+            kind === "word" ? "text-2xl font-bold leading-relaxed" : "text-sm font-normal leading-7",
             devClassName,
           )}
         >
@@ -56,7 +56,7 @@ export function HindiText({
           lang="hi-Latn"
           className={cn(
             "block text-wrap-anywhere text-zinc-500 dark:text-zinc-400",
-            kind === "word" ? "mt-0.5 text-xs font-semibold" : showDev ? "mt-1 text-xs" : "text-sm font-semibold leading-7",
+            kind === "word" ? "mt-0.5 text-xs font-semibold" : showDev ? "mt-1 text-xs" : "text-sm font-normal leading-7",
             romanClassName,
           )}
         >

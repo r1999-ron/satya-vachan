@@ -45,9 +45,9 @@ export function TransformationResult({
         />
       </div>
 
-      <div className="rounded-2xl border border-sky-200/70 bg-sky-100/40 p-4 dark:border-sky-300/20 dark:bg-sky-300/10">
-        <StatusBadge tone="blue">Feedback</StatusBadge>
-        <p className="mt-3 text-wrap-anywhere text-sm leading-7 text-sky-950 dark:text-sky-100">
+      <div className="rounded-2xl border border-zinc-900/8 bg-zinc-900/[0.025] p-4 dark:border-white/10 dark:bg-white/[0.035]">
+        <StatusBadge tone="gold">Feedback</StatusBadge>
+        <p className="mt-3 text-wrap-anywhere text-sm font-normal leading-7 text-zinc-700 dark:text-zinc-300">
           {result.feedback}
         </p>
       </div>
@@ -72,7 +72,7 @@ export function TransformationResult({
               />
             );
           }) : (
-            <div className="rounded-2xl border border-white/60 bg-white/36 p-4 text-sm font-semibold leading-7 text-zinc-600 dark:border-white/12 dark:bg-white/5 dark:text-zinc-300">
+            <div className="rounded-2xl border border-white/60 bg-white/36 p-4 text-sm font-normal leading-7 text-zinc-600 dark:border-white/12 dark:bg-white/5 dark:text-zinc-300">
               No specific word swaps were needed this time. The full sentence
               polish is still ready above.
             </div>
@@ -130,7 +130,7 @@ function VersionPanel({
       <HindiText
         text={text}
         className="mt-3"
-        devClassName={primary ? "text-lg font-bold leading-8 text-emerald-950 dark:text-emerald-100" : "text-sm font-semibold leading-7 text-zinc-700 dark:text-zinc-300"}
+        devClassName={primary ? "text-3xl font-bold leading-[1.55] text-emerald-950 sm:text-4xl dark:text-emerald-100" : "text-xl font-semibold leading-8 text-zinc-700 dark:text-zinc-300"}
       />
     </div>
   );

@@ -220,6 +220,11 @@ export function normalizeWordEntry(rawValue: unknown, targetWord: string): WordE
       : [],
     usageNote: getTrimmedString(rawValue.usageNote) ?? "",
     challengePrompt: getTrimmedString(rawValue.challengePrompt) ?? "",
+    starters: Array.isArray(rawValue.starters)
+      ? rawValue.starters
+          .map((starter) => normalizeHindiText(starter))
+          .filter((starter): starter is HindiText => Boolean(starter.dev && starter.roman))
+      : [],
     tags: Array.isArray(rawValue.tags)
       ? rawValue.tags
           .map((tag) => getTrimmedString(tag, 40))
@@ -317,6 +322,7 @@ function createFallbackWordEntry(targetWord: string): WordEntry {
     synonyms: [],
     usageNote: "",
     challengePrompt: "",
+    starters: [],
     tags: [],
     difficulty: "easy",
   };

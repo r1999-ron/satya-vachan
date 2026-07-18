@@ -18,6 +18,7 @@ export type WordEntry = {
   synonyms: HindiText[];
   usageNote: string;
   challengePrompt: string;
+  starters: HindiText[];
   tags: string[];
   difficulty: "easy" | "medium" | "advanced";
 };

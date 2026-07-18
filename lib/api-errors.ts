@@ -13,7 +13,9 @@ export type ApiErrorCode =
   | "CHALLENGE_FAILED"
   | "TTS_FAILED"
   | "INVALID_MODEL_RESPONSE"
-  | "INVALID_REQUEST";
+  | "INVALID_REQUEST"
+  | "FORBIDDEN_ORIGIN"
+  | "RATE_LIMITED";
 
 export type ApiErrorPayload = {
   error: string;

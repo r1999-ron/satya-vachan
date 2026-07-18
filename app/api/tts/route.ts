@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { jsonApiError } from "@/lib/api-errors";
+import { guardAiRequest } from "@/lib/api-guard";
 import { getOpenAIClient, isOpenAIConfigured } from "@/lib/openai";
 import { validateTtsText } from "@/lib/validators";
 import type { TtsResponse } from "@/types";
@@ -21,6 +22,12 @@ type TtsRequestBody = {
 const TTS_VARIANTS = new Set<TtsVariant>(["natural", "elevated"]);
 
 export async function POST(request: Request) {
+  const guardResponse = guardAiRequest(request, "tts");
+
+  if (guardResponse) {
+    return guardResponse;
+  }
+
   let body: TtsRequestBody;
 
   try {
@@ -55,7 +62,16 @@ export async function POST(request: Request) {
   }
 
   try {
-    const speech = await getOpenAIClient().audio.speech.create({
+    const speech = await getOpenAIClient({
+      traceName: "synthesize-practice-audio",
+      generationName: "synthesize-hindi-speech",
+      tags: ["satya-vachan", "text-to-speech"],
+      generationMetadata: {
+        feature: "text-to-speech",
+        language: "hi",
+        variant,
+      },
+    }).audio.speech.create({
       model: TTS_MODEL,
       voice: TTS_VOICE,
       input: text,

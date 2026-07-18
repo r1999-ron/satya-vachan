@@ -8,6 +8,7 @@ import {
   loadPracticeHistory,
   loadStreakState,
   removeLearnedWord,
+  restoreLearnedWord,
   saveLearnedWord,
   savePracticeHistory,
 } from "@/lib/storage";
@@ -147,6 +148,7 @@ describe("storage", () => {
     const firstSave = saveLearnedWord(
       {
         word: "  Satya  ",
+        wordDev: "  सत्य  ",
         meaning: "  truth  ",
         exampleSentence: "  Satya wins.  ",
       },
@@ -156,6 +158,7 @@ describe("storage", () => {
     expect(firstSave).toHaveLength(1);
     expect(firstSave[0]).toMatchObject({
       word: "Satya",
+      wordDev: "सत्य",
       meaning: "truth",
       exampleSentence: "Satya wins.",
       savedAt: "2026-07-18",
@@ -172,10 +175,29 @@ describe("storage", () => {
     expect(duplicateSave).toHaveLength(1);
     expect(duplicateSave[0]).toMatchObject({
       word: "Satya",
+      wordDev: "सत्य",
+      meaning: "new meaning",
+      simpleAlternative: "sach",
+      exampleSentence: "new sentence",
+    });
+  });
+
+  it("restores a removed word without changing its identity or saved date", () => {
+    const original = {
+      id: "learned-original",
+      word: "satya",
+      wordDev: "सत्य",
       meaning: "truth",
       simpleAlternative: "sach",
-      exampleSentence: "Satya wins.",
-    });
+      exampleSentence: "Satya mahatvapurn hai.",
+      savedAt: "2025-02-03",
+      source: "practice" as const,
+    };
+    storage.setItem(STORAGE_KEYS.learnedWords, JSON.stringify([original]));
+
+    removeLearnedWord(original.id);
+
+    expect(restoreLearnedWord(original, 0)).toEqual([original]);
   });
 
   it("ignores invalid learned-word input and removes by trimmed id", () => {
@@ -229,6 +251,35 @@ describe("storage", () => {
       lastCompletedDate: "2026-07-18",
       completedChallenges: ["2026-07-18"],
     });
+  });
+
+  it("keeps only the 60 most recent challenge completion keys", () => {
+    const completedChallenges = Array.from(
+      { length: 70 },
+      (_, index) => `history-${index}`,
+    );
+    storage.setItem(
+      STORAGE_KEYS.streak,
+      JSON.stringify({
+        currentStreak: 1,
+        longestStreak: 4,
+        lastCompletedDate: "2026-07-17",
+        completedChallenges,
+      }),
+    );
+
+    expect(loadStreakState().completedChallenges).toEqual(
+      completedChallenges.slice(-60),
+    );
+    expect(
+      JSON.parse(storage.getItem(STORAGE_KEYS.streak) ?? "{}").completedChallenges,
+    ).toHaveLength(60);
+
+    const completed = completeTodaysChallenge(
+      new Date("2026-07-18T12:00:00.000Z"),
+    );
+    expect(completed.completedChallenges).toHaveLength(60);
+    expect(completed.completedChallenges.at(-1)).toBe("2026-07-18");
   });
 
   it("saves bounded practice history and removes corrupt entries", () => {

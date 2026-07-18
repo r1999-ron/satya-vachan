@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { wordCorpus } from "@/data/words";
+import { containsTargetWord } from "@/lib/word-match";
 
 const DEVANAGARI = /[\u0900-\u097f]/u;
 
@@ -20,6 +21,17 @@ describe("bilingual word corpus", () => {
         expect(example.dev, entry.id).toMatch(DEVANAGARI);
         expect(example.roman.trim(), entry.id).not.toBe("");
         expect(example.en?.trim(), entry.id).not.toBe("");
+      }
+
+      expect(entry.starters.length, entry.id).toBeGreaterThan(0);
+      for (const starter of entry.starters) {
+        expect(starter.dev, entry.id).toMatch(DEVANAGARI);
+        expect(starter.roman.trim(), entry.id).not.toBe("");
+        expect(
+          containsTargetWord(starter.dev, entry.elevated.dev) ||
+            containsTargetWord(starter.roman, entry.elevated.roman),
+          entry.id,
+        ).toBe(true);
       }
     }
   });

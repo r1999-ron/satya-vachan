@@ -1,5 +1,4 @@
 import { TrendingUp } from "lucide-react";
-import { ProgressRing } from "@/components/ui/ProgressRing";
 import { cn } from "@/lib/utils";
 
 type EleganceScoreProps = {
@@ -18,49 +17,23 @@ export function EleganceScore({
   return (
     <div
       className={cn(
-        "grid gap-4 rounded-2xl border border-white/60 bg-white/35 p-4 dark:border-white/12 dark:bg-white/5 sm:grid-cols-[1fr_auto_1fr]",
+        "flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/60 bg-white/35 p-4 dark:border-white/12 dark:bg-white/5",
         className,
       )}
     >
-      <ScoreBlock label="Original" value={originalScore} tone="muted" />
-      <div className="flex items-center justify-center">
-        <div
-          className="inline-flex items-center gap-2 rounded-full border border-emerald-300/60 bg-emerald-100/70 px-3 py-2 text-xs font-bold tabular-nums text-emerald-900 shadow-sm motion-safe:animate-savePop dark:border-emerald-300/25 dark:bg-emerald-300/12 dark:text-emerald-100"
-          aria-live="polite"
-        >
-          <TrendingUp size={15} aria-hidden="true" />
-          +{improvement}
-        </div>
+      <div>
+        <p className="text-sm font-semibold text-ink dark:text-white">Expression upgrade</p>
+        <p className="mt-1 text-sm font-normal text-zinc-600 dark:text-zinc-300">
+          A playful estimate of how much more polished this version sounds.
+        </p>
       </div>
-      <ScoreBlock label="Polished" value={improvedScore} tone="bright" />
-    </div>
-  );
-}
-
-function ScoreBlock({
-  label,
-  tone,
-  value,
-}: {
-  label: string;
-  tone: "muted" | "bright";
-  value: number;
-}) {
-  return (
-    <div className="flex min-w-0 items-center gap-3">
-      <ProgressRing
-        value={value}
-        label={label}
-        size={64}
-        className={cn(tone === "bright" && "motion-safe:animate-scorePulse")}
-      />
-      <div className="min-w-0">
-        <p className="text-xs font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
-          {label}
-        </p>
-        <p className="mt-1 text-2xl font-bold tabular-nums text-ink dark:text-white">
-          {value}
-        </p>
+      <div
+        className="inline-flex items-center gap-2 rounded-full border border-emerald-300/60 bg-emerald-100/70 px-3 py-2 text-xs font-semibold tabular-nums text-emerald-900 shadow-sm motion-safe:animate-savePop dark:border-emerald-300/25 dark:bg-emerald-300/12 dark:text-emerald-100"
+        aria-label={`Elegance gain of ${improvement}`}
+        aria-live="polite"
+      >
+        <TrendingUp size={15} aria-hidden="true" />
+        +{improvement} elegance
       </div>
     </div>
   );

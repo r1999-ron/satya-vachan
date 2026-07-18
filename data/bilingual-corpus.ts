@@ -3,13 +3,19 @@ import type { HindiText, WordEntry } from "@/types";
 
 export type LegacyWordEntry = Omit<
   WordEntry,
-  "common" | "elevated" | "simpleExample" | "elevatedExample" | "synonyms"
+  | "common"
+  | "elevated"
+  | "simpleExample"
+  | "elevatedExample"
+  | "synonyms"
+  | "starters"
 > & {
   common: string;
   elevated: string;
   simpleExample: string;
   elevatedExample: string;
   synonyms: string[];
+  starters?: string[];
 };
 
 const DEV_OVERRIDES: Record<string, string> = {
@@ -161,6 +167,7 @@ function transliterateToken(token: string) {
 
 export function bilingualWordEntry(entry: LegacyWordEntry): WordEntry {
   const english = EXAMPLE_EN[entry.id] ?? entry.englishMeaning;
+  const starters = entry.starters ?? [entry.elevatedExample];
   return {
     ...entry,
     common: wordText(entry.common),
@@ -168,6 +175,9 @@ export function bilingualWordEntry(entry: LegacyWordEntry): WordEntry {
     simpleExample: makeHindiText(toDevanagari(entry.simpleExample), entry.simpleExample, english),
     elevatedExample: makeHindiText(toDevanagari(entry.elevatedExample), entry.elevatedExample, english),
     synonyms: entry.synonyms.map(wordText),
+    starters: starters.map((starter) =>
+      makeHindiText(toDevanagari(starter), starter),
+    ),
   };
 }
 

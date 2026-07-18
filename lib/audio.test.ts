@@ -3,6 +3,7 @@ import {
   createRecordingBlob,
   createRecordingResult,
   formatRecordingDuration,
+  getRecordingWaveformLevels,
   getSupportedRecordingMimeType,
   isMediaRecorderSupported,
   recordingToFile,
@@ -55,5 +56,18 @@ describe("audio helpers", () => {
 
     expect(stopOne).toHaveBeenCalledOnce();
     expect(stopTwo).toHaveBeenCalledOnce();
+  });
+
+  it("turns microphone frequency samples into bounded waveform levels", () => {
+    const silentLevels = getRecordingWaveformLevels(new Uint8Array(), 3);
+    const voiceLevels = getRecordingWaveformLevels(
+      new Uint8Array([0, 80, 130, 210, 255, 170, 90, 20]),
+      5,
+    );
+
+    expect(silentLevels).toEqual([0.08, 0.08, 0.08]);
+    expect(voiceLevels).toHaveLength(5);
+    expect(voiceLevels.some((level) => level > 0.5)).toBe(true);
+    expect(voiceLevels.every((level) => level >= 0.08 && level <= 1)).toBe(true);
   });
 });

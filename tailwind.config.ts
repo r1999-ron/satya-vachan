@@ -12,6 +12,9 @@ const config: Config = {
   darkMode: "class",
   theme: {
     extend: {
+      screens: {
+        compact: { raw: "(max-width: 767px) and (max-height: 720px)" },
+      },
       colors: {
         ink: "#171514",
         paper: "#fffaf0",

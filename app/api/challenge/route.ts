@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { jsonApiError } from "@/lib/api-errors";
+import { guardAiRequest } from "@/lib/api-guard";
 import {
   getOpenAIClient,
   isLocalDemoMockModeEnabled,
@@ -16,10 +17,12 @@ import {
   normalizeWordEntry,
   validateTranscript,
 } from "@/lib/validators";
+import { containsTargetWord } from "@/lib/word-match";
 
 export const runtime = "nodejs";
 
 const CHALLENGE_MODEL = process.env.OPENAI_CHALLENGE_MODEL ?? "gpt-4o-mini";
+const CHALLENGE_MAX_TOKENS = 500;
 
 type ChallengeRequestBody = {
   transcript?: unknown;
@@ -28,6 +31,12 @@ type ChallengeRequestBody = {
 };
 
 export async function POST(request: Request) {
+  const guardResponse = guardAiRequest(request, "challenge");
+
+  if (guardResponse) {
+    return guardResponse;
+  }
+
   let body: ChallengeRequestBody;
 
   try {
@@ -81,7 +90,16 @@ export async function POST(request: Request) {
   }
 
   try {
-    const completion = await getOpenAIClient().chat.completions.create({
+    const completion = await getOpenAIClient({
+      traceName: "validate-challenge",
+      generationName: "evaluate-challenge-answer",
+      tags: ["satya-vachan", "challenge"],
+      generationMetadata: {
+        feature: "challenge",
+        responseFormat: "structured-json",
+        language: "hi",
+      },
+    }).chat.completions.create({
       model: CHALLENGE_MODEL,
       messages: [
         { role: "system", content: CHALLENGE_SYSTEM_PROMPT },
@@ -100,6 +118,7 @@ export async function POST(request: Request) {
       ],
       response_format: challengeResponseFormat,
       temperature: 0.25,
+      max_completion_tokens: CHALLENGE_MAX_TOKENS,
     });
 
     const content = completion.choices[0]?.message.content;
@@ -179,43 +198,4 @@ function evaluateChallengeLocally(transcript: string, targetWord: string, target
       "Demo mode: OpenAI is not configured, so this used a local check. The target word appears in a complete sentence.",
     completed: true,
   };
-}
-
-function containsTargetWord(transcript: string, targetWord: string) {
-  const normalizedTranscript = normalizeForMatch(transcript);
-  const normalizedTarget = normalizeForMatch(targetWord);
-  const compactTranscript = compactLongVowels(normalizedTranscript);
-  const compactTarget = compactLongVowels(normalizedTarget);
-
-  return (
-    hasTokenMatch(normalizedTranscript, normalizedTarget) ||
-    hasTokenMatch(compactTranscript, compactTarget)
-  );
-}
-
-function hasTokenMatch(transcript: string, targetWord: string) {
-  if (!targetWord) {
-    return false;
-  }
-
-  const escapedTarget = targetWord.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return new RegExp(`(^|\\s)${escapedTarget}(?=$|\\s)`, "i").test(transcript);
-}
-
-function normalizeForMatch(value: string) {
-  return value
-    .toLocaleLowerCase()
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^\p{L}\p{N}]+/gu, " ")
-    .trim();
-}
-
-function compactLongVowels(value: string) {
-  return value
-    .replace(/aa/g, "a")
-    .replace(/ee/g, "i")
-    .replace(/ii/g, "i")
-    .replace(/oo/g, "u")
-    .replace(/uu/g, "u");
 }

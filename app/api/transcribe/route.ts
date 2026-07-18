@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import { jsonApiError } from "@/lib/api-errors";
+import { guardAiRequest } from "@/lib/api-guard";
 import { getOpenAIClient, isOpenAIConfigured } from "@/lib/openai";
+import { PROMPTS } from "@/lib/prompts";
 import { validateAudioFile } from "@/lib/validators";
 
 export const runtime = "nodejs";
 
 const TRANSCRIBE_MODEL = "gpt-4o-mini-transcribe";
-const HINDI_TRANSCRIPTION_PROMPT =
-  "Yeh audio Hindi ya Hinglish mein ho sakta hai. Transcript ko natural Hindi, romanized Hindi, ya Devanagari mein wahi rakhein jo speaker ne kaha hai.";
 
 function getDurationMs(formData: FormData) {
   const rawDuration = formData.get("durationMs");
@@ -20,6 +20,12 @@ function getDurationMs(formData: FormData) {
 }
 
 export async function POST(request: Request) {
+  const guardResponse = guardAiRequest(request, "transcribe");
+
+  if (guardResponse) {
+    return guardResponse;
+  }
+
   if (!isOpenAIConfigured()) {
     return jsonApiError(
       "AI service is unavailable. Type your sentence to keep practicing.",
@@ -60,12 +66,20 @@ export async function POST(request: Request) {
   }
 
   try {
-    const transcription = await getOpenAIClient().audio.transcriptions.create({
+    const transcription = await getOpenAIClient({
+      traceName: "transcribe-practice-audio",
+      generationName: "transcribe-hindi-audio",
+      tags: ["satya-vachan", "transcription"],
+      generationMetadata: {
+        feature: "transcription",
+        language: "hi",
+      },
+    }).audio.transcriptions.create({
       file: fileResult.value,
       model: TRANSCRIBE_MODEL,
       language: "hi",
       response_format: "json",
-      prompt: HINDI_TRANSCRIPTION_PROMPT,
+      prompt: PROMPTS.transcription.instruction,
     });
     const transcript = transcription.text.trim();
 
