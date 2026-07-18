@@ -45,10 +45,10 @@ export function TransformationResult({
       <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
         <VersionPanel
           label="Natural polished"
+          preload
           text={result.naturalPolishedVersion}
           tone="primary"
           variant="natural"
-          autoPlay
           onAudioStatusChange={onAudioStatusChange}
           voicePreference={voicePreference}
         />
@@ -102,16 +102,16 @@ export function TransformationResult({
 
 function VersionPanel({
   label,
+  preload = false,
   text,
   tone,
   variant,
-  autoPlay = false,
   onAudioStatusChange,
   voicePreference,
 }: {
-  autoPlay?: boolean;
   label: string;
   onAudioStatusChange?: (status: "idle" | "loading" | "ready" | "playing" | "error") => void;
+  preload?: boolean;
   text: HindiTextValue;
   tone: "primary" | "secondary";
   variant: "natural" | "elevated";
@@ -138,11 +138,12 @@ function VersionPanel({
           {label}
         </p>
         <AudioPlayer
-          autoPlay={autoPlay}
           key={`${voicePreference}-${variant}-${text.dev}`}
           label="Listen"
           onStatusChange={onAudioStatusChange}
+          preload={preload}
           text={text.dev}
+          tone={primary ? "primary" : "neutral"}
           variant={variant}
           voice={voicePreference}
         />

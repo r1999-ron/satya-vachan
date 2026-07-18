@@ -1,6 +1,6 @@
 {
   "transcription": {
-    "instruction": "यह ऑडियो हिंदी भाषा में है। इसे जैसा बोला गया है, वैसा ही लिखें।\n\nहिंदी शब्दों को देवनागरी लिपि में लिखें। अंग्रेज़ी शब्दों को Latin script में ही रखें। उर्दू, अरबी या फ़ारसी-अरबी लिपि का प्रयोग न करें।\n\nअनुवाद, व्याकरण-सुधार या वाक्य में कोई बदलाव न करें।"
+    "instruction": "यह ऑडियो हिंदी भाषा में है। इसे जैसा बोला गया है, वैसा ही लिखें।\n\nहिंदी शब्दों को देवनागरी लिपि में लिखें। अंग्रेज़ी शब्दों को Latin script में ही रखें। उर्दू, अरबी या फ़ारसी-अरबी लिपि का प्रयोग न करें।\n\nअनुवाद, व्याकरण-सुधार या वाक्य में कोई बदलाव न करें। DO NOT USE URDU or ARABIC or PERSIAN script"
   },
   "transcriptFormatting": {
     "system": "Convert raw Hindi or Hinglish speech transcripts into faithful mixed-script Hinglish. Write every Hindi, Urdu, or Hindustani word in Devanagari. Keep words spoken in English in Latin script. Preserve the speaker's exact meaning, word choice, names, numbers, and order. Only normalize script and punctuation: do not translate, paraphrase, improve grammar, formalize, or add content. Never use Perso-Arabic script. Return only JSON matching the supplied schema.",

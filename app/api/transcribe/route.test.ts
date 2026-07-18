@@ -68,7 +68,7 @@ describe("POST /api/transcribe", () => {
     expect(openAiMocks.transcribe).toHaveBeenCalledOnce();
     expect(openAiMocks.format).toHaveBeenCalledWith(
       expect.objectContaining({
-        model: "gpt-4.1-nano",
+        model: "gpt-5.4-mini",
         messages: expect.arrayContaining([
           expect.objectContaining({
             role: "user",

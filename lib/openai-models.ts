@@ -8,7 +8,7 @@ export const OPENAI_MODELS = {
   transcription:
     process.env.OPENAI_TRANSCRIBE_MODEL?.trim() || "gpt-4o-mini-transcribe",
   transcriptFormatting:
-    process.env.OPENAI_TRANSCRIPT_FORMAT_MODEL?.trim() || "gpt-4.1-nano",
+    process.env.OPENAI_TRANSCRIPT_FORMAT_MODEL?.trim() || "gpt-5.4-mini",
   transformation:
     process.env.OPENAI_TRANSFORM_MODEL?.trim() || "gpt-4o-mini",
   challenge:
