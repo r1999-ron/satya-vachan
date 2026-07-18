@@ -22,6 +22,16 @@ Satya-Vachan is an AI-powered Hindi expression coach for fluent Hindi speakers w
    OPENAI_API_KEY=sk-...
    ```
 
+   Every OpenAI model can be configured independently. The defaults are:
+
+   ```text
+   OPENAI_TRANSCRIBE_MODEL=gpt-4o-mini-transcribe
+   OPENAI_TRANSCRIPT_FORMAT_MODEL=gpt-4.1-nano
+   OPENAI_TRANSFORM_MODEL=gpt-4o-mini
+   OPENAI_CHALLENGE_MODEL=gpt-4o-mini
+   OPENAI_TTS_MODEL=gpt-4o-mini-tts
+   ```
+
    To enable Langfuse tracing, also add the API keys from your Langfuse project:
 
    ```text
@@ -50,6 +60,11 @@ The app's static screens, localStorage progress, learned words, and typed fallba
 
    ```text
    OPENAI_API_KEY
+   OPENAI_TRANSCRIBE_MODEL
+   OPENAI_TRANSCRIPT_FORMAT_MODEL
+   OPENAI_TRANSFORM_MODEL
+   OPENAI_CHALLENGE_MODEL
+   OPENAI_TTS_MODEL
    LANGFUSE_PUBLIC_KEY
    LANGFUSE_SECRET_KEY
    LANGFUSE_BASE_URL

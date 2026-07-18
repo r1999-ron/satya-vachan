@@ -4,6 +4,35 @@ import promptRegistry from "@/lib/prompts.json";
 /** Central registry for all natural-language instructions sent to LLM APIs. */
 export const PROMPTS = promptRegistry;
 
+export const TRANSCRIPT_FORMATTING_SYSTEM_PROMPT =
+  PROMPTS.transcriptFormatting.system;
+export const TRANSCRIPT_FORMATTING_USER_PROMPT =
+  PROMPTS.transcriptFormatting.userTemplate;
+
+export const transcriptFormattingResponseFormat = {
+  type: "json_schema",
+  json_schema: {
+    name: "satya_vachan_formatted_transcript",
+    description: "A speech transcript formatted as mixed-script Hinglish.",
+    strict: true,
+    schema: {
+      type: "object",
+      additionalProperties: false,
+      required: ["transcript"],
+      properties: {
+        transcript: { type: "string" },
+      },
+    },
+  },
+} satisfies ResponseFormatJSONSchema;
+
+export function buildTranscriptFormattingUserPrompt(transcript: string) {
+  return TRANSCRIPT_FORMATTING_USER_PROMPT.replace(
+    "{{TRANSCRIPT}}",
+    () => transcript,
+  );
+}
+
 export const TRANSFORMATION_SYSTEM_PROMPT = PROMPTS.transformation.system;
 export const TRANSFORMATION_USER_PROMPT = PROMPTS.transformation.userTemplate;
 
@@ -117,7 +146,7 @@ export const transformationResponseFormat = {
 } satisfies ResponseFormatJSONSchema;
 
 export function buildTransformationUserPrompt(transcript: string) {
-  return TRANSFORMATION_USER_PROMPT.replace("{{TRANSCRIPT}}", transcript);
+  return TRANSFORMATION_USER_PROMPT.replace("{{TRANSCRIPT}}", () => transcript);
 }
 
 export const CHALLENGE_SYSTEM_PROMPT = PROMPTS.challenge.system;
@@ -175,5 +204,5 @@ export function buildChallengeUserPrompt({
     .replace("{{USAGE_NOTE}}", usageNote)
     .replace("{{CHALLENGE_PROMPT}}", challengePrompt)
     .replace("{{ELEVATED_EXAMPLE}}", elevatedExample)
-    .replace("{{TRANSCRIPT}}", transcript);
+    .replace("{{TRANSCRIPT}}", () => transcript);
 }

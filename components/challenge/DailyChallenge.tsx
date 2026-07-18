@@ -409,7 +409,7 @@ function ChallengeLoadingState({ status }: { status: ChallengeStatus }) {
     status === "transcribing"
       ? {
           title: "Listening carefully...",
-          body: "Your recording is being transcribed into an editable sentence.",
+          body: "Your recording is being transcribed and formatted as mixed-script Hinglish.",
         }
       : {
           title: "Checking your sentence...",

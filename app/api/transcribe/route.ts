@@ -2,12 +2,18 @@ import { NextResponse } from "next/server";
 import { jsonApiError } from "@/lib/api-errors";
 import { guardAiRequest } from "@/lib/api-guard";
 import { getOpenAIClient, isOpenAIConfigured } from "@/lib/openai";
-import { PROMPTS } from "@/lib/prompts";
-import { validateAudioFile } from "@/lib/validators";
+import { OPENAI_MODELS } from "@/lib/openai-models";
+import {
+  PROMPTS,
+  TRANSCRIPT_FORMATTING_SYSTEM_PROMPT,
+  buildTranscriptFormattingUserPrompt,
+  transcriptFormattingResponseFormat,
+} from "@/lib/prompts";
+import { getTrimmedString, isRecord, validateAudioFile } from "@/lib/validators";
 
 export const runtime = "nodejs";
 
-const TRANSCRIBE_MODEL = "gpt-4o-mini-transcribe";
+const TRANSCRIPT_FORMAT_MAX_TOKENS = 500;
 
 function isPromptEcho(transcript: string) {
   const normalize = (value: string) =>
@@ -27,6 +33,19 @@ function getDurationMs(formData: FormData) {
   return Number.isFinite(numericDuration) && numericDuration > 0
     ? Math.round(numericDuration)
     : undefined;
+}
+
+function parseFormattedTranscript(content: string | null | undefined) {
+  if (!content) {
+    return undefined;
+  }
+
+  try {
+    const parsed = JSON.parse(content) as unknown;
+    return isRecord(parsed) ? getTrimmedString(parsed.transcript) : undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 export async function POST(request: Request) {
@@ -86,20 +105,53 @@ export async function POST(request: Request) {
       },
     }).audio.transcriptions.create({
       file: fileResult.value,
-      model: TRANSCRIBE_MODEL,
+      model: OPENAI_MODELS.transcription,
       language: "hi",
       response_format: "json",
       prompt: PROMPTS.transcription.instruction,
     });
-    const transcript = transcription.text.trim();
+    const rawTranscript = transcription.text.trim();
 
     // The transcription model can return the supplied prompt verbatim for silent
     // recordings. Treat that as no speech so it never appears in the transcript box.
-    if (!transcript || isPromptEcho(transcript)) {
+    if (!rawTranscript || isPromptEcho(rawTranscript)) {
       return jsonApiError(
         "No speech was detected. Please try again or type your sentence.",
         "TRANSCRIPTION_FAILED",
         422,
+      );
+    }
+
+    const formattingCompletion = await getOpenAIClient({
+      traceName: "format-microphone-transcript",
+      generationName: "format-mixed-script-hinglish",
+      tags: ["satya-vachan", "transcription", "hinglish-formatting"],
+      generationMetadata: {
+        feature: "transcript-formatting",
+        source: "microphone",
+        script: "devanagari-latin",
+      },
+    }).chat.completions.create({
+      model: OPENAI_MODELS.transcriptFormatting,
+      messages: [
+        { role: "system", content: TRANSCRIPT_FORMATTING_SYSTEM_PROMPT },
+        {
+          role: "user",
+          content: buildTranscriptFormattingUserPrompt(rawTranscript),
+        },
+      ],
+      response_format: transcriptFormattingResponseFormat,
+      temperature: 0,
+      max_completion_tokens: TRANSCRIPT_FORMAT_MAX_TOKENS,
+    });
+    const formattingContent = formattingCompletion.choices[0]?.message.content;
+    const transcript = parseFormattedTranscript(formattingContent);
+
+    if (!transcript) {
+      return jsonApiError(
+        "The transcript could not be formatted. Please try again or type your sentence.",
+        "INVALID_MODEL_RESPONSE",
+        502,
       );
     }
 

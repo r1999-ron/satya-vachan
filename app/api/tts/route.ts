@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 import { jsonApiError } from "@/lib/api-errors";
 import { guardAiRequest } from "@/lib/api-guard";
 import { getOpenAIClient, isOpenAIConfigured } from "@/lib/openai";
+import { OPENAI_MODELS } from "@/lib/openai-models";
 import { PROMPTS } from "@/lib/prompts";
 import { validateTtsText } from "@/lib/validators";
 import type { TtsResponse } from "@/types";
 
 export const runtime = "nodejs";
 
-const TTS_MODEL = "gpt-4o-mini-tts";
 const TTS_INSTRUCTIONS = PROMPTS.tts.instruction;
 const TTS_SPEED = PROMPTS.tts.speed;
 
@@ -80,7 +80,7 @@ export async function POST(request: Request) {
         voicePreference,
       },
     }).audio.speech.create({
-      model: TTS_MODEL,
+      model: OPENAI_MODELS.textToSpeech,
       voice: TTS_VOICES[voicePreference],
       input: text,
       instructions: getInstructions(variant),

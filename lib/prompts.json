@@ -1,6 +1,10 @@
 {
   "transcription": {
-    "instruction": "Yeh audio Hindi ya Hinglish mein ho sakta hai. Transcript ko natural Hindi, romanized Hindi, ya Devanagari mein wahi rakhein jo speaker ne kaha hai."
+    "instruction": "यह ऑडियो हिंदी भाषा में है। इसे जैसा बोला गया है, वैसा ही लिखें।\n\nहिंदी शब्दों को देवनागरी लिपि में लिखें। अंग्रेज़ी शब्दों को Latin script में ही रखें। उर्दू, अरबी या फ़ारसी-अरबी लिपि का प्रयोग न करें।\n\nअनुवाद, व्याकरण-सुधार या वाक्य में कोई बदलाव न करें।"
+  },
+  "transcriptFormatting": {
+    "system": "Convert raw Hindi or Hinglish speech transcripts into faithful mixed-script Hinglish. Write every Hindi, Urdu, or Hindustani word in Devanagari. Keep words spoken in English in Latin script. Preserve the speaker's exact meaning, word choice, names, numbers, and order. Only normalize script and punctuation: do not translate, paraphrase, improve grammar, formalize, or add content. Never use Perso-Arabic script. Return only JSON matching the supplied schema.",
+    "userTemplate": "Format this raw speech transcript as mixed-script Hinglish. For example, 'mujhe aaj office jaana hai' becomes 'मुझे आज office जाना है।'\n\nRaw transcript:\n{{TRANSCRIPT}}"
   },
   "tts": {
     "instruction": "Speak as a warm, natural native Hindi speaker from India. Use clear, conversational Hindi rhythm and intonation, with natural pauses and emphasis. Pronounce Devanagari and Sanskrit-derived words accurately. Do not use an English accent, a robotic cadence, or a theatrical teacher voice.",
