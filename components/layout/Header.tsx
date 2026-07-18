@@ -38,13 +38,18 @@ export function Header() {
             src="/logo.svg"
             alt=""
             aria-hidden="true"
-            width={36}
-            height={36}
+            width={45}
+            height={40}
             priority
-            className="size-9 shrink-0"
+            className="h-10 w-[45px] shrink-0 object-contain"
           />
-          <span className="truncate text-base font-bold tracking-tight text-ink dark:text-white">
-            Satya-Vachan
+          <span className="min-w-0 leading-normal">
+            <span lang="hi" className="block truncate font-hindi text-lg font-bold leading-tight tracking-tight text-ink dark:text-white">
+              सत्य-वचन
+            </span>
+            <span lang="hi" className="mt-0.5 hidden truncate font-hindi text-[9px] font-semibold leading-[1.6] tracking-[0.02em] text-[#d97706] sm:block dark:text-amber-300">
+              शुद्ध हिंदी बोलना सीखें
+            </span>
           </span>
         </Link>
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Martel, Noto_Sans } from "next/font/google";
+import { Martel, Noto_Sans, Noto_Sans_Mono } from "next/font/google";
+import { headers } from "next/headers";
 import { AppShell } from "@/components/layout/AppShell";
 import "./globals.css";
 
@@ -9,49 +10,72 @@ const notoSans = Noto_Sans({
   display: "optional",
 });
 
-const martel = Martel({
-  variable: "--font-martel",
-  subsets: ["devanagari"],
-  weight: ["400", "700"],
+const notoSansMono = Noto_Sans_Mono({
+  variable: "--font-noto-sans-mono",
+  subsets: ["latin"],
   display: "optional",
 });
 
-const description = "Thoughtful Hindi practice, one sentence at a time.";
-const socialImage = "/og.png";
+const martel = Martel({
+  variable: "--font-martel",
+  subsets: ["devanagari", "latin"],
+  weight: ["200", "300", "400", "600", "700", "800", "900"],
+  display: "optional",
+});
 
-export const metadata: Metadata = {
-  title: {
-    default: "Satya-Vachan",
-    template: "%s | Satya-Vachan",
-  },
-  description,
-  applicationName: "Satya-Vachan",
-  metadataBase: new URL("https://satya-vachan.vercel.app"),
-  icons: {
-    icon: "/logo.svg",
-    shortcut: "/logo.svg",
-    apple: "/logo.svg",
-  },
-  openGraph: {
-    type: "website",
-    title: "Satya-Vachan",
+const brandName = "सत्य-वचन";
+const description = "शुद्ध हिंदी बोलना सीखें। Thoughtful Hindi practice, one sentence at a time.";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const incomingHeaders = await headers();
+  const host =
+    incomingHeaders.get("x-forwarded-host") ??
+    incomingHeaders.get("host") ??
+    "satya-vachan.vercel.app";
+  const protocol =
+    incomingHeaders.get("x-forwarded-proto") ??
+    (host.startsWith("localhost") ? "http" : "https");
+  let metadataBase = new URL("https://satya-vachan.vercel.app");
+
+  try {
+    metadataBase = new URL(`${protocol}://${host}`);
+  } catch {
+    // Retain the stable public fallback for malformed proxy headers.
+  }
+
+  const socialImage = new URL("/og.png", metadataBase).toString();
+
+  return {
+    title: { default: brandName, template: `%s | ${brandName}` },
     description,
-    images: [
-      {
-        url: socialImage,
-        width: 1728,
-        height: 909,
-        alt: "Satya-Vachan Hindi expression coach",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Satya-Vachan",
-    description,
-    images: [socialImage],
-  },
-};
+    applicationName: brandName,
+    metadataBase,
+    icons: {
+      icon: "/logo.svg",
+      shortcut: "/logo.svg",
+      apple: "/logo.svg",
+    },
+    openGraph: {
+      type: "website",
+      title: brandName,
+      description,
+      images: [
+        {
+          url: socialImage,
+          width: 1728,
+          height: 909,
+          alt: "सत्य-वचन Hindi expression coach",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: brandName,
+      description,
+      images: [socialImage],
+    },
+  };
+}
 
 export default function RootLayout({
   children,
@@ -60,7 +84,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
-      <body className={`${notoSans.variable} ${martel.variable}`}>
+      <body className={`${notoSans.variable} ${notoSansMono.variable} ${martel.variable}`}>
         <AppShell>{children}</AppShell>
       </body>
     </html>
