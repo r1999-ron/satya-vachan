@@ -22,7 +22,6 @@ import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { LoadingMeter } from "@/components/ui/LoadingMeter";
 import { getDemoHints, defaultTransformationExample } from "@/data/demo";
-import { SPEAK_BETTER_HINDI_TAGLINES } from "@/data/taglines";
 import { wordCorpus } from "@/data/words";
 import { useTranscription } from "@/hooks/useTranscription";
 import { requestJson } from "@/lib/api-client";
@@ -120,49 +119,11 @@ function PracticeContent() {
   const { history, saveHistory } = usePracticeHistory();
   const [state, dispatch] = useReducer(practiceReducer, initialPracticeState);
   const [recorderResetKey, setRecorderResetKey] = useState(0);
-  const [taglineIndex, setTaglineIndex] = useState(0);
-  const [typedTagline, setTypedTagline] = useState({
-    tagline: "",
-    text: "",
-  });
-
-  const currentTagline = SPEAK_BETTER_HINDI_TAGLINES[taglineIndex];
-
   useEffect(() => {
     if (isLegacyChallenge) {
       router.replace("/#daily-challenge");
     }
   }, [isLegacyChallenge, router]);
-
-  useEffect(() => {
-    let characterIndex = 0;
-    const characters = Array.from(currentTagline);
-
-    const typewriter = window.setInterval(() => {
-      characterIndex += 1;
-      setTypedTagline({
-        tagline: currentTagline,
-        text: characters.slice(0, characterIndex).join(""),
-      });
-
-      if (characterIndex >= characters.length) {
-        window.clearInterval(typewriter);
-      }
-    }, 55);
-
-    return () => window.clearInterval(typewriter);
-  }, [currentTagline]);
-
-  useEffect(() => {
-    const shuffleTagline = window.setInterval(() => {
-      setTaglineIndex((currentIndex) => {
-        const offset = Math.floor(Math.random() * (SPEAK_BETTER_HINDI_TAGLINES.length - 1)) + 1;
-        return (currentIndex + offset) % SPEAK_BETTER_HINDI_TAGLINES.length;
-      });
-    }, 5_000);
-
-    return () => window.clearInterval(shuffleTagline);
-  }, []);
 
   const practiceContext = useMemo<WordEntry | string | null>(() => {
     if (!wordParam) {
@@ -331,35 +292,12 @@ function PracticeContent() {
   return (
     <div className="mx-auto max-w-4xl space-y-5">
       <GlassCard className="animate-floatIn p-5 sm:p-8">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <h1
-              lang="hi"
-              aria-label={currentTagline}
-              className="mt-2 rounded-2xl border border-amber-200/55 bg-gradient-to-r from-amber-100/70 via-orange-50/70 to-rose-100/60 px-4 py-3 text-balance font-hindi text-3xl font-bold leading-[1.35] tracking-[-0.035em] text-ink shadow-sm shadow-amber-900/5 sm:px-5 sm:text-5xl dark:border-amber-200/10 dark:from-amber-300/10 dark:via-orange-300/8 dark:to-rose-300/10 dark:text-white"
-            >
-              {typedTagline.tagline === currentTagline ? typedTagline.text : ""}
-              <span aria-hidden="true" className="ml-0.5 inline-block h-[0.95em] w-0.5 animate-pulse bg-amber-700 align-[-0.08em] dark:bg-amber-200" />
-            </h1>
-          </div>
-          {state.status !== "idle" || state.transcript.trim() ? (
-            <button
-              type="button"
-              onClick={handleReset}
-              disabled={isBusy && !state.result}
-              className="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-zinc-600 transition hover:bg-zinc-900/5 hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/55 disabled:cursor-not-allowed disabled:opacity-60 dark:text-zinc-300 dark:hover:bg-white/8 dark:hover:text-white"
-            >
-              <RotateCcw size={15} aria-hidden="true" />
-              <span className="hidden sm:inline">Start over</span>
-            </button>
-          ) : null}
-        </div>
-
-        <div className="mt-6">
+        <div>
           <RecorderButton
             key={recorderResetKey}
             className="border-0 bg-transparent p-0 dark:bg-transparent"
             disabled={isBusy}
+            variant="continuation"
             onRecordingComplete={(recording) => void transcribeRecording(recording)}
             onStateChange={(nextState: RecorderState) => {
               if (nextState === "recording") {
@@ -427,20 +365,34 @@ function PracticeContent() {
             onAction={canRetryTransformation ? () => void runTransformation() : undefined}
           />
         ) : null}
-        <button
-          type="button"
-          onClick={() => void runTransformation()}
-          disabled={!canTransform}
-          className={cn(
-            "mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/35 focus-visible:ring-offset-2 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:shadow-none dark:focus-visible:ring-white/40 dark:focus-visible:ring-offset-zinc-950",
-            canTransform
-              ? "bg-ink text-white shadow-lg shadow-zinc-900/15 hover:-translate-y-0.5 dark:bg-white dark:text-zinc-950"
-              : "bg-zinc-400/70 text-white dark:bg-zinc-700 dark:text-zinc-300",
-          )}
-        >
-          <WandSparkles size={18} aria-hidden="true" />
-          {isTransforming ? "Enhancing..." : "Enhance"}
-        </button>
+        <div className="mt-5 grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={handleReset}
+            disabled={
+              (state.status === "idle" && !state.transcript.trim()) ||
+              (isBusy && !state.result)
+            }
+            className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-zinc-900/12 bg-white/55 px-4 py-3 text-sm font-bold text-zinc-700 transition hover:-translate-y-0.5 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/25 focus-visible:ring-offset-2 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:bg-white/8 dark:text-zinc-200 dark:hover:bg-white/12 dark:focus-visible:ring-white/30 dark:focus-visible:ring-offset-zinc-950"
+          >
+            <RotateCcw size={17} aria-hidden="true" />
+            Start Over
+          </button>
+          <button
+            type="button"
+            onClick={() => void runTransformation()}
+            disabled={!canTransform}
+            className={cn(
+              "inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/35 focus-visible:ring-offset-2 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:shadow-none dark:focus-visible:ring-white/40 dark:focus-visible:ring-offset-zinc-950",
+              canTransform
+                ? "bg-ink text-white shadow-lg shadow-zinc-900/15 hover:-translate-y-0.5 dark:bg-white dark:text-zinc-950"
+                : "bg-zinc-400/70 text-white dark:bg-zinc-700 dark:text-zinc-300",
+            )}
+          >
+            <WandSparkles size={18} aria-hidden="true" />
+            {isTransforming ? "Enhancing..." : "Enhance"}
+          </button>
+        </div>
       </GlassCard>
 
       {isTranscribing || isTransforming || state.status === "ttsLoading" ? (
@@ -512,7 +464,9 @@ function practiceReducer(
       return {
         ...state,
         status: "transcriptReady",
-        transcript: action.transcript,
+        transcript: [state.transcript.trim(), action.transcript.trim()]
+          .filter(Boolean)
+          .join(" "),
         selectedHint: "",
         transcriptionError: "",
         lastFailedStep: null,

@@ -48,6 +48,7 @@ type RecorderButtonProps = {
   className?: string;
   disabled?: boolean;
   maxDurationMs?: number;
+  variant?: "default" | "continuation";
   onRecordingComplete?: (recording: RecordingResult) => void;
   onStateChange?: (state: RecorderState) => void;
 };
@@ -56,6 +57,7 @@ export function RecorderButton({
   className,
   disabled = false,
   maxDurationMs = DEFAULT_MAX_RECORDING_MS,
+  variant = "default",
   onRecordingComplete,
   onStateChange,
 }: RecorderButtonProps) {
@@ -85,6 +87,7 @@ export function RecorderButton({
     () => formatRecordingDuration(maxDurationMs),
     [maxDurationMs],
   );
+  const isContinuationVariant = variant === "continuation";
 
   useEffect(() => {
     onStateChangeRef.current = onStateChange;
@@ -415,21 +418,30 @@ export function RecorderButton({
             state === "recording"
               ? "Stop recording"
               : state === "recorded"
-                ? "Record again"
+                ? isContinuationVariant
+                  ? "Continue recording"
+                  : "Record again"
                 : "Start recording"
           }
           className={cn(
             "relative grid size-20 shrink-0 place-items-center rounded-full bg-zinc-950 text-white shadow-[0_14px_34px_rgba(24,20,16,0.22)] transition hover:-translate-y-0.5 hover:bg-zinc-800 focus:outline-none focus-visible:ring-4 focus-visible:ring-amber-400/40 focus-visible:ring-offset-4 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 sm:size-24 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-100 dark:focus-visible:ring-offset-zinc-950",
             state === "recording" &&
               "bg-rose-600 text-white before:absolute before:inset-0 before:rounded-full before:bg-rose-400/35 before:motion-safe:animate-ping hover:bg-rose-600 dark:bg-rose-500 dark:text-white",
-            state === "recorded" &&
+            state === "recorded" && !isContinuationVariant &&
               "bg-emerald-600 text-white hover:bg-emerald-600 dark:bg-emerald-300 dark:text-emerald-950",
           )}
         >
           {state === "recording" || state === "stopping" ? (
             <Square size={28} aria-hidden="true" />
           ) : state === "recorded" ? (
-            <CheckCircle2 size={32} aria-hidden="true" />
+            isContinuationVariant ? (
+              <span className="flex flex-col items-center gap-0.5 leading-none">
+                <Mic size={27} aria-hidden="true" />
+                <span className="text-[0.65rem] font-bold">Continue</span>
+              </span>
+            ) : (
+              <CheckCircle2 size={32} aria-hidden="true" />
+            )
           ) : (
             <Mic size={32} aria-hidden="true" />
           )}
@@ -437,19 +449,25 @@ export function RecorderButton({
 
         <div className="mt-3 w-full min-w-0 text-center">
           <div>
-            {state !== "idle" && state !== "permission-needed" ? (
+            {state !== "idle" &&
+            state !== "permission-needed" &&
+            !(isContinuationVariant && state === "recorded") ? (
               <div className="mx-auto">
                 <p className="text-sm font-bold text-ink dark:text-white">
                   {getTitle(state)}
                 </p>
-                <p className="mx-auto mt-1 max-w-md text-xs font-normal leading-5 text-zinc-600 dark:text-zinc-400">
-                  {getDescription(state, maxDurationLabel)}
-                </p>
+                {!(isContinuationVariant && state === "recording") ? (
+                  <p className="mx-auto mt-1 max-w-md text-xs font-normal leading-5 text-zinc-600 dark:text-zinc-400">
+                    {getDescription(state, maxDurationLabel)}
+                  </p>
+                ) : null}
               </div>
             ) : null}
-            <span className="mt-2 inline-flex rounded-full bg-zinc-900/[0.045] px-3 py-1 text-xs font-bold text-zinc-700 dark:bg-white/8 dark:text-zinc-200">
-              {formatRecordingDuration(durationMs)}
-            </span>
+            {!isContinuationVariant ? (
+              <span className="mt-2 inline-flex rounded-full bg-zinc-900/[0.045] px-3 py-1 text-xs font-bold text-zinc-700 dark:bg-white/8 dark:text-zinc-200">
+                {formatRecordingDuration(durationMs)}
+              </span>
+            ) : null}
           </div>
 
           {state === "recording" ? (
@@ -457,18 +475,23 @@ export function RecorderButton({
               className="mx-auto mt-4 max-w-xl overflow-hidden rounded-xl border border-rose-200/70 bg-gradient-to-r from-rose-50/90 via-amber-50/90 to-rose-50/90 px-3 py-2.5 shadow-inner dark:border-rose-300/20 dark:from-rose-950/35 dark:via-amber-950/25 dark:to-rose-950/35"
               data-recording-visualizer="active"
             >
-              <div className="flex items-center justify-between gap-3 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-rose-700 dark:text-rose-200">
-                <span className="inline-flex items-center gap-2">
-                  <span className="relative flex size-2" aria-hidden="true">
-                    <span className="absolute inline-flex size-full rounded-full bg-rose-500 opacity-70 motion-safe:animate-ping" />
-                    <span className="relative inline-flex size-2 rounded-full bg-rose-600" />
+              {!isContinuationVariant ? (
+                <div className="flex items-center justify-between gap-3 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-rose-700 dark:text-rose-200">
+                  <span className="inline-flex items-center gap-2">
+                    <span className="relative flex size-2" aria-hidden="true">
+                      <span className="absolute inline-flex size-full rounded-full bg-rose-500 opacity-70 motion-safe:animate-ping" />
+                      <span className="relative inline-flex size-2 rounded-full bg-rose-600" />
+                    </span>
+                    Live voice
                   </span>
-                  Live voice
-                </span>
-                <span className="text-zinc-500 dark:text-zinc-400">Listening</span>
-              </div>
+                  <span className="text-zinc-500 dark:text-zinc-400">Listening</span>
+                </div>
+              ) : null}
               <div
-                className="mt-2.5 flex h-12 items-center gap-1"
+                className={cn(
+                  "flex h-12 items-center gap-1",
+                  !isContinuationVariant && "mt-2.5",
+                )}
                 aria-label="Live microphone level"
                 role="img"
               >

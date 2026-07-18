@@ -2,6 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { DailyChallenge } from "@/components/challenge/DailyChallenge";
 import { SaveDailyWordButton } from "@/components/challenge/SaveDailyWordButton";
 import { HindiText } from "@/components/hindi/HindiText";
+import { SpeakBetterHindiTagline } from "@/components/home/SpeakBetterHindiTagline";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { getWordOfTheDay } from "@/data/words";
 import { cn } from "@/lib/utils";
@@ -14,6 +15,8 @@ export default function HomePage() {
 
   return (
     <div className="mx-auto max-w-4xl space-y-4 sm:space-y-5">
+      <SpeakBetterHindiTagline />
+
       <GlassCard className="overflow-hidden p-5 sm:p-7 lg:p-8">
         <div className="flex items-center justify-between gap-3">
           <p className="text-xs font-bold uppercase tracking-[0.14em] text-amber-800 dark:text-amber-200">
