@@ -40,18 +40,15 @@ export default function HomePage() {
         <div className="mt-5 grid gap-3 md:grid-cols-3 sm:mt-6 sm:gap-4">
           <Example
             label="Everyday usage"
-            description="Natural everyday speech"
             text={todayWord.simpleExample}
           />
           <Example
             label="Improved version"
-            description="A more elegant phrasing"
             text={todayWord.elevatedExample}
             featured
           />
           <Example
             label="Scholar version"
-            description="A Sanskritized, formal register"
             text={todayWord.scholarExample}
           />
         </div>
@@ -92,12 +89,10 @@ export default function HomePage() {
 }
 
 function Example({
-  description,
   featured = false,
   label,
   text,
 }: {
-  description: string;
   featured?: boolean;
   label: string;
   text: HindiTextValue;
@@ -117,7 +112,6 @@ function Example({
       )}>
         {label}
       </p>
-      <p className="mt-1 text-xs leading-5 text-zinc-500 dark:text-zinc-400">{description}</p>
       <HindiText text={text} className="mt-3" />
     </div>
   );

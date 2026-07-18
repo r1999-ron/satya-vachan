@@ -27,14 +27,14 @@ export function TransformationResult({
     <section className="animate-floatIn space-y-5">
       <div className="grid gap-4 lg:grid-cols-2">
         <VersionPanel
-          label="Natural polished"
+          label="Natural elegant"
           preload
-          text={result.naturalPolishedVersion}
+          text={result.naturalElegantVersion}
           variant="natural"
           onAudioStatusChange={onAudioStatusChange}
         />
         <VersionPanel
-          label="More elevated"
+          label="Scholarly"
           preload
           text={result.elevatedVersion}
           variant="elevated"
@@ -64,7 +64,7 @@ export function TransformationResult({
           }) : (
             <div className="rounded-2xl border border-white/60 bg-white/36 p-4 text-sm font-normal leading-7 text-zinc-600 dark:border-white/12 dark:bg-white/5 dark:text-zinc-300">
               No specific word swaps were needed this time. The full sentence
-              polish is still ready above.
+              elegant version is still ready above.
             </div>
           )}
         </div>
@@ -125,7 +125,7 @@ function getSaveableWord(
       wordDev: replacement.replacement.dev,
       meaning: replacement.meaning,
       simpleAlternative: replacement.original.roman,
-      exampleSentence: result.naturalPolishedVersion.dev,
+      exampleSentence: result.naturalElegantVersion.dev,
     }
   );
 }

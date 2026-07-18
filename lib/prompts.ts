@@ -48,14 +48,14 @@ export const transformationResponseFormat = {
       additionalProperties: false,
       required: [
         "transcript",
-        "naturalPolishedVersion",
+        "naturalElegantVersion",
         "elevatedVersion",
         "replacements",
         "saveableWords",
       ],
       properties: {
         transcript: { type: "string" },
-        naturalPolishedVersion: {
+        naturalElegantVersion: {
           type: "object",
           additionalProperties: false,
           required: ["dev", "roman", "en"],

@@ -200,7 +200,7 @@ export function DailyChallenge({ word }: { word: WordEntry }) {
               Try today&apos;s word
             </h2>
             <p className="mt-2 text-sm font-normal leading-6 text-zinc-600 dark:text-zinc-300">
-              Say or type a sentence, then check how naturally you used it.
+              Say or type a sentence and check how effectively you have used it.
             </p>
           </div>
         </div>

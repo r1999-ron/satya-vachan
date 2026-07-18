@@ -119,13 +119,13 @@ export function normalizePracticeResponse(
   const transcript =
     getTrimmedString(rawValue.transcript, VALIDATION_LIMITS.transcriptChars) ??
     fallbackTranscript.trim();
-  const naturalPolishedVersion = normalizeHindiText(rawValue.naturalPolishedVersion);
+  const naturalElegantVersion = normalizeHindiText(rawValue.naturalElegantVersion);
   const elevatedVersion = normalizeHindiText(rawValue.elevatedVersion);
 
   if (
     !transcript ||
-    !naturalPolishedVersion.dev ||
-    !naturalPolishedVersion.roman ||
+    !naturalElegantVersion.dev ||
+    !naturalElegantVersion.roman ||
     !elevatedVersion.dev ||
     !elevatedVersion.roman
   ) {
@@ -134,7 +134,7 @@ export function normalizePracticeResponse(
 
   return {
     transcript,
-    naturalPolishedVersion,
+    naturalElegantVersion,
     elevatedVersion,
     replacements: Array.isArray(rawValue.replacements)
       ? rawValue.replacements
@@ -253,7 +253,7 @@ function normalizeReplacement(rawValue: unknown): WordReplacement | null {
     meaning,
     whyBetter:
       getTrimmedString(rawValue.whyBetter, 400) ??
-      `${replacement.roman} is a more polished option in this sentence.`,
+      `${replacement.roman} is a more elegant option in this sentence.`,
     naturalness: getRegisterLevel(rawValue.naturalness),
   };
 }

@@ -16,7 +16,7 @@ const legacyFallbackWordEntry: LegacyWordEntry = {
     "Nirdharit avadhi mein is karya ka sampadan safalatapurvak sampann hua.",
   synonyms: ["kaarya", "kartavya", "prayojan"],
   usageNote:
-    "Karya sounds polished but remains natural for everyday professional speech.",
+    "Karya sounds elegant but remains natural for everyday professional speech.",
   challengePrompt:
     "Apne din ke kisi mahatvapurn karya ke baare mein ek vaakya kahiye.",
   tags: ["work", "daily speech", "professional"],

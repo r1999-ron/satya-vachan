@@ -23,23 +23,23 @@ const replacementLibrary = [
   ["confusion", "aspashtata", "lack of clarity"],
 ] as const;
 
-function replacement(original: string, polished: string, meaning: string): WordReplacement {
+function replacement(original: string, upgraded: string, meaning: string): WordReplacement {
   return {
     original: makeHindiText(toDevanagari(original), original, meaning),
-    replacement: makeHindiText(toDevanagari(polished), polished, meaning),
+    replacement: makeHindiText(toDevanagari(upgraded), upgraded, meaning),
     meaning,
-    whyBetter: `${polished} sentence ko zyada polished aur spasht banata hai.`,
+    whyBetter: `${upgraded} sentence ko zyada sundar aur spasht banata hai.`,
     naturalness: "formal",
   };
 }
 
 const defaultReplacements = replacementLibrary
   .slice(0, 3)
-  .map(([original, polished, meaning]) => replacement(original, polished, meaning));
+  .map(([original, upgraded, meaning]) => replacement(original, upgraded, meaning));
 
 export const defaultTransformationExample: PracticeResponse = {
   transcript: hintPracticeSentences[0].roman,
-  naturalPolishedVersion: makeHindiText(
+  naturalElegantVersion: makeHindiText(
     "हमने इस कार्य को शीघ्र समाप्त करने का प्रयास किया।",
     "Humne is karya ko sheeghra samaapt karne ka prayas kiya.",
     "We tried to finish this work quickly.",
@@ -68,7 +68,7 @@ export function getMockPracticeResponse(transcript: string): PracticeResponse {
   const found = replacementLibrary
     .filter(([original]) => new RegExp(`\\b${escapeRegex(original)}\\b`, "i").test(cleanedTranscript))
     .slice(0, 3)
-    .map(([original, polished, meaning]) => replacement(original, polished, meaning));
+    .map(([original, upgraded, meaning]) => replacement(original, upgraded, meaning));
   const replacements = found.length ? found : defaultReplacements.slice(0, 2);
   const roman = replacements.reduce(
     (sentence, item) => sentence.replace(
@@ -77,20 +77,20 @@ export function getMockPracticeResponse(transcript: string): PracticeResponse {
     ),
     cleanedTranscript,
   );
-  const polishedRoman = roman === cleanedTranscript
+  const elegantRoman = roman === cleanedTranscript
     ? `${cleanedTranscript} Is baat ko aur spasht roop se kaha ja sakta hai.`
     : roman;
-  const elevatedRoman = polishedRoman
+  const elevatedRoman = elegantRoman
     .replace(/\bsheeghra\b/gi, "atishighra")
     .replace(/\bprayas\b/gi, "gambhir prayatna")
     .replace(/\bsamadhan\b/gi, "uchit samadhan");
 
   return {
     transcript: cleanedTranscript,
-    naturalPolishedVersion: makeHindiText(
-      toDevanagari(polishedRoman),
-      polishedRoman,
-      "A more polished version of the original sentence.",
+    naturalElegantVersion: makeHindiText(
+      toDevanagari(elegantRoman),
+      elegantRoman,
+      "A more elegant version of the original sentence.",
     ),
     elevatedVersion: makeHindiText(
       toDevanagari(elevatedRoman),
@@ -103,7 +103,7 @@ export function getMockPracticeResponse(transcript: string): PracticeResponse {
       wordDev: item.replacement.dev,
       meaning: item.meaning,
       simpleAlternative: item.original.roman,
-      exampleSentence: toDevanagari(polishedRoman),
+      exampleSentence: toDevanagari(elegantRoman),
     })),
   };
 }
@@ -125,7 +125,7 @@ export const seedLearnedWords: LearnedWord[] = [
 }));
 
 export const emptyStateExamples = [
-  { title: "Start with a polished everyday word", body: "Save words like कार्य, प्रयास, and स्पष्ट as you practice." },
+  { title: "Start with an elegant everyday word", body: "Save words like कार्य, प्रयास, and स्पष्ट as you practice." },
   { title: "Build by use, not memorization", body: "Each saved word should carry a sentence you would actually say." },
 ];
 

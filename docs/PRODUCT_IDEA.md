@@ -2,7 +2,7 @@
 
 ## 1. Product Summary
 
-**Satya-Vachan** is an AI-powered Hindi speaking coach for people who already speak Hindi but want to sound more polished, articulate, cultured, and eloquent.
+**Satya-Vachan** is an AI-powered Hindi speaking coach for people who already speak Hindi but want to sound more elegant, articulate, cultured, and eloquent.
 
 The app does **not** teach Hindi from scratch. Instead, it helps fluent Hindi speakers upgrade their everyday Hindi into a more refined register through daily vocabulary, speech practice, AI-powered sentence transformation, and light gamification.
 
@@ -28,7 +28,7 @@ Primary users:
 - Hindi-medium interview candidates
 - Hobbyists who enjoy beautiful Hindi
 - People who want to read and appreciate Hindi literature better
-- Anyone who wants to speak polished Hindi without sounding artificial or overly pedantic
+- Anyone who wants to speak elegant Hindi without sounding artificial or overly pedantic
 
 ---
 
@@ -36,7 +36,7 @@ Primary users:
 
 Many Hindi speakers can communicate easily in daily life, but struggle when they need to sound:
 
-- polished
+- elegant
 - dignified
 - eloquent
 - cultured
@@ -49,7 +49,7 @@ A user may naturally say:
 
 > Humne is kaam ko jaldi khatam karne ki koshish ki.
 
-A more polished version could be:
+A more elegant version could be:
 
 > Humne is karya ko sheeghra samaapt karne ka prayas kiya.
 
@@ -165,7 +165,7 @@ Elevated sentence:
 Arthaat humein ab ek nayi paddhati ki avashyakta hai.
 
 Usage note:
-Use “arthaat” when explaining or clarifying something. It sounds polished but still natural.
+Use “arthaat” when explaining or clarifying something. It sounds elegant but still natural.
 
 Related words:
 isliye, tatparya, nihitaarth
@@ -223,11 +223,11 @@ Audio is sent for speech-to-text transcription
         ↓
 AI receives the transcript
         ↓
-AI generates two polished Hindi versions
+AI generates two elegant Hindi versions
         ↓
 AI gives elegance score and explanation
         ↓
-App speaks the basic polished version using text-to-speech
+App speaks the basic elegant version using text-to-speech
         ↓
 User can optionally listen to the more elevated version
 ```
@@ -235,12 +235,12 @@ User can optionally listen to the more elevated version
 The app should show:
 
 1. Original transcript
-2. Basic polished version
+2. Basic elegant version
 3. More elevated version
 4. Elegance score
 5. Word-by-word explanation
 6. Option to save useful words
-7. Audio playback for both polished versions
+7. Audio playback for both elegant versions
 
 ---
 
@@ -248,7 +248,7 @@ The app should show:
 
 For every user sentence, the AI should generate two transformed versions.
 
-#### Variant 1: Natural Polished Hindi
+#### Variant 1: Natural Elegant Hindi
 
 This version should sound better than the original but still usable in normal speech.
 
@@ -258,7 +258,7 @@ Original:
 
 > Humne is kaam ko jaldi khatam karne ki koshish ki.
 
-Natural polished version:
+Natural elegant version:
 
 > Humne is karya ko sheeghra samaapt karne ka prayas kiya.
 
@@ -291,7 +291,7 @@ Example:
 ```text
 Original word: kaam
 Replacement: karya
-Why: “Karya” sounds more formal and polished than “kaam.”
+Why: “Karya” sounds more formal and elegant than “kaam.”
 
 Original word: jaldi
 Replacement: sheeghra
@@ -317,7 +317,7 @@ Original Elegance Score: 42/100
 Improved Elegance Score: 78/100
 
 Feedback:
-Your original sentence was clear but conversational. The improved version uses more precise and polished words such as “karya,” “sheeghra,” and “prayas.”
+Your original sentence was clear but conversational. The improved version uses more precise and elegant words such as “karya,” “sheeghra,” and “prayas.”
 ```
 
 The score is mainly for gamification and user delight. It does not need to be linguistically perfect in the MVP, but it should feel consistent and explainable.
@@ -447,7 +447,7 @@ Components:
 - Record button
 - Audio recording state
 - Transcribed text
-- Basic polished version
+- Basic elegant version
 - More elevated version
 - Elegance score
 - Word explanation cards
@@ -507,7 +507,7 @@ OpenAI speech-to-text transcribes the audio
       ↓
 GPT model rewrites, scores, and explains the sentence
       ↓
-OpenAI text-to-speech generates audio for the polished version
+OpenAI text-to-speech generates audio for the elegant version
       ↓
 Frontend displays text and plays audio
 ```
@@ -541,7 +541,7 @@ Use `gpt-4o-transcribe` if transcription quality is noticeably better for Hindi 
 Use a GPT model to produce structured JSON containing:
 
 - original transcript
-- natural polished Hindi version
+- natural elegant Hindi version
 - more elevated Hindi version
 - English explanation
 - word replacements
@@ -556,7 +556,7 @@ Expected JSON shape:
 ```ts
 type PracticeResponse = {
   transcript: string;
-  naturalPolishedVersion: string;
+  naturalElegantVersion: string;
   elevatedVersion: string;
   originalEleganceScore: number;
   improvedEleganceScore: number;
@@ -581,7 +581,7 @@ Use:
 gpt-4o-mini-tts
 ```
 
-The app should generate speech for the natural polished version by default.
+The app should generate speech for the natural elegant version by default.
 
 The user should also have a button to listen to the more elevated version.
 
@@ -596,7 +596,7 @@ Voice instructions should ask for:
 Example TTS instruction:
 
 ```text
-Speak in clear, polished Hindi with a calm teacher-like tone. Pronounce Sanskritized Hindi words carefully. Keep the delivery natural, not theatrical.
+Speak in clear, elegant Hindi with a calm teacher-like tone. Pronounce Sanskritized Hindi words carefully. Keep the delivery natural, not theatrical.
 ```
 
 ---
@@ -695,7 +695,7 @@ Send to /api/transcribe
 Receive transcript
 Send transcript to /api/transform
 Receive structured transformation
-Send polished text to /api/tts
+Send elegant text to /api/tts
 Play returned audio
 ```
 
@@ -766,7 +766,7 @@ Reasons:
 
 ## 11. Suggested Curated Word Corpus
 
-The examples should be polished but not absurdly archaic.
+The examples should be elegant but not absurdly archaic.
 
 Good replacements:
 
@@ -839,7 +839,7 @@ The transformation prompt should enforce the following:
 - Understand the user's Hindi sentence
 - Preserve the original meaning
 - Improve the register
-- Generate natural polished Hindi
+- Generate natural elegant Hindi
 - Generate one more elevated version
 - Avoid unnecessary archaism
 - Explain word replacements simply
@@ -860,10 +860,10 @@ The transformation prompt should enforce the following:
 ```text
 You are Satya-Vachan, an AI Hindi expression coach.
 
-Your job is to help fluent Hindi speakers express the same idea in more polished, clear, and elegant Hindi.
+Your job is to help fluent Hindi speakers express the same idea in more elegant, clear, and expressive Hindi.
 
 Always preserve the user's meaning. Produce two versions:
-1. Natural polished Hindi: refined but usable in normal speech.
+1. Natural elegant Hindi: refined but usable in normal speech.
 2. More elevated Hindi: more formal, literary, or Sanskritized, but still grammatically correct.
 
 Avoid making the Hindi comically archaic. Prefer words that an educated Hindi speaker could realistically use.
@@ -894,7 +894,7 @@ Avoid:
 - Heavy avatars
 - Long onboarding
 
-The product should feel like a polished learning tool, not a cartoon language game.
+The product should feel like an elegant learning tool, not a cartoon language game.
 
 ---
 
@@ -911,7 +911,7 @@ This is valuable, especially for Sanskritized words, but can be deferred.
 Possible flow:
 
 ```text
-User listens to polished sentence
+User listens to elegant sentence
         ↓
 User repeats it
         ↓
@@ -1009,7 +1009,7 @@ These are distractions for the demo.
 
 The demo should focus on one impressive moment:
 
-> A user speaks ordinary Hindi, and the app instantly turns it into polished Hindi with explanation, score, and audio playback.
+> A user speaks ordinary Hindi, and the app instantly turns it into elegant Hindi with explanation, score, and audio playback.
 
 Best demo sentence:
 
@@ -1020,7 +1020,7 @@ Humne is kaam ko jaldi khatam karne ki koshish ki.
 Expected output:
 
 ```text
-Natural polished:
+Natural elegant:
 Humne is karya ko sheeghra samaapt karne ka prayas kiya.
 
 More elevated:
@@ -1133,7 +1133,7 @@ Connect:
 Record → Transcribe → Transform → Speak → Save Words
 ```
 
-### Step 7: Polish Demo
+### Step 7: Refine Demo
 
 Add:
 
@@ -1150,11 +1150,11 @@ Add:
 
 One-line pitch:
 
-> Satya-Vachan is an AI speaking coach that helps fluent Hindi speakers turn everyday Hindi into polished, eloquent Hindi through speech practice, daily vocabulary, and instant AI feedback.
+> Satya-Vachan is an AI speaking coach that helps fluent Hindi speakers turn everyday Hindi into elegant, eloquent Hindi through speech practice, daily vocabulary, and instant AI feedback.
 
 Short pitch:
 
-> Most Hindi speakers can communicate, but many struggle to sound polished when speaking formally. Satya-Vachan helps users practice elegant Hindi by transforming their spoken sentences into refined Hindi, explaining better word choices, and helping them build a personal vocabulary through daily challenges.
+> Most Hindi speakers can communicate, but many struggle to sound elegant when speaking formally. Satya-Vachan helps users practice elegant Hindi by transforming their spoken sentences into refined Hindi, explaining better word choices, and helping them build a personal vocabulary through daily challenges.
 
 Hackathon pitch:
 

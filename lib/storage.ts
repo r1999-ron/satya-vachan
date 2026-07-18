@@ -19,7 +19,7 @@ export const STORAGE_KEYS = {
 
 export type PracticeHistoryItem = Pick<
   PracticeResponse,
-  "transcript" | "naturalPolishedVersion" | "elevatedVersion"
+  "transcript" | "naturalElegantVersion" | "elevatedVersion"
 > & {
   id: string;
   savedAt: string;
@@ -198,7 +198,7 @@ function isPracticeHistoryItem(value: unknown): value is PracticeHistoryItem {
     typeof value.id === "string" &&
     typeof value.savedAt === "string" &&
     typeof value.transcript === "string" &&
-    (typeof value.naturalPolishedVersion === "string" || isHindiText(value.naturalPolishedVersion)) &&
+    (typeof value.naturalElegantVersion === "string" || isHindiText(value.naturalElegantVersion)) &&
     (typeof value.elevatedVersion === "string" || isHindiText(value.elevatedVersion))
   );
 }
@@ -388,10 +388,10 @@ export function loadPracticeHistory(): PracticeHistoryItem[] {
     .filter(isPracticeHistoryItem)
     .map((item) => ({
       ...item,
-      naturalPolishedVersion:
-        typeof item.naturalPolishedVersion === "string"
-          ? makeHindiText(item.naturalPolishedVersion, item.naturalPolishedVersion)
-          : item.naturalPolishedVersion,
+      naturalElegantVersion:
+        typeof item.naturalElegantVersion === "string"
+          ? makeHindiText(item.naturalElegantVersion, item.naturalElegantVersion)
+          : item.naturalElegantVersion,
       elevatedVersion:
         typeof item.elevatedVersion === "string"
           ? makeHindiText(item.elevatedVersion, item.elevatedVersion)
@@ -415,7 +415,7 @@ export function savePracticeHistory(response: PracticeResponse): PracticeHistory
     id: createId("practice"),
     savedAt: getTodayKey(),
     transcript: response.transcript.trim(),
-    naturalPolishedVersion: response.naturalPolishedVersion,
+    naturalElegantVersion: response.naturalElegantVersion,
     elevatedVersion: response.elevatedVersion,
   };
   const nextHistory = [item, ...loadPracticeHistory()].slice(0, PRACTICE_HISTORY_LIMIT);

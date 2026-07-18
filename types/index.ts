@@ -34,7 +34,7 @@ export type WordReplacement = {
 
 export type PracticeResponse = {
   transcript: string;
-  naturalPolishedVersion: HindiText;
+  naturalElegantVersion: HindiText;
   elevatedVersion: HindiText;
   replacements: WordReplacement[];
   saveableWords: LearnedWordInput[];

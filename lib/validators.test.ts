@@ -87,7 +87,7 @@ describe("validators", () => {
     const normalized = normalizePracticeResponse(
       {
         transcript: "  original transcript  ",
-        naturalPolishedVersion: "polished transcript",
+        naturalElegantVersion: "elegant transcript",
         elevatedVersion: "elevated transcript",
         replacements: [
           {
@@ -113,7 +113,7 @@ describe("validators", () => {
 
     expect(normalized).toMatchObject({
       transcript: "original transcript",
-      naturalPolishedVersion: { dev: "polished transcript", roman: "polished transcript" },
+      naturalElegantVersion: { dev: "elegant transcript", roman: "elegant transcript" },
       elevatedVersion: { dev: "elevated transcript", roman: "elevated transcript" },
     });
     expect(normalized?.replacements).toEqual([
@@ -121,7 +121,7 @@ describe("validators", () => {
         original: { dev: "good", roman: "good" },
         replacement: { dev: "excellent", roman: "excellent" },
         meaning: "very good",
-        whyBetter: "excellent is a more polished option in this sentence.",
+        whyBetter: "excellent is a more elegant option in this sentence.",
         naturalness: "literary",
       },
     ]);
@@ -139,7 +139,7 @@ describe("validators", () => {
   it("does not include removed scoring and feedback metadata", () => {
     const normalized = normalizePracticeResponse({
       transcript: "rough words",
-      naturalPolishedVersion: "polished words",
+      naturalElegantVersion: "elegant words",
       elevatedVersion: "elevated words",
       feedback: "better",
       originalEleganceScore: 98,
@@ -156,7 +156,7 @@ describe("validators", () => {
     expect(
       normalizePracticeResponse({
         transcript: "hello",
-        naturalPolishedVersion: "hello",
+        naturalElegantVersion: "hello",
         elevatedVersion: "",
       }),
     ).toBeNull();

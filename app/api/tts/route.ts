@@ -55,7 +55,7 @@ export async function POST(request: Request) {
 
   if (!isOpenAIConfigured()) {
     return jsonApiError(
-      "AI audio is unavailable. Your polished text is still available.",
+      "AI audio is unavailable. Your elegant text is still available.",
       "MISSING_API_KEY",
       503,
     );
@@ -91,7 +91,7 @@ export async function POST(request: Request) {
     console.error("Satya-Vachan TTS failed", error);
 
     return jsonApiError(
-      "Audio generation failed. Your polished text is still available.",
+      "Audio generation failed. Your elegant text is still available.",
       "TTS_FAILED",
       502,
     );

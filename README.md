@@ -1,6 +1,6 @@
 # Satya-Vachan
 
-Satya-Vachan is an AI-powered Hindi expression coach for fluent Hindi speakers who want to make everyday Hindi sound more polished, articulate, and graceful.
+Satya-Vachan is an AI-powered Hindi expression coach for fluent Hindi speakers who want to make everyday Hindi sound more elegant, articulate, and graceful.
 
 ## Local Development
 

@@ -81,7 +81,7 @@ export const generatedWordCorpus = [
       "bhaav",
       "tatparya"
     ],
-    "usageNote": "Arth is concise and polished, useful whenever you are clarifying meaning.",
+    "usageNote": "Arth is concise and elegant, useful whenever you are clarifying meaning.",
     "englishMeaning": "meaning or significance",
     "challengePrompt": "Arth shabd ka prayog karte hue kisi vichaar ko samjhaiye.",
     "tags": [
@@ -213,7 +213,7 @@ export const generatedWordCorpus = [
       "sahyog",
       "samarthan"
     ],
-    "usageNote": "Sahayata keeps a request respectful and polished.",
+    "usageNote": "Sahayata keeps a request respectful and elegant.",
     "englishMeaning": "help or assistance",
     "challengePrompt": "Sahayata maangte hue ek vinamra vaakya taiyar kijiye.",
     "tags": [
@@ -323,7 +323,7 @@ export const generatedWordCorpus = [
       "nishchay",
       "tai"
     ],
-    "usageNote": "Nirnay is polished and common enough for everyday formal speech.",
+    "usageNote": "Nirnay is elegant and common enough for everyday formal speech.",
     "englishMeaning": "decision",
     "challengePrompt": "Nirnay shabd ka prayog karte hue ek sthir vaakya kahiye.",
     "tags": [
@@ -653,7 +653,7 @@ export const generatedWordCorpus = [
       "vichar-vimarsh",
       "vaarta"
     ],
-    "usageNote": "Charcha is familiar and polished for meetings, classes, and family decisions.",
+    "usageNote": "Charcha is familiar and elegant for meetings, classes, and family decisions.",
     "englishMeaning": "discussion or deliberation",
     "challengePrompt": "Charcha shabd ka prayog karte hue kisi vishay ka ullekh kijiye.",
     "tags": [
@@ -697,7 +697,7 @@ export const generatedWordCorpus = [
       "manohar",
       "akarshak"
     ],
-    "usageNote": "Rochak is lively but still polished; it works well for stories and ideas.",
+    "usageNote": "Rochak is lively but still elegant; it works well for stories and ideas.",
     "englishMeaning": "interesting or engaging",
     "challengePrompt": "Rochak shabd ka prayog karte hue kisi kahani ya vichaar ka varnan kijiye.",
     "tags": [
@@ -807,7 +807,7 @@ export const generatedWordCorpus = [
       "phal",
       "prabhav"
     ],
-    "usageNote": "Parinaam is polished and familiar, especially for outcomes and consequences.",
+    "usageNote": "Parinaam is elegant and familiar, especially for outcomes and consequences.",
     "englishMeaning": "result or outcome",
     "challengePrompt": "Parinaam shabd ka prayog karte hue kisi kriya ka asar batayiye.",
     "tags": [
@@ -1247,7 +1247,7 @@ export const generatedWordCorpus = [
       "sanyam",
       "santushti"
     ],
-    "usageNote": "Santulan is polished and useful for lifestyle, tone, and judgment.",
+    "usageNote": "Santulan is elegant and useful for lifestyle, tone, and judgment.",
     "englishMeaning": "balance or equilibrium",
     "challengePrompt": "Santulan shabd ka prayog karte hue jeevan ya kaam par vaakya kahiye.",
     "tags": [
@@ -1269,7 +1269,7 @@ export const generatedWordCorpus = [
       "vyakti",
       "bolne ka dhang"
     ],
-    "usageNote": "Abhivyakti is central to polished speech and works well for language learning.",
+    "usageNote": "Abhivyakti is central to elegant speech and works well for language learning.",
     "englishMeaning": "expression or articulation",
     "challengePrompt": "Abhivyakti shabd ka prayog karte hue bhasha ke mahatva par vaakya kahiye.",
     "tags": [

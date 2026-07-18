@@ -318,7 +318,7 @@ function PracticeContent() {
 
         {state.transformError ? (
           <ErrorNotice
-            actionLabel={canRetryTransformation ? "Retry polish" : undefined}
+            actionLabel={canRetryTransformation ? "Retry elevation" : undefined}
             message={state.transformError}
             onAction={canRetryTransformation ? () => void runTransformation() : undefined}
           />
@@ -484,16 +484,13 @@ function LoadingState({ status }: { status: PracticeStatus }) {
     status === "transcribing"
       ? {
           title: "Listening carefully...",
-          body: "Your recording is being transcribed and formatted as mixed-script Hinglish.",
         }
       : status === "ttsLoading"
           ? {
               title: "Preparing audio...",
-              body: "The polished sentence is being prepared for playback.",
             }
           : {
-              title: "Polishing your expression...",
-              body: "The AI coach is preserving your meaning while refining the wording.",
+              title: "Elevating your expression...",
             };
 
   return (
@@ -503,9 +500,6 @@ function LoadingState({ status }: { status: PracticeStatus }) {
       </span>
       <div className="min-w-0 flex-1">
         <h2 className="text-lg font-bold text-ink dark:text-white">{copy.title}</h2>
-        <p className="mt-1 text-sm font-normal leading-6 text-zinc-600 dark:text-zinc-400">
-          {copy.body}
-        </p>
         <LoadingMeter />
       </div>
     </div>
@@ -546,7 +540,7 @@ function RecentPracticeHistory({
                 {item.transcript}
               </p>
               <HindiText
-                text={item.naturalPolishedVersion}
+                text={item.naturalElegantVersion}
                 className="mt-1 line-clamp-2"
                 showEnglish={false}
               />

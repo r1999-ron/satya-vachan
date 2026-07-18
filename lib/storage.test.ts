@@ -295,7 +295,7 @@ describe("storage", () => {
   it("saves bounded practice history and removes corrupt entries", () => {
     const response: PracticeResponse = {
       transcript: "  original  ",
-      naturalPolishedVersion: { dev: "परिष्कृत", roman: "polished", en: "polished" },
+      naturalElegantVersion: { dev: "परिष्कृत", roman: "elegant", en: "elegant" },
       elevatedVersion: { dev: "उन्नत", roman: "elevated", en: "elevated" },
       replacements: [],
       saveableWords: [],
@@ -313,7 +313,7 @@ describe("storage", () => {
     expect(history[0]).toMatchObject({
       savedAt: "2026-07-18",
       transcript: "sentence 11",
-      naturalPolishedVersion: { dev: "परिष्कृत", roman: "polished", en: "polished" },
+      naturalElegantVersion: { dev: "परिष्कृत", roman: "elegant", en: "elegant" },
       elevatedVersion: { dev: "उन्नत", roman: "elevated", en: "elevated" },
     });
 
