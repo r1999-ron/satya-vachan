@@ -79,5 +79,8 @@ describe("POST /api/transcribe", () => {
         ]),
       }),
     );
+    expect(openAiMocks.format.mock.calls[0]?.[0]).not.toHaveProperty(
+      "temperature",
+    );
   });
 });
