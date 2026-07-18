@@ -13,19 +13,13 @@ const TTS_INSTRUCTIONS = PROMPTS.tts.instruction;
 const TTS_SPEED = PROMPTS.tts.speed;
 
 type TtsVariant = "natural" | "elevated";
-type TtsVoicePreference = "female" | "male";
 
 type TtsRequestBody = {
   text?: unknown;
   variant?: unknown;
-  voice?: unknown;
 };
 
 const TTS_VARIANTS = new Set<TtsVariant>(["natural", "elevated"]);
-const TTS_VOICES: Record<TtsVoicePreference, "nova" | "onyx"> = {
-  female: "nova",
-  male: "onyx",
-};
 
 export async function POST(request: Request) {
   const guardResponse = guardAiRequest(request, "tts");
@@ -54,9 +48,8 @@ export async function POST(request: Request) {
 
   const text = textResult.value;
   const variant = getVariant(body.variant);
-  const voicePreference = getVoicePreference(body.voice);
 
-  if (!variant || !voicePreference) {
+  if (!variant) {
     return jsonApiError("Choose a recognized audio variant.", "INVALID_REQUEST", 400);
   }
 
@@ -77,11 +70,11 @@ export async function POST(request: Request) {
         feature: "text-to-speech",
         language: "hi",
         variant,
-        voicePreference,
+        voice: "male",
       },
     }).audio.speech.create({
       model: OPENAI_MODELS.textToSpeech,
-      voice: TTS_VOICES[voicePreference],
+      voice: "onyx",
       input: text,
       instructions: getInstructions(variant),
       response_format: "mp3",
@@ -113,14 +106,6 @@ function getVariant(value: unknown): TtsVariant | null {
   return typeof value === "string" && TTS_VARIANTS.has(value as TtsVariant)
     ? (value as TtsVariant)
     : null;
-}
-
-function getVoicePreference(value: unknown): TtsVoicePreference | null {
-  if (value === undefined || value === null || value === "") {
-    return "female";
-  }
-
-  return value === "female" || value === "male" ? value : null;
 }
 
 function getInstructions(variant: TtsVariant) {

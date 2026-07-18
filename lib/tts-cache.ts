@@ -1,5 +1,3 @@
-import type { VoicePreference } from "@/types";
-
 type TtsVariant = "natural" | "elevated";
 
 const MAX_CACHE_ENTRIES = 12;
@@ -8,9 +6,8 @@ const audioCache = new Map<string, Blob>();
 export function getCachedTtsAudio(
   text: string,
   variant: TtsVariant,
-  voice: VoicePreference,
 ) {
-  const key = getCacheKey(text, variant, voice);
+  const key = getCacheKey(text, variant);
   const cached = audioCache.get(key);
 
   if (cached) {
@@ -24,10 +21,9 @@ export function getCachedTtsAudio(
 export function cacheTtsAudio(
   text: string,
   variant: TtsVariant,
-  voice: VoicePreference,
   audio: Blob,
 ) {
-  const key = getCacheKey(text, variant, voice);
+  const key = getCacheKey(text, variant);
   audioCache.delete(key);
   audioCache.set(key, audio);
 
@@ -42,6 +38,6 @@ export function cacheTtsAudio(
   }
 }
 
-function getCacheKey(text: string, variant: TtsVariant, voice: VoicePreference) {
-  return `${voice}\u0000${variant}\u0000${text.trim()}`;
+function getCacheKey(text: string, variant: TtsVariant) {
+  return `${variant}\u0000${text.trim()}`;
 }

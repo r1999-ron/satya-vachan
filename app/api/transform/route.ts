@@ -64,12 +64,7 @@ export async function POST(request: Request) {
   if (!isOpenAIConfigured()) {
     if (isLocalDemoMockModeEnabled()) {
       const mockResponse = normalizePracticeResponse(
-        {
-          ...getMockPracticeResponse(transcript),
-          feedback:
-            "Demo mode: OpenAI is not configured, so this uses deterministic sample coaching. " +
-            getMockPracticeResponse(transcript).feedback,
-        },
+        getMockPracticeResponse(transcript),
         transcript,
       );
 

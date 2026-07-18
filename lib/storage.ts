@@ -8,7 +8,6 @@ import type {
   PracticeResponse,
   ScriptPreference,
   StreakState,
-  VoicePreference,
 } from "@/types";
 
 export const STORAGE_KEYS = {
@@ -20,7 +19,7 @@ export const STORAGE_KEYS = {
 
 export type PracticeHistoryItem = Pick<
   PracticeResponse,
-  "transcript" | "naturalPolishedVersion" | "elevatedVersion" | "improvedEleganceScore"
+  "transcript" | "naturalPolishedVersion" | "elevatedVersion"
 > & {
   id: string;
   savedAt: string;
@@ -39,10 +38,7 @@ const PREFERENCES_EVENT = "satya-vachan:preferences";
 
 type Preferences = {
   script: ScriptPreference;
-  voice: VoicePreference;
 };
-
-const DEFAULT_VOICE_PREFERENCE: VoicePreference = "female";
 
 export function canUseLocalStorage() {
   if (typeof window === "undefined") {
@@ -203,8 +199,7 @@ function isPracticeHistoryItem(value: unknown): value is PracticeHistoryItem {
     typeof value.savedAt === "string" &&
     typeof value.transcript === "string" &&
     (typeof value.naturalPolishedVersion === "string" || isHindiText(value.naturalPolishedVersion)) &&
-    (typeof value.elevatedVersion === "string" || isHindiText(value.elevatedVersion)) &&
-    typeof value.improvedEleganceScore === "number"
+    (typeof value.elevatedVersion === "string" || isHindiText(value.elevatedVersion))
   );
 }
 
@@ -422,7 +417,6 @@ export function savePracticeHistory(response: PracticeResponse): PracticeHistory
     transcript: response.transcript.trim(),
     naturalPolishedVersion: response.naturalPolishedVersion,
     elevatedVersion: response.elevatedVersion,
-    improvedEleganceScore: response.improvedEleganceScore,
   };
   const nextHistory = [item, ...loadPracticeHistory()].slice(0, PRACTICE_HISTORY_LIMIT);
 
@@ -533,35 +527,18 @@ function isScriptPreference(value: unknown): value is ScriptPreference {
   return value === "dev" || value === "roman" || value === "both";
 }
 
-function isVoicePreference(value: unknown): value is VoicePreference {
-  return value === "female" || value === "male";
-}
-
 export function loadPreferences(): Preferences {
   const stored = readJson<unknown>(STORAGE_KEYS.preferences, {});
   const script =
     isRecord(stored) && isScriptPreference(stored.script)
       ? stored.script
       : DEFAULT_SCRIPT_PREFERENCE;
-  const voice =
-    isRecord(stored) && isVoicePreference(stored.voice)
-      ? stored.voice
-      : DEFAULT_VOICE_PREFERENCE;
 
-  return { script, voice };
+  return { script };
 }
 
 export function saveScriptPreference(script: ScriptPreference) {
   const preferences = { ...loadPreferences(), script };
-  writeJson(STORAGE_KEYS.preferences, preferences);
-  if (typeof window !== "undefined") {
-    window.dispatchEvent(new CustomEvent(PREFERENCES_EVENT, { detail: preferences }));
-  }
-  return preferences;
-}
-
-export function saveVoicePreference(voice: VoicePreference) {
-  const preferences = { ...loadPreferences(), voice };
   writeJson(STORAGE_KEYS.preferences, preferences);
   if (typeof window !== "undefined") {
     window.dispatchEvent(new CustomEvent(PREFERENCES_EVENT, { detail: preferences }));
@@ -589,28 +566,4 @@ export function useScriptPreference() {
   }, []);
 
   return { preference, setScriptPreference };
-}
-
-export function useVoicePreference() {
-  const [preference, setPreference] = useState<VoicePreference>(
-    DEFAULT_VOICE_PREFERENCE,
-  );
-
-  useEffect(() => {
-    const syncPreference = () => setPreference(loadPreferences().voice);
-    syncPreference();
-    window.addEventListener("storage", syncPreference);
-    window.addEventListener(PREFERENCES_EVENT, syncPreference);
-    return () => {
-      window.removeEventListener("storage", syncPreference);
-      window.removeEventListener(PREFERENCES_EVENT, syncPreference);
-    };
-  }, []);
-
-  const setVoicePreference = useCallback((voice: VoicePreference) => {
-    saveVoicePreference(voice);
-    setPreference(voice);
-  }, []);
-
-  return { preference, setVoicePreference };
 }

@@ -121,40 +121,21 @@ export function normalizePracticeResponse(
     fallbackTranscript.trim();
   const naturalPolishedVersion = normalizeHindiText(rawValue.naturalPolishedVersion);
   const elevatedVersion = normalizeHindiText(rawValue.elevatedVersion);
-  const feedback = getTrimmedString(rawValue.feedback);
 
   if (
     !transcript ||
     !naturalPolishedVersion.dev ||
     !naturalPolishedVersion.roman ||
     !elevatedVersion.dev ||
-    !elevatedVersion.roman ||
-    !feedback
+    !elevatedVersion.roman
   ) {
     return null;
-  }
-
-  const originalEleganceScore = clampScore(rawValue.originalEleganceScore);
-  let improvedEleganceScore = clampScore(rawValue.improvedEleganceScore);
-
-  if (improvedEleganceScore < originalEleganceScore) {
-    improvedEleganceScore = originalEleganceScore;
-  }
-
-  if (
-    improvedEleganceScore === originalEleganceScore &&
-    naturalPolishedVersion.roman !== transcript
-  ) {
-    improvedEleganceScore = Math.min(100, originalEleganceScore + 5);
   }
 
   return {
     transcript,
     naturalPolishedVersion,
     elevatedVersion,
-    originalEleganceScore,
-    improvedEleganceScore,
-    feedback,
     replacements: Array.isArray(rawValue.replacements)
       ? rawValue.replacements
           .map(normalizeReplacement)
@@ -251,16 +232,6 @@ export function normalizeTtsResponse(rawValue: unknown): TtsResponse | null {
         mimeType: "audio/mpeg",
       }
     : null;
-}
-
-export function clampScore(value: unknown) {
-  const numericValue = Number(value);
-
-  if (!Number.isFinite(numericValue)) {
-    return 50;
-  }
-
-  return Math.max(0, Math.min(100, Math.round(numericValue)));
 }
 
 function normalizeReplacement(rawValue: unknown): WordReplacement | null {

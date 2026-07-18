@@ -12,7 +12,6 @@ import {
   restoreLearnedWord,
   saveLearnedWord,
   savePracticeHistory,
-  saveVoicePreference,
 } from "@/lib/storage";
 import { seedLearnedWords } from "@/data/demo";
 import type { PracticeResponse } from "@/types";
@@ -94,12 +93,8 @@ describe("storage", () => {
     expect(canUseLocalStorage()).toBe(false);
   });
 
-  it("defaults to a female voice and persists a selected voice", () => {
-    expect(loadPreferences()).toEqual({ script: "both", voice: "female" });
-
-    saveVoicePreference("male");
-
-    expect(loadPreferences()).toEqual({ script: "both", voice: "male" });
+  it("defaults to both scripts", () => {
+    expect(loadPreferences()).toEqual({ script: "both" });
   });
 
   it("initializes learned words from the seed data when the key is missing", () => {
@@ -302,9 +297,6 @@ describe("storage", () => {
       transcript: "  original  ",
       naturalPolishedVersion: { dev: "परिष्कृत", roman: "polished", en: "polished" },
       elevatedVersion: { dev: "उन्नत", roman: "elevated", en: "elevated" },
-      originalEleganceScore: 40,
-      improvedEleganceScore: 65,
-      feedback: "nice",
       replacements: [],
       saveableWords: [],
     };
@@ -323,7 +315,6 @@ describe("storage", () => {
       transcript: "sentence 11",
       naturalPolishedVersion: { dev: "परिष्कृत", roman: "polished", en: "polished" },
       elevatedVersion: { dev: "उन्नत", roman: "elevated", en: "elevated" },
-      improvedEleganceScore: 65,
     });
 
     storage.setItem(STORAGE_KEYS.practiceHistory, JSON.stringify([...history, { id: "bad" }]));

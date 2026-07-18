@@ -49,9 +49,6 @@ export const defaultTransformationExample: PracticeResponse = {
     "Humne is karya ko atishighra sampann karne ka gambhir prayatna kiya.",
     "We made a serious effort to complete this work very quickly.",
   ),
-  originalEleganceScore: 52,
-  improvedEleganceScore: 84,
-  feedback: "Baat wahi rahi, lekin shabd-chayan zyada spasht, vinamra, aur sajeev ho gaya.",
   replacements: defaultReplacements,
   saveableWords: defaultReplacements.map((item) => ({
     word: item.replacement.roman,
@@ -100,9 +97,6 @@ export function getMockPracticeResponse(transcript: string): PracticeResponse {
       elevatedRoman,
       "A more elevated version of the original sentence.",
     ),
-    originalEleganceScore: cleanedTranscript.length < 28 ? 42 : 50,
-    improvedEleganceScore: cleanedTranscript.length < 28 ? 68 : 78,
-    feedback: "Mock practice ne aapke sentence mein polish ke liye upyogi shabd-chayan dikhaya hai.",
     replacements,
     saveableWords: replacements.map((item) => ({
       word: item.replacement.roman,
