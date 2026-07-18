@@ -88,7 +88,16 @@ export async function POST(request: Request) {
   }
 
   try {
-    const completion = await getOpenAIClient().chat.completions.create({
+    const completion = await getOpenAIClient({
+      traceName: "transform-expression",
+      generationName: "generate-transformation",
+      tags: ["satya-vachan", "practice"],
+      generationMetadata: {
+        feature: "practice",
+        responseFormat: "structured-json",
+        language: "hi",
+      },
+    }).chat.completions.create({
       model: TRANSFORM_MODEL,
       messages: [
         { role: "system", content: TRANSFORMATION_SYSTEM_PROMPT },

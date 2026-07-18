@@ -62,7 +62,16 @@ export async function POST(request: Request) {
   }
 
   try {
-    const speech = await getOpenAIClient().audio.speech.create({
+    const speech = await getOpenAIClient({
+      traceName: "synthesize-practice-audio",
+      generationName: "synthesize-hindi-speech",
+      tags: ["satya-vachan", "text-to-speech"],
+      generationMetadata: {
+        feature: "text-to-speech",
+        language: "hi",
+        variant,
+      },
+    }).audio.speech.create({
       model: TTS_MODEL,
       voice: TTS_VOICE,
       input: text,

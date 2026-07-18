@@ -67,7 +67,15 @@ export async function POST(request: Request) {
   }
 
   try {
-    const transcription = await getOpenAIClient().audio.transcriptions.create({
+    const transcription = await getOpenAIClient({
+      traceName: "transcribe-practice-audio",
+      generationName: "transcribe-hindi-audio",
+      tags: ["satya-vachan", "transcription"],
+      generationMetadata: {
+        feature: "transcription",
+        language: "hi",
+      },
+    }).audio.transcriptions.create({
       file: fileResult.value,
       model: TRANSCRIBE_MODEL,
       language: "hi",

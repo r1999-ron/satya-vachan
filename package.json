@@ -11,6 +11,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@langfuse/openai": "^5.9.1",
+    "@langfuse/otel": "^5.9.1",
+    "@opentelemetry/sdk-node": "^0.220.0",
     "clsx": "latest",
     "lucide-react": "latest",
     "next": "latest",

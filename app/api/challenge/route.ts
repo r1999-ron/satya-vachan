@@ -90,7 +90,16 @@ export async function POST(request: Request) {
   }
 
   try {
-    const completion = await getOpenAIClient().chat.completions.create({
+    const completion = await getOpenAIClient({
+      traceName: "validate-challenge",
+      generationName: "evaluate-challenge-answer",
+      tags: ["satya-vachan", "challenge"],
+      generationMetadata: {
+        feature: "challenge",
+        responseFormat: "structured-json",
+        language: "hi",
+      },
+    }).chat.completions.create({
       model: CHALLENGE_MODEL,
       messages: [
         { role: "system", content: CHALLENGE_SYSTEM_PROMPT },
