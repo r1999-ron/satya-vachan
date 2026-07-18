@@ -2,13 +2,12 @@ import { NextResponse } from "next/server";
 import { jsonApiError } from "@/lib/api-errors";
 import { guardAiRequest } from "@/lib/api-guard";
 import { getOpenAIClient, isOpenAIConfigured } from "@/lib/openai";
+import { PROMPTS } from "@/lib/prompts";
 import { validateAudioFile } from "@/lib/validators";
 
 export const runtime = "nodejs";
 
 const TRANSCRIBE_MODEL = "gpt-4o-mini-transcribe";
-const HINDI_TRANSCRIPTION_PROMPT =
-  "Yeh audio Hindi ya Hinglish mein ho sakta hai. Transcript ko natural Hindi, romanized Hindi, ya Devanagari mein wahi rakhein jo speaker ne kaha hai.";
 
 function getDurationMs(formData: FormData) {
   const rawDuration = formData.get("durationMs");
@@ -80,7 +79,7 @@ export async function POST(request: Request) {
       model: TRANSCRIBE_MODEL,
       language: "hi",
       response_format: "json",
-      prompt: HINDI_TRANSCRIPTION_PROMPT,
+      prompt: PROMPTS.transcription.instruction,
     });
     const transcript = transcription.text.trim();
 
