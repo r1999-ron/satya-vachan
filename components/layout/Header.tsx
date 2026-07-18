@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Languages, Sparkles } from "lucide-react";
+import { Languages } from "lucide-react";
 import { ResilienceStatus } from "@/components/ui/ResilienceStatus";
 import { navItems } from "@/lib/nav";
 import { useScriptPreference, useStreak } from "@/lib/storage";
@@ -32,8 +32,11 @@ export function Header() {
           href="/"
           className="group flex min-w-0 items-center gap-2.5 rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-500"
         >
-          <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-amber-500 text-zinc-950 shadow-sm shadow-amber-900/15">
-            <Sparkles size={18} aria-hidden="true" />
+          <span
+            aria-hidden="true"
+            className="grid size-9 shrink-0 place-items-center rounded-xl bg-amber-400 font-sans text-[28px] font-normal leading-none text-zinc-950 shadow-sm shadow-amber-500/15"
+          >
+            {"\u0938"}
           </span>
           <span className="truncate text-base font-bold tracking-tight text-ink dark:text-white">
             Satya-Vachan

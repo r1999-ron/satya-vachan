@@ -7,6 +7,7 @@ export type LegacyWordEntry = Omit<
   | "elevated"
   | "simpleExample"
   | "elevatedExample"
+  | "scholarExample"
   | "synonyms"
   | "starters"
 > & {
@@ -14,6 +15,7 @@ export type LegacyWordEntry = Omit<
   elevated: string;
   simpleExample: string;
   elevatedExample: string;
+  scholarExample?: string;
   synonyms: string[];
   starters?: string[];
 };
@@ -76,6 +78,8 @@ const DEV_OVERRIDES: Record<string, string> = {
   "bolne ka dhang": "बोलने का ढंग", helpful: "हेल्पफुल", upyogi: "उपयोगी",
   upayogi: "उपयोगी", laabhdayak: "लाभदायक", sahayak: "सहायक", "kaam ka": "काम का",
   meaningful: "मीनिंगफुल", sarthak: "सार्थक", arthapurn: "अर्थपूर्ण", moolyavaan: "मूल्यवान",
+  aupacharik: "औपचारिक", shabd: "शब्द", prayog: "प्रयोग", sarvatha: "सर्वथा",
+  evam: "एवं", prateet: "प्रतीत", hota: "होता",
   humne: "हमने", hum: "हम", maine: "मैंने", mera: "मेरा", meri: "मेरी", mere: "मेरे",
   mujhe: "मुझे", humein: "हमें", aap: "आप", aapka: "आपका", aapki: "आपकी", unka: "उनका",
   is: "इस", iska: "इसका", yeh: "यह", ab: "अब", aaj: "आज", kal: "कल", ek: "एक",
@@ -167,6 +171,7 @@ function transliterateToken(token: string) {
 
 export function bilingualWordEntry(entry: LegacyWordEntry): WordEntry {
   const english = EXAMPLE_EN[entry.id] ?? entry.englishMeaning;
+  const scholarExample = entry.scholarExample ?? createScholarExample(entry.elevated);
   const starters = entry.starters ?? [entry.elevatedExample];
   return {
     ...entry,
@@ -174,11 +179,20 @@ export function bilingualWordEntry(entry: LegacyWordEntry): WordEntry {
     elevated: wordText(entry.elevated),
     simpleExample: makeHindiText(toDevanagari(entry.simpleExample), entry.simpleExample, english),
     elevatedExample: makeHindiText(toDevanagari(entry.elevatedExample), entry.elevatedExample, english),
+    scholarExample: makeHindiText(
+      toDevanagari(scholarExample),
+      scholarExample,
+      `In a formal setting, the use of “${entry.elevated}” is especially appropriate and meaningful.`,
+    ),
     synonyms: entry.synonyms.map(wordText),
     starters: starters.map((starter) =>
       makeHindiText(toDevanagari(starter), starter),
     ),
   };
+}
+
+function createScholarExample(elevatedWord: string) {
+  return `Aupacharik samvaad mein ${elevatedWord} shabd ka prayog sarvatha uchit evam sarthak prateet hota hai.`;
 }
 
 function wordText(roman: string): HindiText {

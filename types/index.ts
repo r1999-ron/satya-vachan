@@ -15,6 +15,7 @@ export type WordEntry = {
   englishMeaning: string;
   simpleExample: HindiText;
   elevatedExample: HindiText;
+  scholarExample: HindiText;
   synonyms: HindiText[];
   usageNote: string;
   challengePrompt: string;
