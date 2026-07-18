@@ -24,6 +24,7 @@ import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { LoadingMeter } from "@/components/ui/LoadingMeter";
 import { getDemoHints, defaultTransformationExample } from "@/data/demo";
+import { SPEAK_BETTER_HINDI_TAGLINES } from "@/data/taglines";
 import { getWordOfTheDay, wordCorpus } from "@/data/words";
 import { useTranscription } from "@/hooks/useTranscription";
 import { requestJson } from "@/lib/api-client";
@@ -139,7 +140,7 @@ export default function PracticePage() {
 }
 
 function PracticeContent() {
-  const hints = getDemoHints(3);
+  const hints = getDemoHints(2);
   const searchParams = useSearchParams();
   const wordParam = searchParams.get("word")?.trim() ?? "";
   const challengeMode = searchParams.get("challenge") === "today";
@@ -152,6 +153,43 @@ function PracticeContent() {
   const { completedToday, completeToday } = useStreak();
   const [state, dispatch] = useReducer(practiceReducer, initialPracticeState);
   const [recorderResetKey, setRecorderResetKey] = useState(0);
+  const [taglineIndex, setTaglineIndex] = useState(0);
+  const [typedTagline, setTypedTagline] = useState({
+    tagline: "",
+    text: "",
+  });
+
+  const currentTagline = SPEAK_BETTER_HINDI_TAGLINES[taglineIndex];
+
+  useEffect(() => {
+    let characterIndex = 0;
+    const characters = Array.from(currentTagline);
+
+    const typewriter = window.setInterval(() => {
+      characterIndex += 1;
+      setTypedTagline({
+        tagline: currentTagline,
+        text: characters.slice(0, characterIndex).join(""),
+      });
+
+      if (characterIndex >= characters.length) {
+        window.clearInterval(typewriter);
+      }
+    }, 55);
+
+    return () => window.clearInterval(typewriter);
+  }, [currentTagline]);
+
+  useEffect(() => {
+    const shuffleTagline = window.setInterval(() => {
+      setTaglineIndex((currentIndex) => {
+        const offset = Math.floor(Math.random() * (SPEAK_BETTER_HINDI_TAGLINES.length - 1)) + 1;
+        return (currentIndex + offset) % SPEAK_BETTER_HINDI_TAGLINES.length;
+      });
+    }, 5_000);
+
+    return () => window.clearInterval(shuffleTagline);
+  }, []);
 
   const practiceContext = useMemo<WordEntry | string | null>(() => {
     if (!wordParam) {
@@ -393,11 +431,18 @@ function PracticeContent() {
       <GlassCard className="animate-floatIn p-5 sm:p-8">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-sm font-bold text-amber-800 dark:text-amber-200">
-              {challengeMode ? "Daily challenge" : "Practice"}
-            </p>
-            <h1 lang="hi" className="mt-2 text-balance font-hindi text-3xl font-bold leading-[1.35] tracking-[-0.035em] text-ink sm:text-5xl dark:text-white">
-              अपनी बात को निखारें।
+            {challengeMode ? (
+              <p className="text-sm font-bold text-amber-800 dark:text-amber-200">
+                Daily challenge
+              </p>
+            ) : null}
+            <h1
+              lang="hi"
+              aria-label={currentTagline}
+              className="mt-2 rounded-2xl border border-amber-200/55 bg-gradient-to-r from-amber-100/70 via-orange-50/70 to-rose-100/60 px-4 py-3 text-balance font-hindi text-3xl font-bold leading-[1.35] tracking-[-0.035em] text-ink shadow-sm shadow-amber-900/5 sm:px-5 sm:text-5xl dark:border-amber-200/10 dark:from-amber-300/10 dark:via-orange-300/8 dark:to-rose-300/10 dark:text-white"
+            >
+              {typedTagline.tagline === currentTagline ? typedTagline.text : ""}
+              <span aria-hidden="true" className="ml-0.5 inline-block h-[0.95em] w-0.5 animate-pulse bg-amber-700 align-[-0.08em] dark:bg-amber-200" />
             </h1>
           </div>
           {state.status !== "idle" || state.transcript.trim() ? (
@@ -462,22 +507,18 @@ function PracticeContent() {
         ) : null}
 
         <label className="mt-6 block">
-          <span className="text-sm font-bold text-ink dark:text-white">Your sentence</span>
           <textarea
             value={state.transcript}
             disabled={isBusy}
             onChange={(event) => handleTranscriptChange(event.target.value)}
-            placeholder="Type your Hindi sentence here..."
-            className="mt-2 min-h-32 w-full resize-y rounded-xl border border-zinc-900/10 bg-white/58 p-4 text-sm font-normal leading-7 text-ink outline-none transition placeholder:text-zinc-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 disabled:cursor-not-allowed disabled:opacity-70 dark:border-white/12 dark:bg-white/8 dark:text-white dark:placeholder:text-zinc-500"
+            placeholder="Type any sentence..."
+            className="min-h-32 w-full resize-y rounded-xl border border-zinc-900/10 bg-white/58 p-4 text-sm font-normal leading-7 text-ink outline-none transition placeholder:text-zinc-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 disabled:cursor-not-allowed disabled:opacity-70 dark:border-white/12 dark:bg-white/8 dark:text-white dark:placeholder:text-zinc-500"
           />
         </label>
 
         {!challengeMode ? (
           <div className="mt-4">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-                Try one of these
-              </p>
+            <div className="flex items-center">
               <button
                 type="button"
                 onClick={handleTryDemo}
@@ -530,11 +571,9 @@ function PracticeContent() {
           <WandSparkles size={18} aria-hidden="true" />
           {isValidating
             ? "Checking..."
-            : isTransforming
-              ? "Polishing..."
-              : challengeMode
+            : challengeMode
                 ? "Check challenge"
-                : "Polish sentence"}
+                : "Enhance"}
         </button>
       </GlassCard>
 
@@ -824,7 +863,7 @@ function RecentPracticeHistory({
       <div className="flex items-center justify-between gap-3">
         <h2 className="flex items-center gap-2 text-lg font-bold text-ink dark:text-white">
           <Clock3 className="text-amber-700 dark:text-amber-200" size={18} aria-hidden="true" />
-          Recent practice
+          Recently used
         </h2>
         <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
           {history.length} saved

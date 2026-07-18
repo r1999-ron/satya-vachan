@@ -8,6 +8,7 @@ import type {
   PracticeResponse,
   ScriptPreference,
   StreakState,
+  VoicePreference,
 } from "@/types";
 
 export const STORAGE_KEYS = {
@@ -38,7 +39,10 @@ const PREFERENCES_EVENT = "satya-vachan:preferences";
 
 type Preferences = {
   script: ScriptPreference;
+  voice: VoicePreference;
 };
+
+const DEFAULT_VOICE_PREFERENCE: VoicePreference = "female";
 
 export function canUseLocalStorage() {
   if (typeof window === "undefined") {
@@ -529,18 +533,35 @@ function isScriptPreference(value: unknown): value is ScriptPreference {
   return value === "dev" || value === "roman" || value === "both";
 }
 
+function isVoicePreference(value: unknown): value is VoicePreference {
+  return value === "female" || value === "male";
+}
+
 export function loadPreferences(): Preferences {
   const stored = readJson<unknown>(STORAGE_KEYS.preferences, {});
   const script =
     isRecord(stored) && isScriptPreference(stored.script)
       ? stored.script
       : DEFAULT_SCRIPT_PREFERENCE;
+  const voice =
+    isRecord(stored) && isVoicePreference(stored.voice)
+      ? stored.voice
+      : DEFAULT_VOICE_PREFERENCE;
 
-  return { script };
+  return { script, voice };
 }
 
 export function saveScriptPreference(script: ScriptPreference) {
   const preferences = { ...loadPreferences(), script };
+  writeJson(STORAGE_KEYS.preferences, preferences);
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent(PREFERENCES_EVENT, { detail: preferences }));
+  }
+  return preferences;
+}
+
+export function saveVoicePreference(voice: VoicePreference) {
+  const preferences = { ...loadPreferences(), voice };
   writeJson(STORAGE_KEYS.preferences, preferences);
   if (typeof window !== "undefined") {
     window.dispatchEvent(new CustomEvent(PREFERENCES_EVENT, { detail: preferences }));
@@ -568,4 +589,28 @@ export function useScriptPreference() {
   }, []);
 
   return { preference, setScriptPreference };
+}
+
+export function useVoicePreference() {
+  const [preference, setPreference] = useState<VoicePreference>(
+    DEFAULT_VOICE_PREFERENCE,
+  );
+
+  useEffect(() => {
+    const syncPreference = () => setPreference(loadPreferences().voice);
+    syncPreference();
+    window.addEventListener("storage", syncPreference);
+    window.addEventListener(PREFERENCES_EVENT, syncPreference);
+    return () => {
+      window.removeEventListener("storage", syncPreference);
+      window.removeEventListener(PREFERENCES_EVENT, syncPreference);
+    };
+  }, []);
+
+  const setVoicePreference = useCallback((voice: VoicePreference) => {
+    saveVoicePreference(voice);
+    setPreference(voice);
+  }, []);
+
+  return { preference, setVoicePreference };
 }

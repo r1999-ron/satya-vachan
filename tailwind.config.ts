@@ -31,7 +31,6 @@ const config: Config = {
         hindi: ["var(--font-martel)", "var(--font-noto-sans)", "system-ui", "sans-serif"],
         sans: ["var(--font-noto-sans)", "system-ui", "sans-serif"],
         mono: [
-          "var(--font-noto-sans-mono)",
           "ui-monospace",
           "SFMono-Regular",
           "Consolas",

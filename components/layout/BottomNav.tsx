@@ -10,7 +10,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-40 rounded-2xl border border-zinc-900/8 bg-white/90 p-1.5 shadow-[0_12px_34px_rgba(24,20,16,0.14)] backdrop-blur-2xl md:hidden dark:border-white/12 dark:bg-zinc-950/90"
+      className="fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-40 rounded-2xl border border-zinc-900/8 bg-white/95 p-1.5 shadow-[0_12px_34px_rgba(24,20,16,0.14)] md:hidden dark:border-white/12 dark:bg-zinc-950/95"
       aria-label="Primary navigation"
     >
       <div className="grid grid-cols-3 gap-1">
@@ -22,6 +22,7 @@ export function BottomNav() {
             <Link
               key={href}
               href={href}
+              prefetch={false}
               aria-current={active ? "page" : undefined}
               className={cn(
                 "flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-xl px-1 text-[11px] font-semibold transition",

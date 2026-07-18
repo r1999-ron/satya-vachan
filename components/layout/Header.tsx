@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Languages } from "lucide-react";
@@ -30,14 +31,18 @@ export function Header() {
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:gap-5 sm:px-6">
         <Link
           href="/"
+          prefetch={false}
           className="group flex min-w-0 items-center gap-2.5 rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-500"
         >
-          <span
+          <Image
+            src="/logo.svg"
+            alt=""
             aria-hidden="true"
-            className="grid size-9 shrink-0 place-items-center rounded-xl bg-amber-400 font-sans text-[28px] font-normal leading-none text-zinc-950 shadow-sm shadow-amber-500/15"
-          >
-            {"\u0938"}
-          </span>
+            width={36}
+            height={36}
+            priority
+            className="size-9 shrink-0"
+          />
           <span className="truncate text-base font-bold tracking-tight text-ink dark:text-white">
             Satya-Vachan
           </span>
@@ -51,6 +56,7 @@ export function Header() {
               <Link
                 key={href}
                 href={href}
+                prefetch={false}
                 className={cn(
                   "inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-semibold transition",
                   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500",
@@ -138,6 +144,7 @@ function ScriptPreferenceControl({
           aria-pressed={preference === option.value}
           className={cn(
             "rounded-lg px-2.5 py-1.5 text-[11px] font-bold transition",
+            option.value === "dev" && "font-hindi",
             preference === option.value
               ? "bg-white text-zinc-950 shadow-sm dark:bg-zinc-800 dark:text-white"
               : "text-zinc-500 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white",
@@ -216,6 +223,7 @@ function MobileScriptPreferenceControl({
               }}
               className={cn(
                 "flex w-full rounded-xl px-3 py-2 text-left text-xs font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/55",
+                option.value === "dev" && "font-hindi",
                 preference === option.value
                   ? "bg-amber-100 text-amber-950 dark:bg-amber-300/15 dark:text-amber-100"
                   : "text-zinc-600 hover:bg-zinc-900/5 dark:text-zinc-300 dark:hover:bg-white/8",
