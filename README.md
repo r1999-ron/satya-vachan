@@ -26,7 +26,7 @@ Satya-Vachan is an AI-powered Hindi expression coach for fluent Hindi speakers w
 
    ```text
    OPENAI_TRANSCRIBE_MODEL=gpt-4o-mini-transcribe
-   OPENAI_TRANSCRIPT_FORMAT_MODEL=gpt-4.1-nano
+   OPENAI_TRANSCRIPT_FORMAT_MODEL=gpt-5.4-nano-2026-03-17
    OPENAI_TRANSFORM_MODEL=gpt-4o-mini
    OPENAI_CHALLENGE_MODEL=gpt-4o-mini
    OPENAI_TTS_MODEL=gpt-4o-mini-tts

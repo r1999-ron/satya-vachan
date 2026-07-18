@@ -8,12 +8,14 @@ describe("OPENAI_MODELS", () => {
     vi.resetModules();
   });
 
-  it("uses gpt-4.1-nano for transcript formatting by default", async () => {
+  it("uses gpt-5.4-nano for transcript formatting by default", async () => {
     vi.stubEnv("OPENAI_TRANSCRIPT_FORMAT_MODEL", "");
 
     const { OPENAI_MODELS } = await import("@/lib/openai-models");
 
-    expect(OPENAI_MODELS.transcriptFormatting).toBe("gpt-4.1-nano");
+    expect(OPENAI_MODELS.transcriptFormatting).toBe(
+      "gpt-5.4-nano-2026-03-17",
+    );
   });
 
   it("allows every OpenAI model to be configured independently", async () => {

@@ -141,6 +141,8 @@ export async function POST(request: Request) {
         },
       ],
       response_format: transcriptFormattingResponseFormat,
+      reasoning_effort: "low",
+      verbosity: "low",
       temperature: 0,
       max_completion_tokens: TRANSCRIPT_FORMAT_MAX_TOKENS,
     });
