@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { Languages, Sparkles } from "lucide-react";
 import { ResilienceStatus } from "@/components/ui/ResilienceStatus";
 import { navItems } from "@/lib/nav";
-import { useScriptPreference } from "@/lib/storage";
+import { useScriptPreference, useStreak } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 import type { ScriptPreference } from "@/types";
 
@@ -23,6 +23,7 @@ const scriptOptions: {
 export function Header() {
   const pathname = usePathname();
   const { preference, setScriptPreference } = useScriptPreference();
+  const { streak } = useStreak();
 
   return (
     <header className="sticky top-0 z-30 border-b border-zinc-900/5 bg-[#fbf8f2]/88 backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/80">
@@ -63,6 +64,7 @@ export function Header() {
         </nav>
 
         <div className="flex shrink-0 items-center gap-3">
+          <StreakChip count={streak.currentStreak} />
           <div className="hidden sm:block">
             <ScriptPreferenceControl
               preference={preference}
@@ -77,6 +79,37 @@ export function Header() {
         </div>
       </div>
     </header>
+  );
+}
+
+function StreakChip({ count }: { count: number }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dayLabel = count === 1 ? "day" : "days";
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        aria-expanded={isOpen}
+        aria-label={`View ${count} ${dayLabel} streak`}
+        onClick={() => setIsOpen((open) => !open)}
+        className="inline-flex min-h-9 items-center gap-1 rounded-full bg-amber-100 px-3 text-sm font-bold text-amber-900 transition hover:bg-amber-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/55 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f8f5ef] dark:bg-amber-300/12 dark:text-amber-100 dark:hover:bg-amber-300/20 dark:focus-visible:ring-offset-zinc-950"
+      >
+        <span aria-hidden="true">🔥</span>
+        {count}
+      </button>
+
+      {isOpen && (
+        <div className="absolute right-0 top-full z-50 mt-2 w-40 rounded-xl border border-amber-200 bg-[#fdfbf7] p-3 text-right shadow-lg shadow-zinc-900/10 dark:border-amber-300/20 dark:bg-zinc-900 dark:shadow-black/20">
+          <p className="text-xs font-bold uppercase tracking-[0.12em] text-amber-800 dark:text-amber-200">
+            Current streak
+          </p>
+          <p className="mt-1 text-sm font-semibold text-zinc-700 dark:text-zinc-200">
+            {count} {dayLabel}
+          </p>
+        </div>
+      )}
+    </div>
   );
 }
 

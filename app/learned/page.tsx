@@ -16,6 +16,7 @@ import {
 import { HindiText } from "@/components/hindi/HindiText";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { wordCorpus } from "@/data/words";
+import { UI_FEEDBACK_DURATION_MS } from "@/lib/constants";
 import { useLearnedWords } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 import type { LearnedWord, WordEntry } from "@/types";
@@ -24,7 +25,6 @@ type SourceFilter = "all" | LearnedWord["source"];
 type DifficultyFilter = "all" | WordEntry["difficulty"] | "uncategorized";
 type RemovedWord = { word: LearnedWord; index: number };
 
-const UNDO_DISMISS_MS = 5_000;
 const ADVANCED_FILTER_THRESHOLD = 10;
 
 const sourceLabels: Record<SourceFilter, string> = {
@@ -123,7 +123,7 @@ export default function LearnedPage() {
       setRemovedWord((current) =>
         current?.word.id === removedId ? null : current,
       );
-    }, UNDO_DISMISS_MS);
+    }, UI_FEEDBACK_DURATION_MS.undoRemoval);
     return () => window.clearTimeout(timeout);
   }, [removedWord]);
 
@@ -162,7 +162,7 @@ export default function LearnedPage() {
             Vocabulary
           </p>
           <h1 className="mt-1 text-balance text-4xl font-bold tracking-[-0.035em] text-ink sm:text-5xl dark:text-white">
-            My Words
+            Saved Words
           </h1>
         </div>
         <p className="pb-1 text-sm font-medium text-zinc-500 dark:text-zinc-400">
