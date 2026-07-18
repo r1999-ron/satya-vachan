@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { HindiText } from "@/components/hindi/HindiText";
@@ -7,6 +5,8 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { getWordOfTheDay } from "@/data/words";
 import { cn } from "@/lib/utils";
 import type { HindiText as HindiTextValue } from "@/types";
+
+export const revalidate = 3600;
 
 export default function HomePage() {
   const todayWord = getWordOfTheDay();
@@ -51,6 +51,7 @@ export default function HomePage() {
 
         <Link
           href="/practice?challenge=today"
+          prefetch={false}
           className="mt-5 inline-flex min-h-10 items-center rounded-lg bg-ink px-4 text-sm font-bold text-white shadow-md shadow-zinc-900/15 transition hover:-translate-y-0.5 hover:bg-zinc-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f8f5ef] active:translate-y-0 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-white/40 dark:focus-visible:ring-offset-zinc-950"
         >
           Use it in a sentence

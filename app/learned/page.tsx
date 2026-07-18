@@ -255,10 +255,9 @@ export default function LearnedPage() {
 
       {filteredWords.length > 0 ? (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredWords.map((word, index) => (
+          {filteredWords.map((word) => (
             <LearnedWordCard
               key={word.id}
-              index={index}
               word={word}
               onRemove={() => handleRemove(word)}
             />
@@ -295,11 +294,9 @@ export default function LearnedPage() {
 }
 
 function LearnedWordCard({
-  index,
   onRemove,
   word,
 }: {
-  index: number;
   onRemove: () => void;
   word: LearnedWord;
 }) {
@@ -312,8 +309,7 @@ function LearnedWordCard({
   return (
     <GlassCard
       interactive
-      className="flex min-h-0 flex-col p-4"
-      style={{ animationDelay: `${Math.min(index, 8) * 45}ms` }}
+      className="flex min-h-0 flex-col p-4 [contain-intrinsic-size:240px] [content-visibility:auto]"
     >
       <div className="flex flex-wrap items-center gap-2">
         <h2 className="min-w-0">
@@ -347,6 +343,7 @@ function LearnedWordCard({
         <div className="flex shrink-0 items-center gap-1.5">
           <Link
             href={`/practice?word=${encodeURIComponent(word.word)}`}
+            prefetch={false}
             className="grid size-9 place-items-center rounded-xl text-amber-800 transition hover:bg-amber-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/55 dark:text-amber-200 dark:hover:bg-amber-300/10"
             aria-label={`Practice ${word.word}`}
           >
@@ -451,6 +448,7 @@ function EmptyDictionaryState({
           ) : (
             <Link
               href="/practice"
+              prefetch={false}
               className="mt-4 inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-ink px-4 py-2 text-xs font-bold text-white transition hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/35 dark:bg-white dark:text-zinc-950"
             >
               Start practicing
