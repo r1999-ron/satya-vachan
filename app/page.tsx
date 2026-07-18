@@ -1,214 +1,107 @@
 "use client";
 
 import Link from "next/link";
-import {
-  ArrowRight,
-  BookOpen,
-  Check,
-  ChevronDown,
-  Flame,
-  Mic2,
-  Sparkles,
-} from "lucide-react";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { ArrowRight, Check, ChevronDown, Flame } from "lucide-react";
 import { HindiText } from "@/components/hindi/HindiText";
-import { StatusBadge } from "@/components/ui/StatusBadge";
+import { GlassCard } from "@/components/ui/GlassCard";
 import { getWordOfTheDay } from "@/data/words";
 import { formatReadableDate } from "@/lib/dates";
 import { useLearnedWords, useStreak } from "@/lib/storage";
+import { cn } from "@/lib/utils";
+import type { HindiText as HindiTextValue } from "@/types";
 
 export default function HomePage() {
   const todayWord = getWordOfTheDay();
   const { words } = useLearnedWords();
   const { completedToday, streak } = useStreak();
-  const savedWordCount = words.length;
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <section className="grid gap-4 md:grid-cols-[minmax(0,1.15fr)_minmax(16rem,0.85fr)] lg:grid-cols-[1.25fr_0.75fr]">
-        <GlassCard className="relative overflow-hidden bg-zinc-950 p-5 text-white compact:p-4 sm:p-8 lg:p-10 dark:bg-white dark:text-zinc-950">
-          <div className="pointer-events-none absolute -right-16 -top-24 size-64 rounded-full bg-amber-400/25 blur-3xl" />
-          <div className="relative max-w-2xl">
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-sm font-semibold text-amber-300 dark:text-amber-700">
-                {formatReadableDate()}
-              </p>
-              <div className="flex items-center gap-2">
-                <span className="hidden text-xs font-bold text-zinc-300 compact:inline dark:text-zinc-700">
-                  {streak.currentStreak} streak / {savedWordCount} saved
-                </span>
-                {completedToday ? (
-                  <span className="grid size-9 place-items-center rounded-full bg-emerald-300/16 text-emerald-100 dark:bg-emerald-100 dark:text-emerald-700">
-                    <Check size={18} aria-label="Challenge complete" />
-                  </span>
-                ) : null}
-              </div>
-            </div>
-            <h1 lang="hi" className="mt-4 text-balance font-hindi text-[2.35rem] font-bold leading-[1.2] compact:mt-3 compact:text-[2rem] sm:mt-7 sm:text-5xl lg:text-6xl">
-              अपनी हिंदी को निखारें।
-            </h1>
-            <div className="mt-5 grid grid-cols-2 gap-2.5 compact:mt-4 sm:mt-8 sm:flex sm:flex-row sm:gap-3">
-              <Link
-                href="/practice"
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-amber-400 px-3 py-2 text-[13px] font-bold text-zinc-950 transition hover:-translate-y-0.5 hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2 focus:ring-offset-zinc-950 active:translate-y-0 sm:min-h-12 sm:px-5 sm:py-3 sm:text-sm"
-              >
-                <Mic2 size={18} aria-hidden="true" />
-                <span className="sm:hidden">Practice</span>
-                <span className="hidden sm:inline">Start practicing</span>
-                <ArrowRight className="hidden sm:block" size={17} aria-hidden="true" />
-              </Link>
-              <Link
-                href="/challenge"
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-white/16 bg-white/10 px-3 py-2 text-[13px] font-bold text-white transition hover:bg-white/16 focus:outline-none focus:ring-2 focus:ring-white/35 sm:min-h-12 sm:px-5 sm:py-3 sm:text-sm dark:border-zinc-900/15 dark:bg-zinc-900/5 dark:text-zinc-950"
-              >
-                <Sparkles className="sm:hidden" size={16} aria-hidden="true" />
-                <span className="sm:hidden">Challenge</span>
-                <span className="hidden sm:inline">Today&apos;s challenge</span>
-              </Link>
-            </div>
-            <dl className="mt-4 grid grid-cols-2 gap-2 compact:hidden md:hidden">
-              <MobileMetric
-                icon={<Flame size={17} aria-hidden="true" />}
-                label="Streak"
-                value={streak.currentStreak}
-              />
-              <MobileMetric
-                icon={<BookOpen size={17} aria-hidden="true" />}
-                label="Saved"
-                value={savedWordCount}
-              />
-            </dl>
-          </div>
-        </GlassCard>
-
-        <GlassCard className="hidden flex-col justify-between p-7 sm:p-8 md:flex">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-bold text-zinc-500 dark:text-zinc-400">
-              Your progress
-            </p>
-            {completedToday ? (
-              <span className="grid size-9 place-items-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-300/15 dark:text-emerald-200">
-                <Check size={18} aria-label="Challenge complete" />
-              </span>
-            ) : null}
-          </div>
-          <div className="my-8 grid grid-cols-2 divide-x divide-zinc-900/10 dark:divide-white/10">
-            <Metric
-              icon={<Flame size={19} aria-hidden="true" />}
-              label="day streak"
-              value={streak.currentStreak}
-            />
-            <Metric
-              icon={<BookOpen size={19} aria-hidden="true" />}
-              label="saved words"
-              value={savedWordCount}
-            />
-          </div>
-          <Link
-            href="/learned"
-            className="inline-flex items-center justify-between rounded-2xl bg-zinc-900/[0.045] px-4 py-3 text-sm font-bold text-zinc-700 transition hover:bg-zinc-900/[0.08] hover:text-zinc-950 focus:outline-none focus:ring-2 focus:ring-amber-400/50 dark:bg-white/8 dark:text-zinc-200 dark:hover:bg-white/12 dark:hover:text-white"
-          >
-            My Words
-            <ArrowRight size={16} aria-hidden="true" />
-          </Link>
-        </GlassCard>
+    <div className="mx-auto max-w-4xl space-y-4 sm:space-y-5">
+      <section className="flex items-start justify-between gap-3 px-1 py-1">
+        <div className="min-w-0">
+          <p className="text-sm font-bold text-amber-800 dark:text-amber-200">
+            {formatReadableDate()}
+          </p>
+          <p className="mt-1 text-xs font-normal text-zinc-500 sm:text-sm dark:text-zinc-400">
+            Thoughtful Hindi, one sentence at a time · {words.length} saved {words.length === 1 ? "word" : "words"}
+          </p>
+        </div>
+        <StreakChip completedToday={completedToday} count={streak.currentStreak} />
       </section>
 
-      <GlassCard interactive className="p-5 compact:p-4 sm:p-8">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <p className="text-sm font-bold text-amber-700 dark:text-amber-300">
-              Today&apos;s word
-            </p>
-            <p className="mt-1 text-xs font-semibold capitalize text-zinc-500 dark:text-zinc-400">
-              {todayWord.difficulty}
-            </p>
+      <GlassCard className="overflow-hidden p-5 sm:p-7 lg:p-8">
+        <p className="text-xs font-bold uppercase tracking-[0.14em] text-amber-800 dark:text-amber-200">
+          Today&apos;s word
+        </p>
+
+        <div className="mt-4 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-stretch gap-2 sm:mt-6 sm:gap-4">
+          <Word value={todayWord.common} />
+          <div className="flex items-center justify-center">
+            <ArrowRight className="text-amber-600" size={20} aria-hidden="true" />
           </div>
-          <StatusBadge tone={completedToday ? "green" : "gold"}>
-            {completedToday ? "Completed" : "Ready"}
-          </StatusBadge>
+          <Word value={todayWord.elevated} featured />
         </div>
 
-        <div className="mt-5 grid gap-5 compact:mt-3 compact:gap-3 sm:mt-7 lg:grid-cols-[1.1fr_0.9fr] lg:gap-10">
-          <div>
-            <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-stretch gap-2 sm:gap-3">
-              <Word value={todayWord.common} />
-              <div className="flex items-center justify-center">
-                <ArrowRight className="text-amber-500" size={20} aria-hidden="true" />
-              </div>
-              <Word value={todayWord.elevated} featured />
-            </div>
-            <p className="mt-3 text-sm font-normal text-zinc-600 compact:text-xs sm:mt-5 dark:text-zinc-300">
-              {todayWord.englishMeaning}
-            </p>
-          </div>
-
-          <div className="hidden space-y-4 border-zinc-900/8 lg:block lg:border-l lg:pl-10 dark:border-white/10">
-            <Example label="Everyday" value={todayWord.simpleExample} />
-            <Example label="Refined" value={todayWord.elevatedExample} featured />
-          </div>
-        </div>
-
-        <div className="mt-5 grid gap-4 border-t border-zinc-900/8 pt-5 sm:mt-7 sm:grid-cols-2 dark:border-white/10">
-          <WordDetails label="Synonyms">
-            <div className="flex flex-wrap gap-2">
-              {todayWord.synonyms.map((synonym) => (
-                <span
-                  key={synonym.roman}
-                  className="rounded-full bg-amber-100 px-3 py-1.5 text-xs font-bold text-amber-950 ring-1 ring-amber-200 dark:bg-amber-300/10 dark:text-amber-100 dark:ring-amber-300/20"
-                >
-                  <HindiText text={synonym} kind="inline" />
-                </span>
-              ))}
-            </div>
-          </WordDetails>
-          <WordDetails label="Usage note">
-            <p className="text-sm font-semibold leading-6 text-zinc-700 dark:text-zinc-300">
-              {todayWord.usageNote}
-            </p>
-          </WordDetails>
-          <WordDetails label="Tags" className="sm:col-span-2">
-            <div className="flex flex-wrap gap-2">
-              {todayWord.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full bg-zinc-900/[0.045] px-3 py-1 text-xs font-bold text-zinc-600 dark:bg-white/8 dark:text-zinc-300"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </WordDetails>
-        </div>
-
-        <div className="mt-5 grid items-center gap-4 rounded-2xl border border-zinc-900/8 bg-zinc-900/[0.025] p-4 compact:mt-3 compact:p-3 sm:mt-7 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-5 sm:p-5 dark:border-white/10 dark:bg-white/[0.035]">
-          <p className="max-w-3xl text-sm font-semibold leading-6 text-zinc-600 sm:text-[15px] dark:text-zinc-300">
-            {todayWord.challengePrompt}
-          </p>
-          <Link
-            href="/challenge"
-            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-zinc-900/30 focus:ring-offset-2 active:translate-y-0 sm:w-auto sm:min-w-[11rem] sm:rounded-2xl sm:px-5 dark:bg-white dark:text-zinc-950"
-          >
-            <span className="sm:hidden">Use word</span>
-            <span className="hidden sm:inline">Use this word</span>
-            <Sparkles size={16} aria-hidden="true" />
-          </Link>
-        </div>
+        <p className="mt-4 text-sm font-normal leading-6 text-zinc-600 sm:mt-5 sm:text-base dark:text-zinc-300">
+          {todayWord.englishMeaning}
+        </p>
       </GlassCard>
 
-      <GlassCard className="p-4 lg:hidden">
+      <Link
+        href="/practice?challenge=today"
+        className={cn(
+          "inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-center text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/55 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f8f5ef] active:translate-y-0 dark:focus-visible:ring-offset-zinc-950",
+          completedToday
+            ? "border border-zinc-900/10 bg-white/65 text-zinc-700 hover:bg-white dark:border-white/12 dark:bg-white/8 dark:text-zinc-200 dark:hover:bg-white/12"
+            : "bg-zinc-950 text-white shadow-lg shadow-zinc-900/15 hover:-translate-y-0.5 hover:bg-zinc-800 dark:bg-amber-300 dark:text-zinc-950 dark:hover:bg-amber-200",
+        )}
+      >
+        {completedToday ? (
+          <Check size={18} aria-hidden="true" />
+        ) : (
+          <Flame className="text-amber-400" size={18} aria-hidden="true" />
+        )}
+        <span>
+          {completedToday
+            ? "Completed today ✓ — practice again"
+            : "आज की चुनौती — use it in a sentence →"}
+        </span>
+      </Link>
+
+      <GlassCard className="p-4 sm:p-5">
         <details className="group">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-bold text-zinc-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50 dark:text-zinc-200 [&::-webkit-details-marker]:hidden">
-            Examples
+          <summary className="flex min-h-8 cursor-pointer list-none items-center justify-between gap-3 rounded-xl text-sm font-bold text-zinc-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/55 dark:text-zinc-200 [&::-webkit-details-marker]:hidden">
+            Details
             <ChevronDown
               className="shrink-0 text-zinc-500 transition group-open:rotate-180 dark:text-zinc-400"
               size={18}
               aria-hidden="true"
             />
           </summary>
-          <div className="mt-4 space-y-4">
-            <Example label="Everyday" value={todayWord.simpleExample} />
-            <Example label="Refined" value={todayWord.elevatedExample} featured />
+          <div className="mt-5 grid gap-5 border-t border-zinc-900/8 pt-5 sm:grid-cols-2 dark:border-white/10">
+            <Detail label="Everyday example">
+              <HindiText text={todayWord.simpleExample} />
+            </Detail>
+            <Detail label="Refined example" featured>
+              <HindiText text={todayWord.elevatedExample} />
+            </Detail>
+            <Detail label="Synonyms">
+              <div className="flex flex-wrap gap-2">
+                {todayWord.synonyms.map((synonym) => (
+                  <span
+                    key={synonym.roman}
+                    className="rounded-full bg-amber-100 px-3 py-1.5 text-xs font-semibold text-amber-950 dark:bg-amber-300/10 dark:text-amber-100"
+                  >
+                    <HindiText text={synonym} kind="inline" />
+                  </span>
+                ))}
+              </div>
+            </Detail>
+            <Detail label="Usage note">
+              <p className="text-sm font-normal leading-6 text-zinc-700 dark:text-zinc-300">
+                {todayWord.usageNote}
+              </p>
+            </Detail>
           </div>
         </details>
       </GlassCard>
@@ -216,99 +109,82 @@ export default function HomePage() {
   );
 }
 
-function MobileMetric({
-  icon,
-  label,
-  value,
+function StreakChip({
+  completedToday,
+  count,
 }: {
-  icon: React.ReactNode;
-  label: string;
-  value: number;
+  completedToday: boolean;
+  count: number;
 }) {
+  const label = completedToday
+    ? `Done today · ${count} day streak`
+    : count === 0
+      ? "Start your streak today"
+      : `${count} day streak`;
+
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/10 px-3 py-2.5 backdrop-blur-md dark:border-zinc-900/10 dark:bg-zinc-900/[0.04]">
-      <dt className="flex items-center gap-1.5 text-[11px] font-bold uppercase text-amber-200 dark:text-amber-700">
-        {icon}
-        {label}
-      </dt>
-      <dd className="mt-1 text-2xl font-bold text-white dark:text-zinc-950">
-        {value}
-      </dd>
-    </div>
+    <span
+      className={cn(
+        "inline-flex min-h-9 max-w-[11rem] shrink-0 items-center gap-1.5 rounded-full px-3 text-[11px] font-bold leading-4 sm:max-w-none sm:text-xs",
+        completedToday
+          ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-300/15 dark:text-emerald-100"
+          : "bg-amber-100 text-amber-900 dark:bg-amber-300/12 dark:text-amber-100",
+      )}
+    >
+      {completedToday ? (
+        <Check className="shrink-0" size={14} aria-hidden="true" />
+      ) : (
+        <Flame className="shrink-0" size={14} aria-hidden="true" />
+      )}
+      {label}
+    </span>
   );
 }
 
-function Metric({
-  icon,
-  label,
+function Word({
+  featured = false,
   value,
 }: {
-  icon: React.ReactNode;
-  label: string;
-  value: number;
+  featured?: boolean;
+  value: HindiTextValue;
 }) {
-  return (
-    <div className="px-4 first:pl-0 last:pr-0">
-      <div className="flex items-center gap-2 text-amber-600">{icon}</div>
-      <p className="mt-3 text-4xl font-bold text-ink dark:text-white">
-        {value}
-      </p>
-      <p className="mt-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400">
-        {label}
-      </p>
-    </div>
-  );
-}
-
-function Word({ value, featured = false }: { value: import("@/types").HindiText; featured?: boolean }) {
   return (
     <div
-      className={
+      className={cn(
+        "min-w-0 rounded-2xl px-3 py-4 sm:px-5 sm:py-5",
         featured
-          ? "rounded-2xl bg-amber-100 px-4 py-4 ring-1 ring-amber-200 compact:px-3 compact:py-3 sm:px-5 sm:py-5 dark:bg-amber-300/10 dark:ring-amber-300/20"
-          : "rounded-2xl bg-zinc-900/[0.035] px-4 py-4 ring-1 ring-zinc-900/[0.06] compact:px-3 compact:py-3 sm:px-5 sm:py-5 dark:bg-white/5 dark:ring-white/10"
-      }
+          ? "bg-amber-100 ring-1 ring-amber-200 dark:bg-amber-300/10 dark:ring-amber-300/20"
+          : "bg-zinc-900/[0.035] ring-1 ring-zinc-900/[0.06] dark:bg-white/5 dark:ring-white/10",
+      )}
     >
       <HindiText
         text={value}
         kind="word"
-        devClassName="text-[1.55rem] leading-relaxed text-ink compact:text-lg sm:text-3xl dark:text-white"
+        devClassName="text-wrap-anywhere text-lg leading-relaxed text-ink sm:text-3xl dark:text-white"
       />
     </div>
   );
 }
 
-function Example({
-  featured = false,
-  label,
-  value,
-}: {
-  featured?: boolean;
-  label: string;
-  value: import("@/types").HindiText;
-}) {
-  return (
-    <div>
-      <p className={featured ? "text-xs font-bold text-amber-700 dark:text-amber-300" : "text-xs font-bold text-zinc-500 dark:text-zinc-400"}>
-        {label}
-      </p>
-      <HindiText text={value} className="mt-1" />
-    </div>
-  );
-}
-
-function WordDetails({
+function Detail({
   children,
-  className = "",
+  featured = false,
   label,
 }: {
   children: React.ReactNode;
-  className?: string;
+  featured?: boolean;
   label: string;
 }) {
   return (
-    <div className={className}>
-      <p className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
+    <div className="min-w-0">
+      <p
+        className={cn(
+          "mb-2 text-xs font-bold uppercase tracking-[0.14em]",
+          featured
+            ? "text-amber-800 dark:text-amber-200"
+            : "text-zinc-500 dark:text-zinc-400",
+        )}
+      >
         {label}
       </p>
       {children}

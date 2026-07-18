@@ -151,7 +151,7 @@ export function AudioPlayer({
       setStatus("playing");
     } catch {
       setStatus("ready");
-      setError("Playback is ready. Press Play to start listening.");
+      setError("Playback could not start. Try Listen again.");
     }
   }, []);
 
@@ -217,6 +217,7 @@ export function AudioPlayer({
               : "border border-white/60 bg-white/50 text-ink shadow-sm hover:-translate-y-0.5 dark:border-white/12 dark:bg-white/8 dark:text-white",
           )}
           aria-label={`${label} ${variant} audio`}
+          aria-pressed={isPlaying}
         >
           {isLoading ? (
             <LoaderCircle className="motion-safe:animate-spin" size={16} aria-hidden="true" />
@@ -243,21 +244,16 @@ export function AudioPlayer({
         ) : null}
       </div>
 
-      {audioUrl ? (
-        <audio
-          ref={audioRef}
-          src={audioUrl}
-          controls
-          preload="metadata"
-          className="h-10 w-full max-w-sm rounded-full"
-          aria-label={`${label} ${variant} playback controls`}
-          onEnded={() => setStatus("ready")}
-          onPause={() => setStatus((current) => (current === "playing" ? "ready" : current))}
-          onPlay={() => setStatus("playing")}
-        />
-      ) : (
-        <audio ref={audioRef} className="hidden" aria-hidden="true" />
-      )}
+      <audio
+        ref={audioRef}
+        src={audioUrl || undefined}
+        preload="metadata"
+        className="hidden"
+        aria-hidden="true"
+        onEnded={() => setStatus("ready")}
+        onPause={() => setStatus((current) => (current === "playing" ? "ready" : current))}
+        onPlay={() => setStatus("playing")}
+      />
 
       {error ? (
         <p className="flex items-start gap-2 text-xs leading-5 text-rose-900 dark:text-rose-100">

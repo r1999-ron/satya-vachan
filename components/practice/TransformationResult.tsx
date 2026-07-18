@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { AudioPlayer } from "@/components/audio/AudioPlayer";
 import { HindiText } from "@/components/hindi/HindiText";
 import { EleganceScore } from "@/components/practice/EleganceScore";
@@ -21,12 +20,6 @@ export function TransformationResult({
   onSaveWord,
   result,
 }: TransformationResultProps) {
-  const [showAllUpgrades, setShowAllUpgrades] = useState(false);
-  const visibleReplacements = showAllUpgrades
-    ? result.replacements
-    : result.replacements.slice(0, 2);
-  const hiddenUpgradeCount = result.replacements.length - visibleReplacements.length;
-
   return (
     <section className="animate-floatIn space-y-5">
       <EleganceScore
@@ -52,9 +45,9 @@ export function TransformationResult({
         />
       </div>
 
-      <div className="rounded-2xl border border-sky-200/70 bg-sky-100/40 p-4 dark:border-sky-300/20 dark:bg-sky-300/10">
-        <StatusBadge tone="blue">Feedback</StatusBadge>
-        <p className="mt-3 text-wrap-anywhere text-sm leading-7 text-sky-950 dark:text-sky-100">
+      <div className="rounded-2xl border border-zinc-900/8 bg-zinc-900/[0.025] p-4 dark:border-white/10 dark:bg-white/[0.035]">
+        <StatusBadge tone="gold">Feedback</StatusBadge>
+        <p className="mt-3 text-wrap-anywhere text-sm font-normal leading-7 text-zinc-700 dark:text-zinc-300">
           {result.feedback}
         </p>
       </div>
@@ -66,7 +59,7 @@ export function TransformationResult({
           </h2>
         </div>
         <div className="grid gap-3">
-          {result.replacements.length > 0 ? visibleReplacements.map((replacement) => {
+          {result.replacements.length > 0 ? result.replacements.map((replacement) => {
             const saveableWord = getSaveableWord(result, replacement);
 
             return (
@@ -85,15 +78,6 @@ export function TransformationResult({
             </div>
           )}
         </div>
-        {hiddenUpgradeCount > 0 ? (
-          <button
-            type="button"
-            onClick={() => setShowAllUpgrades(true)}
-            className="mt-3 text-sm font-semibold text-amber-800 transition hover:text-amber-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50 dark:text-amber-200 dark:hover:text-amber-100"
-          >
-            +{hiddenUpgradeCount} more upgrade{hiddenUpgradeCount === 1 ? "" : "s"}
-          </button>
-        ) : null}
       </div>
     </section>
   );

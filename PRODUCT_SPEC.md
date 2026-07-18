@@ -15,7 +15,7 @@ The MVP should be built for deployment on Vercel.
 - Frame feedback as "Here is a more elegant way to say this."
 - Keep the default transformed sentence natural and usable in ordinary speech.
 - Keep the more elevated version available, but do not make it the default.
-- The app should feel modern, glassmorphic, slightly gamified, animated, and demo-friendly.
+- The app should feel modern, warm, softly layered, lightly gamified, animated, and demo-friendly.
 - The product must work without authentication or a database for the MVP.
 
 ## Recommended Stack
@@ -179,7 +179,7 @@ All localStorage access must be guarded for server-side rendering. Use client-on
 
 ### Objective
 
-Create the base Next.js application shell, global styling, navigation, responsive layout, glassmorphic theme, and reusable UI primitives that every later screen will use.
+Create the base Next.js application shell, global styling, three-destination navigation, responsive layout, warm soft-UI theme, and reusable UI primitives that every later screen will use.
 
 ### Dependencies
 
@@ -189,18 +189,17 @@ Create the base Next.js application shell, global styling, navigation, responsiv
 
 - Configure TypeScript, Tailwind CSS, and App Router.
 - Add global metadata for Satya-Vachan.
-- Add app-wide navigation for Home, Practice, Daily Challenge, and Learned Words.
+- Add app-wide navigation for Home, Practice, and My Words. The daily challenge is a Practice mode, not a fourth destination.
 - Create a responsive app shell that works on mobile and desktop.
-- Use a glassmorphic visual style:
-  - layered translucent panels
-  - subtle blur
-  - luminous borders
-  - soft shadows
-  - animated background shimmer or aurora-like gradients
+- Use a warm soft-UI visual style:
+  - warm cream surfaces with restrained translucency
+  - subtle blur and borders
+  - soft shadows with no more than one nested visual panel
+  - amber for brand and primary emphasis
+  - green only for success or improvement and red only for destructive actions
   - high readability over all backgrounds
 - Add a lightly gamified feel:
   - streak badges
-  - progress rings
   - small completion animations
   - score movement animation
   - tactile button states
@@ -211,7 +210,8 @@ Create the base Next.js application shell, global styling, navigation, responsiv
 ### UI Behavior
 
 - Mobile:
-  - Use a bottom navigation bar with four primary destinations.
+  - Use a bottom navigation bar with three primary destinations: Home, Practice, and My Words.
+  - Emphasize Practice as the center action because speaking is the core interaction.
   - Keep primary calls to action thumb-friendly.
   - Avoid overlapping fixed elements with page content.
 - Desktop:
@@ -246,14 +246,14 @@ Create the base Next.js application shell, global styling, navigation, responsiv
 ### Acceptance Criteria
 
 - The app starts locally without runtime errors.
-- The four main routes exist and display placeholder content.
-- Navigation works between Home, Practice, Daily Challenge, and Learned Words.
-- The visual system clearly reads as glassmorphic and lightly gamified.
+- The three main routes exist and display product content.
+- Navigation works between Home, Practice, and My Words; `/challenge` redirects to `/practice?challenge=today`.
+- The visual system clearly reads as warm, refined, softly layered, and lightly gamified.
 - Layouts are responsive and text does not overlap at common mobile and desktop widths.
 
 ### Codex Prompt
 
-Build the Next.js App Router foundation for Satya-Vachan with TypeScript, Tailwind, a responsive app shell, glassmorphic UI theme, navigation across Home, Practice, Daily Challenge, and Learned Words, shared type definitions, and reusable UI primitives. Keep pages functional with placeholder content and ensure the app is Vercel-ready.
+Build the Next.js App Router foundation for Satya-Vachan with TypeScript, Tailwind, a responsive app shell, warm soft-UI theme, navigation across Home, Practice, and My Words, shared type definitions, and reusable UI primitives. Keep the daily challenge inside Practice at `/practice?challenge=today` and ensure the app is Vercel-ready.
 
 ## Module 2: Static Content, Word Corpus, and Demo Data
 
@@ -454,30 +454,21 @@ Build the complete product home screen that explains the app quickly, shows prog
 ### Requirements
 
 - Display app name: Satya-Vachan.
-- Display tagline: "Speak Hindi with clarity, grace, and confidence."
-- Show today's word in a rich card:
+- Display a slim greeting row with readable date, tagline, saved-word count, and streak state.
+- Show today's word as the page hero:
   - common word
   - elevated word
   - English meaning
-  - simple example
-  - elevated example
-  - usage note
-- Show daily challenge preview.
-- Show current streak.
-- Show learned words count.
-- Show primary actions:
-  - Practice
-  - Daily Challenge
-  - Learned Words
-- Include one demo hint sentence or mini transformation preview.
+  - common and elevated word pair
+  - English meaning
+- Put simple/elevated examples, synonyms, and usage note inside a Details disclosure.
+- Show one primary action that starts today's challenge in Practice.
 
 ### UI Behavior
 
-- Primary action should lead to `/practice`.
-- Challenge action should lead to `/challenge`.
-- Learned words action should lead to `/learned`.
+- Primary action should lead to `/practice?challenge=today`.
 - Word of the Day card should have subtle entrance animation.
-- Streak card should have a small gamified visual, such as a ring, badge, or glowing counter.
+- Streak should be a compact chip, with a completed state and a first-day invitation when the streak is zero.
 - Do not hide core CTAs below excessive hero content.
 
 ### Business Logic
@@ -510,13 +501,13 @@ Build the complete product home screen that explains the app quickly, shows prog
 ### Acceptance Criteria
 
 - A first-time user understands the app within 30 seconds.
-- User can navigate to all core flows.
+- User can enter today's challenge or navigate to Practice and My Words.
 - Home reflects persisted streak and learned words count.
-- The visual design matches the glassmorphic gamified theme.
+- The visual design matches the warm, refined soft-UI theme.
 
 ### Codex Prompt
 
-Build the full Satya-Vachan Home screen using the existing corpus and local progress state. Show the app identity, Word of the Day, daily challenge preview, streak, learned words count, and navigation into Practice, Challenge, and Learned Words with polished glassmorphic UI and subtle animation.
+Build the full Satya-Vachan Home-as-Today screen using the existing corpus and local progress state. Show a compact greeting and streak row, Word of the Day hero, one action into `/practice?challenge=today`, and disclosed details with warm soft-UI styling and subtle animation.
 
 ## Module 5: Practice Screen Static Flow
 
@@ -612,7 +603,7 @@ Build the full Practice screen as a static/mock interactive flow. Include hint p
 
 ### Objective
 
-Add browser microphone recording with the MediaRecorder API and connect recorded audio to the Practice and Challenge screens.
+Add browser microphone recording with the MediaRecorder API and connect recorded audio to the unified Practice screen, including challenge mode.
 
 ### Dependencies
 
@@ -636,7 +627,7 @@ Add browser microphone recording with the MediaRecorder API and connect recorded
 - Show visual recording feedback, such as pulse ring or waveform-like animation.
 - Let user discard and re-record.
 - Use recorded audio on Practice screen first.
-- Reuse component on Challenge screen later.
+- Reuse the same mounted component when Practice enters challenge mode; do not create a second recorder surface.
 
 ### UI Behavior
 
@@ -1109,7 +1100,7 @@ Complete the full Satya-Vachan Practice flow by connecting recording, transcript
 
 ### Objective
 
-Implement the daily Word of the Day challenge with recording, transcription, AI validation, feedback, completion, and streak updates.
+Implement the daily Word of the Day challenge as a mode of Practice with shared recording, transcription, AI validation, feedback, completion, and streak updates.
 
 ### Dependencies
 
@@ -1117,16 +1108,15 @@ Implement the daily Word of the Day challenge with recording, transcription, AI 
 
 ### Requirements
 
-- Daily Challenge screen shows:
-  - today's word
-  - meaning
-  - usage note
-  - challenge prompt
+- `/practice?challenge=today` shows a compact challenge banner with:
+  - today's common-to-elevated word pair
+  - one-line meaning
   - suggested sentence starters
-  - recorder or text fallback
-  - transcript
-  - feedback
   - completion state
+- The shared Practice surface provides:
+  - recorder and text fallback
+  - editable transcript
+  - feedback
   - streak update
 - User task: use today's elevated word in their own sentence.
 - The app should transcribe the sentence.
@@ -1143,6 +1133,7 @@ Implement the daily Word of the Day challenge with recording, transcription, AI 
 - Show a small completion animation or badge.
 - If already completed today, show completed state and allow optional re-practice without increasing streak.
 - Provide helpful retry feedback if target word is missing.
+- After a successful challenge, offer an optional action to polish the same sentence through the normal transform flow.
 
 ### Business Logic
 
@@ -1211,14 +1202,14 @@ Error response:
 ### Acceptance Criteria
 
 - User can complete a daily challenge.
-- Successful completion updates streak on Home and Challenge screens.
+- Successful completion updates streak on Home and Practice challenge mode.
 - Re-completing same day does not increment streak again.
 - User receives supportive feedback for failed attempts.
 - Local fallback allows demo continuity if AI validation fails.
 
 ### Codex Prompt
 
-Build the Daily Challenge flow for Satya-Vachan. Show today's word and prompt, reuse recording/transcription, validate target-word usage through `/api/challenge` with a local fallback, show supportive feedback, mark completion, and update local streak without double-counting the same day.
+Build the Daily Challenge mode at `/practice?challenge=today`. Show a compact word banner and starters above the one shared Practice recorder/input, validate target-word usage through `/api/challenge` with a local fallback, offer optional polishing after success, and update local streak without double-counting the same day. Keep `/challenge` as a redirect only.
 
 ## Module 12: Learned Words and Personal Dictionary
 
@@ -1377,7 +1368,7 @@ Harden Satya-Vachan with shared validation, consistent API error responses, clie
 
 ### Objective
 
-Elevate the MVP into a refined, glassmorphic, lightly gamified experience suitable for a hackathon demo.
+Elevate the MVP into a refined, warm, softly layered, lightly gamified experience suitable for a hackathon demo.
 
 ### Dependencies
 
@@ -1395,7 +1386,6 @@ Elevate the MVP into a refined, glassmorphic, lightly gamified experience suitab
 - Add gamified elements:
   - streak badge
   - learned words count
-  - progress ring
   - completion badge
   - score improvement indicator
 - Keep animations fast and tasteful.
@@ -1414,7 +1404,7 @@ Elevate the MVP into a refined, glassmorphic, lightly gamified experience suitab
 
 - Animations must not block task completion.
 - No text overlap during animation.
-- Glass panels must remain readable on all supported backgrounds.
+- Soft translucent panels must remain readable on all supported backgrounds.
 - Buttons should feel tactile with hover/press states.
 - Do not use decorative elements that obscure content.
 
@@ -1433,14 +1423,14 @@ Elevate the MVP into a refined, glassmorphic, lightly gamified experience suitab
 ### Acceptance Criteria
 
 - The app looks and feels like a polished demo.
-- The theme is clearly glassmorphic and slightly gamified.
+- The theme is clearly warm, refined, softly layered, and slightly gamified.
 - Animations are smooth but restrained.
 - Reduced motion users get a calmer experience.
 - No layout shifts or overlapping UI during common flows.
 
 ### Codex Prompt
 
-Polish Satya-Vachan's UI with tasteful glassmorphic styling, subtle animation, recording pulse, score movement, challenge completion feedback, save-word feedback, improved loading and empty states, and reduced-motion support. Keep the app refined, readable, responsive, and demo-ready.
+Polish Satya-Vachan's UI with warm soft surfaces, restrained borders and shadows, subtle animation, recording pulse, score movement, challenge completion feedback, save-word feedback, improved loading and empty states, and reduced-motion support. Keep the app refined, readable, responsive, and demo-ready.
 
 ## Module 15: Vercel Deployment Readiness
 
@@ -1537,7 +1527,7 @@ Perform a final end-to-end pass to ensure the MVP meets the product idea and is 
   - Listen
   - Save words
   - Learned Words
-  - Daily Challenge
+  - Daily Challenge mode within Practice
   - Streak update
 - Test responsive layouts:
   - mobile width
@@ -1554,14 +1544,14 @@ Perform a final end-to-end pass to ensure the MVP meets the product idea and is 
 - Judge understands product within 30 seconds.
 - Judge can experience core value within 2 minutes.
 - Core demo flow is stable.
-- UI is polished, glassmorphic, and lightly gamified.
+- UI is polished, warm, softly layered, and lightly gamified.
 - Feedback tone is supportive.
 - No feature depends on authentication or database.
 - Vercel deployment is documented and ready.
 
 ### Codex Prompt
 
-Run a final QA pass on Satya-Vachan. Verify the canonical demo flow, localStorage persistence, Daily Challenge streak behavior, Learned Words, AI error handling, responsive layouts, glassmorphic polish, Vercel build readiness, and README deployment instructions. Fix any issues found without adding non-MVP scope.
+Run a final QA pass on Satya-Vachan. Verify the canonical demo flow, localStorage persistence, Practice challenge-mode streak behavior, My Words, AI error handling, responsive layouts, warm soft-UI polish, Vercel build readiness, and README deployment instructions. Fix any issues found without adding non-MVP scope.
 
 ## API Summary
 

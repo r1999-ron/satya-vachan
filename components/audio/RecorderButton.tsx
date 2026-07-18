@@ -399,39 +399,59 @@ export function RecorderButton({
         className,
       )}
     >
-      <div className="flex items-start gap-3">
-        <span
+      <div className="flex flex-col items-center">
+        <button
+          type="button"
+          onClick={
+            state === "recording" || state === "stopping"
+              ? stopRecording
+              : startRecording
+          }
+          disabled={disabled || state === "stopping"}
+          aria-label={
+            state === "recording"
+              ? "Stop recording"
+              : state === "recorded"
+                ? "Record again"
+                : "Start recording"
+          }
           className={cn(
-            "relative grid size-12 shrink-0 place-items-center rounded-full bg-amber-400/18 text-amber-700 shadow-glow dark:text-amber-200",
+            "relative grid size-20 shrink-0 place-items-center rounded-full bg-zinc-950 text-white shadow-[0_14px_34px_rgba(24,20,16,0.22)] transition hover:-translate-y-0.5 hover:bg-zinc-800 focus:outline-none focus-visible:ring-4 focus-visible:ring-amber-400/40 focus-visible:ring-offset-4 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 sm:size-24 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-100 dark:focus-visible:ring-offset-zinc-950",
             state === "recording" &&
-              "bg-rose-600 text-white before:absolute before:inset-0 before:rounded-full before:bg-rose-400/35 before:motion-safe:animate-ping",
+              "bg-rose-600 text-white before:absolute before:inset-0 before:rounded-full before:bg-rose-400/35 before:motion-safe:animate-ping hover:bg-rose-600 dark:bg-rose-500 dark:text-white",
+            state === "recorded" &&
+              "bg-emerald-600 text-white hover:bg-emerald-600 dark:bg-emerald-300 dark:text-emerald-950",
           )}
         >
-          {state === "recorded" ? (
-            <CheckCircle2 size={21} aria-hidden="true" />
+          {state === "recording" || state === "stopping" ? (
+            <Square size={28} aria-hidden="true" />
+          ) : state === "recorded" ? (
+            <CheckCircle2 size={32} aria-hidden="true" />
           ) : (
-            <Mic size={21} aria-hidden="true" />
+            <Mic size={32} aria-hidden="true" />
           )}
-        </span>
+        </button>
 
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <p className="text-sm font-bold text-ink dark:text-white">
-                {getTitle(state)}
-              </p>
-              <p className="mt-1 text-xs leading-5 text-zinc-600 dark:text-zinc-400">
-                {getDescription(state, maxDurationLabel)}
-              </p>
-            </div>
-            <span className="rounded-full border border-white/55 bg-white/55 px-3 py-1 text-xs font-bold text-zinc-700 dark:border-white/12 dark:bg-white/8 dark:text-zinc-200">
+        <div className="mt-3 w-full min-w-0 text-center">
+          <div>
+            {state !== "idle" && state !== "permission-needed" ? (
+              <div className="mx-auto">
+                <p className="text-sm font-bold text-ink dark:text-white">
+                  {getTitle(state)}
+                </p>
+                <p className="mx-auto mt-1 max-w-md text-xs font-normal leading-5 text-zinc-600 dark:text-zinc-400">
+                  {getDescription(state, maxDurationLabel)}
+                </p>
+              </div>
+            ) : null}
+            <span className="mt-2 inline-flex rounded-full bg-zinc-900/[0.045] px-3 py-1 text-xs font-bold text-zinc-700 dark:bg-white/8 dark:text-zinc-200">
               {formatRecordingDuration(durationMs)}
             </span>
           </div>
 
           {state === "recording" ? (
             <div
-              className="mt-4 overflow-hidden rounded-2xl border border-rose-200/70 bg-gradient-to-r from-rose-50/90 via-amber-50/90 to-rose-50/90 px-3 py-2.5 shadow-inner dark:border-rose-300/20 dark:from-rose-950/35 dark:via-amber-950/25 dark:to-rose-950/35"
+              className="mx-auto mt-4 max-w-xl overflow-hidden rounded-xl border border-rose-200/70 bg-gradient-to-r from-rose-50/90 via-amber-50/90 to-rose-50/90 px-3 py-2.5 shadow-inner dark:border-rose-300/20 dark:from-rose-950/35 dark:via-amber-950/25 dark:to-rose-950/35"
               data-recording-visualizer="active"
             >
               <div className="flex items-center justify-between gap-3 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-rose-700 dark:text-rose-200">
@@ -464,43 +484,19 @@ export function RecorderButton({
           ) : null}
 
           {error ? (
-            <p className="mt-3 text-sm leading-6 text-rose-800 dark:text-rose-100">
+            <p className="mx-auto mt-3 max-w-md text-sm font-normal leading-6 text-rose-800 dark:text-rose-100">
               {error}
             </p>
           ) : null}
 
-          <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-            {state === "recording" || state === "stopping" ? (
-              <button
-                type="button"
-                onClick={stopRecording}
-                disabled={disabled || state === "stopping"}
-                className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-2xl bg-rose-600 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-rose-900/15 transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-rose-400/45 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:bg-zinc-500 dark:focus:ring-offset-zinc-950"
-              >
-                <Square size={16} aria-hidden="true" />
-                {state === "stopping" ? "Stopping..." : "Stop recording"}
-              </button>
-            ) : null}
-
-            {state !== "recording" && state !== "stopping" ? (
-              <button
-                type="button"
-                onClick={startRecording}
-                disabled={disabled}
-                className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-2xl bg-ink px-4 py-2 text-sm font-bold text-white shadow-lg shadow-zinc-900/15 transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ink/40 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:bg-zinc-500 disabled:shadow-none dark:bg-white dark:text-zinc-950 dark:focus:ring-white/40 dark:focus:ring-offset-zinc-950"
-              >
-                <Mic size={16} aria-hidden="true" />
-                {state === "recorded" ? "Record again" : "Start recording"}
-              </button>
-            ) : null}
-
+          <div className="mx-auto mt-4 flex max-w-md flex-col justify-center gap-2 sm:flex-row">
             {state === "recorded" ? (
               <>
                 <button
                   type="button"
                   onClick={processRecording}
                   disabled={disabled || !recording}
-                  className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-emerald-900/10 transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-emerald-400/45 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:bg-zinc-500 dark:focus:ring-offset-zinc-950"
+                  className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-emerald-900/10 transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-emerald-400/45 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:bg-zinc-500 dark:focus:ring-offset-zinc-950"
                 >
                   <Upload size={16} aria-hidden="true" />
                   Use recording
@@ -509,7 +505,7 @@ export function RecorderButton({
                   type="button"
                   onClick={discardRecording}
                   disabled={disabled}
-                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-white/60 bg-white/55 px-4 py-2 text-sm font-bold text-ink shadow-sm backdrop-blur-md transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/12 dark:bg-white/10 dark:text-white dark:focus:ring-offset-zinc-950"
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-zinc-900/10 bg-white/55 px-4 py-2 text-sm font-bold text-ink transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/12 dark:bg-white/10 dark:text-white dark:focus:ring-offset-zinc-950"
                 >
                   <RotateCcw size={16} aria-hidden="true" />
                   Discard
