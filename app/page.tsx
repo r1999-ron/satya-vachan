@@ -1,5 +1,6 @@
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { DailyChallenge } from "@/components/challenge/DailyChallenge";
+import { SaveDailyWordButton } from "@/components/challenge/SaveDailyWordButton";
 import { HindiText } from "@/components/hindi/HindiText";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { getWordOfTheDay } from "@/data/words";
@@ -14,9 +15,12 @@ export default function HomePage() {
   return (
     <div className="mx-auto max-w-4xl space-y-4 sm:space-y-5">
       <GlassCard className="overflow-hidden p-5 sm:p-7 lg:p-8">
-        <p className="text-xs font-bold uppercase tracking-[0.14em] text-amber-800 dark:text-amber-200">
-          Today&apos;s word
-        </p>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-xs font-bold uppercase tracking-[0.14em] text-amber-800 dark:text-amber-200">
+            Today&apos;s word
+          </p>
+          <SaveDailyWordButton word={todayWord} />
+        </div>
 
         <div className="mt-4 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-stretch gap-2 sm:mt-6 sm:gap-4">
           <Word value={todayWord.common} />
@@ -49,13 +53,12 @@ export default function HomePage() {
           />
         </div>
 
-        <Link
-          href="/practice?challenge=today"
-          prefetch={false}
+        <a
+          href="#daily-challenge"
           className="mt-5 inline-flex min-h-10 items-center rounded-lg bg-ink px-4 text-sm font-bold text-white shadow-md shadow-zinc-900/15 transition hover:-translate-y-0.5 hover:bg-zinc-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f8f5ef] active:translate-y-0 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-white/40 dark:focus-visible:ring-offset-zinc-950"
         >
           Use it in a sentence
-        </Link>
+        </a>
       </GlassCard>
 
       <GlassCard className="p-4 sm:p-5">
@@ -79,6 +82,8 @@ export default function HomePage() {
           </Detail>
         </div>
       </GlassCard>
+
+      <DailyChallenge word={todayWord} />
     </div>
   );
 }
