@@ -3,9 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "generate:word-corpus": "node scripts/generate-word-corpus.mjs",
+    "predev": "pnpm generate:word-corpus",
     "dev": "next dev",
+    "prebuild": "pnpm generate:word-corpus",
     "build": "next build",
+    "pretest": "pnpm generate:word-corpus",
     "start": "next start",
+    "pretypecheck": "pnpm generate:word-corpus",
     "lint": "eslint .",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"

@@ -213,6 +213,7 @@ export function normalizeWordEntry(rawValue: unknown, targetWord: string): WordE
     englishMeaning: getTrimmedString(rawValue.englishMeaning) ?? "",
     simpleExample: normalizeHindiText(rawValue.simpleExample, ""),
     elevatedExample: normalizeHindiText(rawValue.elevatedExample, ""),
+    scholarExample: normalizeHindiText(rawValue.scholarExample, ""),
     synonyms: Array.isArray(rawValue.synonyms)
       ? rawValue.synonyms
           .map((synonym) => normalizeHindiText(synonym))
@@ -319,6 +320,7 @@ function createFallbackWordEntry(targetWord: string): WordEntry {
     englishMeaning: "",
     simpleExample: { dev: "", roman: "" },
     elevatedExample: { dev: "", roman: "" },
+    scholarExample: { dev: "", roman: "" },
     synonyms: [],
     usageNote: "",
     challengePrompt: "",

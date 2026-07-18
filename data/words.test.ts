@@ -10,7 +10,7 @@ describe("bilingual word corpus", () => {
 
     for (const entry of wordCorpus) {
       const words = [entry.common, entry.elevated, ...entry.synonyms];
-      const examples = [entry.simpleExample, entry.elevatedExample];
+      const examples = [entry.simpleExample, entry.elevatedExample, entry.scholarExample];
 
       for (const word of words) {
         expect(word.dev, entry.id).toMatch(DEVANAGARI);
