@@ -22,7 +22,6 @@ import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { LoadingMeter } from "@/components/ui/LoadingMeter";
 import { getDemoHints, defaultTransformationExample } from "@/data/demo";
-import { wordCorpus } from "@/data/words";
 import { useTranscription } from "@/hooks/useTranscription";
 import { requestJson } from "@/lib/api-client";
 import {
@@ -36,7 +35,6 @@ import type {
   LearnedWordInput,
   PracticeResponse,
   RecordingResult,
-  WordEntry,
 } from "@/types";
 
 type PracticeStatus =
@@ -112,7 +110,6 @@ function PracticeContent() {
   const hints = getDemoHints(2);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const wordParam = searchParams.get("word")?.trim() ?? "";
   const isLegacyChallenge = searchParams.get("challenge") === "today";
   const resultRef = useRef<HTMLDivElement | null>(null);
   const { saveWord, words } = useLearnedWords();
@@ -124,24 +121,6 @@ function PracticeContent() {
       router.replace("/#daily-challenge");
     }
   }, [isLegacyChallenge, router]);
-
-  const practiceContext = useMemo<WordEntry | string | null>(() => {
-    if (!wordParam) {
-      return null;
-    }
-
-    const normalizedWord = wordParam.toLocaleLowerCase();
-    return (
-      wordCorpus.find((entry) =>
-        [entry.id, entry.common, entry.elevated, ...entry.synonyms]
-          .flatMap((value) =>
-            typeof value === "string" ? [value] : [value.dev, value.roman],
-          )
-          .map((value) => value.trim().toLocaleLowerCase())
-          .includes(normalizedWord),
-      ) ?? wordParam
-    );
-  }, [wordParam]);
 
   const savedWordKeys = useMemo(
     () => new Set(words.map((word) => word.word.trim().toLocaleLowerCase())),
@@ -259,17 +238,6 @@ function PracticeContent() {
     }
   };
 
-  const handleUsePracticeContext = () => {
-    if (isBusy || !practiceContext) {
-      return;
-    }
-    const transcript =
-      typeof practiceContext === "string"
-        ? `Maine ${practiceContext} shabd ka prayog apne vaakya mein kiya.`
-        : practiceContext.elevatedExample.dev;
-    dispatch({ type: "transcript_changed", transcript });
-  };
-
   const handleReset = () => {
     dispatch({ type: "reset" });
     setRecorderResetKey((key) => key + 1);
@@ -317,16 +285,6 @@ function PracticeContent() {
             />
           ) : null}
         </div>
-
-        {practiceContext ? (
-          <div className="mt-6">
-            <PracticeContextPrompt
-              context={practiceContext}
-              disabled={isBusy}
-              onUse={handleUsePracticeContext}
-            />
-          </div>
-        ) : null}
 
         <label className="mt-6 block">
           <textarea
@@ -549,52 +507,6 @@ function LoadingState({ status }: { status: PracticeStatus }) {
           {copy.body}
         </p>
         <LoadingMeter />
-      </div>
-    </div>
-  );
-}
-
-function PracticeContextPrompt({
-  context,
-  disabled,
-  onUse,
-}: {
-  context: WordEntry | string;
-  disabled: boolean;
-  onUse: () => void;
-}) {
-  const word =
-    typeof context === "string" ? { dev: context, roman: context } : context.elevated;
-  const meaning =
-    typeof context === "string"
-      ? "Use this saved word in a fresh sentence."
-      : context.englishMeaning;
-
-  return (
-    <div className="border-y border-emerald-200/70 py-4 dark:border-emerald-300/20">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="min-w-0">
-          <p className="text-xs font-bold uppercase tracking-[0.14em] text-emerald-800 dark:text-emerald-200">
-            Practice word
-          </p>
-          <HindiText
-            text={word}
-            kind="inline"
-            className="mt-1 text-wrap-anywhere text-lg font-bold text-ink dark:text-white"
-          />
-          <p className="mt-1 text-wrap-anywhere text-sm font-normal leading-6 text-zinc-600 dark:text-zinc-300">
-            {meaning}
-          </p>
-        </div>
-        <button
-          type="button"
-          disabled={disabled}
-          onClick={onUse}
-          className="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-xl bg-emerald-700 px-4 py-2 text-xs font-bold text-white transition hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/45 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-emerald-200 dark:text-emerald-950"
-        >
-          Use prompt
-          <ArrowRight size={14} aria-hidden="true" />
-        </button>
       </div>
     </div>
   );

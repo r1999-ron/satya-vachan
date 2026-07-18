@@ -9,6 +9,16 @@ export const runtime = "nodejs";
 
 const TRANSCRIBE_MODEL = "gpt-4o-mini-transcribe";
 
+function isPromptEcho(transcript: string) {
+  const normalize = (value: string) =>
+    value
+      .normalize("NFKC")
+      .toLocaleLowerCase("en-US")
+      .replace(/[\p{P}\p{S}\s]+/gu, "");
+
+  return normalize(transcript) === normalize(PROMPTS.transcription.instruction);
+}
+
 function getDurationMs(formData: FormData) {
   const rawDuration = formData.get("durationMs");
   const numericDuration =
@@ -83,7 +93,9 @@ export async function POST(request: Request) {
     });
     const transcript = transcription.text.trim();
 
-    if (!transcript) {
+    // The transcription model can return the supplied prompt verbatim for silent
+    // recordings. Treat that as no speech so it never appears in the transcript box.
+    if (!transcript || isPromptEcho(transcript)) {
       return jsonApiError(
         "No speech was detected. Please try again or type your sentence.",
         "TRANSCRIPTION_FAILED",
