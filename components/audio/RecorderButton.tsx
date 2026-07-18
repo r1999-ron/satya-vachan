@@ -11,9 +11,11 @@ import {
 } from "lucide-react";
 import {
   DEFAULT_MAX_RECORDING_MS,
+  RECORDING_WAVEFORM_BAR_COUNT,
   createRecordingBlob,
   createRecordingResult,
   formatRecordingDuration,
+  getRecordingWaveformLevels,
   getSupportedRecordingMimeType,
   isMediaRecorderSupported,
   requestMicrophoneStream,
@@ -21,6 +23,16 @@ import {
 } from "@/lib/audio";
 import { cn } from "@/lib/utils";
 import type { RecordingResult } from "@/types";
+
+const INACTIVE_WAVEFORM_LEVELS = Array.from(
+  { length: RECORDING_WAVEFORM_BAR_COUNT },
+  () => 0.08,
+);
+
+type WindowWithLegacyAudioContext = Window &
+  typeof globalThis & {
+    webkitAudioContext?: typeof AudioContext;
+  };
 
 export type RecorderState =
   | "unsupported"
@@ -54,6 +66,9 @@ export function RecorderButton({
   const [durationMs, setDurationMs] = useState(0);
   const [recording, setRecording] = useState<RecordingResult | null>(null);
   const [error, setError] = useState("");
+  const [waveformLevels, setWaveformLevels] = useState(
+    INACTIVE_WAVEFORM_LEVELS,
+  );
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -61,19 +76,29 @@ export function RecorderButton({
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const maxTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const stateRef = useRef<RecorderState>("permission-needed");
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const audioSourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
+  const isMountedRef = useRef(true);
+  const onStateChangeRef = useRef(onStateChange);
 
   const maxDurationLabel = useMemo(
     () => formatRecordingDuration(maxDurationMs),
     [maxDurationMs],
   );
 
+  useEffect(() => {
+    onStateChangeRef.current = onStateChange;
+  }, [onStateChange]);
+
   const setRecorderState = useCallback(
     (nextState: RecorderState) => {
       stateRef.current = nextState;
       setState(nextState);
-      onStateChange?.(nextState);
+      onStateChangeRef.current?.(nextState);
     },
-    [onStateChange],
+    [],
   );
 
   const clearTimers = useCallback(() => {
@@ -88,12 +113,90 @@ export function RecorderButton({
     }
   }, []);
 
+  const stopAudioVisualization = useCallback(() => {
+    if (animationFrameRef.current !== null) {
+      window.cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+
+    audioSourceRef.current?.disconnect();
+    analyserRef.current?.disconnect();
+    audioSourceRef.current = null;
+    analyserRef.current = null;
+
+    const audioContext = audioContextRef.current;
+    audioContextRef.current = null;
+
+    if (audioContext && audioContext.state !== "closed") {
+      void audioContext.close().catch(() => undefined);
+    }
+
+    if (isMountedRef.current) {
+      setWaveformLevels(INACTIVE_WAVEFORM_LEVELS);
+    }
+  }, []);
+
+  const startAudioVisualization = useCallback(
+    (stream: MediaStream) => {
+      stopAudioVisualization();
+
+      const AudioContextConstructor =
+        window.AudioContext ||
+        (window as WindowWithLegacyAudioContext).webkitAudioContext;
+
+      if (!AudioContextConstructor) {
+        return;
+      }
+
+      try {
+        const audioContext = new AudioContextConstructor();
+        const analyser = audioContext.createAnalyser();
+        const source = audioContext.createMediaStreamSource(stream);
+
+        analyser.fftSize = 128;
+        analyser.minDecibels = -82;
+        analyser.maxDecibels = -18;
+        analyser.smoothingTimeConstant = 0.78;
+        source.connect(analyser);
+
+        audioContextRef.current = audioContext;
+        audioSourceRef.current = source;
+        analyserRef.current = analyser;
+
+        if (audioContext.state === "suspended") {
+          void audioContext.resume().catch(() => undefined);
+        }
+
+        const frequencyData = new Uint8Array(analyser.frequencyBinCount);
+        const updateWaveform = () => {
+          if (
+            !isMountedRef.current ||
+            audioContextRef.current !== audioContext
+          ) {
+            return;
+          }
+
+          analyser.getByteFrequencyData(frequencyData);
+          setWaveformLevels(getRecordingWaveformLevels(frequencyData));
+          animationFrameRef.current = window.requestAnimationFrame(updateWaveform);
+        };
+
+        updateWaveform();
+      } catch {
+        // Recording must still work if Web Audio visualization is unavailable.
+        stopAudioVisualization();
+      }
+    },
+    [stopAudioVisualization],
+  );
+
   const cleanupRecorder = useCallback(() => {
     clearTimers();
+    stopAudioVisualization();
     stopMediaStreamTracks(streamRef.current);
     streamRef.current = null;
     mediaRecorderRef.current = null;
-  }, [clearTimers]);
+  }, [clearTimers, stopAudioVisualization]);
 
   const stopRecording = useCallback(() => {
     if (stateRef.current !== "recording") {
@@ -115,6 +218,7 @@ export function RecorderButton({
   }, [cleanupRecorder, clearTimers, setRecorderState]);
 
   useEffect(() => {
+    isMountedRef.current = true;
     let unsupportedTimer: ReturnType<typeof setTimeout> | null = null;
 
     if (!isMediaRecorderSupported()) {
@@ -124,13 +228,23 @@ export function RecorderButton({
     }
 
     return () => {
+      isMountedRef.current = false;
+
       if (unsupportedTimer) {
         clearTimeout(unsupportedTimer);
       }
 
       const recorder = mediaRecorderRef.current;
       if (recorder && recorder.state !== "inactive") {
-        recorder.stop();
+        recorder.ondataavailable = null;
+        recorder.onerror = null;
+        recorder.onstop = null;
+
+        try {
+          recorder.stop();
+        } catch {
+          // The recorder may already be stopping while the component unmounts.
+        }
       }
 
       cleanupRecorder();
@@ -159,6 +273,7 @@ export function RecorderButton({
         stream,
         mimeType ? { mimeType } : undefined,
       );
+      const recorderMimeType = recorder.mimeType || mimeType;
 
       streamRef.current = stream;
       mediaRecorderRef.current = recorder;
@@ -178,9 +293,13 @@ export function RecorderButton({
 
       recorder.onstop = () => {
         const measuredDurationMs = Date.now() - startedAtRef.current;
-        const blob = createRecordingBlob(chunksRef.current, mimeType);
+        const blob = createRecordingBlob(chunksRef.current, recorderMimeType);
 
         cleanupRecorder();
+
+        if (!isMountedRef.current) {
+          return;
+        }
 
         if (blob.size === 0) {
           setRecorderState("error");
@@ -190,7 +309,7 @@ export function RecorderButton({
 
         const nextRecording = createRecordingResult(
           blob,
-          mimeType,
+          recorderMimeType,
           Math.min(measuredDurationMs, maxDurationMs),
         );
 
@@ -200,7 +319,10 @@ export function RecorderButton({
         onRecordingComplete?.(nextRecording);
       };
 
-      recorder.start();
+      // Periodic chunks make finalization reliable across Chromium/WebKit and
+      // avoid producing a header-only blob if recording is interrupted.
+      recorder.start(250);
+      startAudioVisualization(stream);
       setRecorderState("recording");
 
       intervalRef.current = setInterval(() => {
@@ -280,9 +402,9 @@ export function RecorderButton({
       <div className="flex items-start gap-3">
         <span
           className={cn(
-            "relative grid size-12 shrink-0 place-items-center rounded-2xl bg-amber-400/18 text-amber-700 shadow-glow dark:text-amber-200",
+            "relative grid size-12 shrink-0 place-items-center rounded-full bg-amber-400/18 text-amber-700 shadow-glow dark:text-amber-200",
             state === "recording" &&
-              "before:absolute before:inset-0 before:rounded-2xl before:bg-rose-400/30 before:motion-safe:animate-ping",
+              "bg-rose-600 text-white before:absolute before:inset-0 before:rounded-full before:bg-rose-400/35 before:motion-safe:animate-ping",
           )}
         >
           {state === "recorded" ? (
@@ -308,17 +430,36 @@ export function RecorderButton({
           </div>
 
           {state === "recording" ? (
-            <div className="mt-4 flex h-8 items-end gap-1" aria-hidden="true">
-              {Array.from({ length: 18 }).map((_, index) => (
-                <span
-                  key={index}
-                  className="w-full origin-bottom rounded-full bg-rose-400/70 motion-safe:animate-wave dark:bg-rose-300/80"
-                  style={{
-                    height: `${28 + ((index * 17) % 48)}%`,
-                    animationDelay: `${index * 60}ms`,
-                  }}
-                />
-              ))}
+            <div
+              className="mt-4 overflow-hidden rounded-2xl border border-rose-200/70 bg-gradient-to-r from-rose-50/90 via-amber-50/90 to-rose-50/90 px-3 py-2.5 shadow-inner dark:border-rose-300/20 dark:from-rose-950/35 dark:via-amber-950/25 dark:to-rose-950/35"
+              data-recording-visualizer="active"
+            >
+              <div className="flex items-center justify-between gap-3 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-rose-700 dark:text-rose-200">
+                <span className="inline-flex items-center gap-2">
+                  <span className="relative flex size-2" aria-hidden="true">
+                    <span className="absolute inline-flex size-full rounded-full bg-rose-500 opacity-70 motion-safe:animate-ping" />
+                    <span className="relative inline-flex size-2 rounded-full bg-rose-600" />
+                  </span>
+                  Live voice
+                </span>
+                <span className="text-zinc-500 dark:text-zinc-400">Listening</span>
+              </div>
+              <div
+                className="mt-2.5 flex h-12 items-center gap-1"
+                aria-label="Live microphone level"
+                role="img"
+              >
+                {waveformLevels.map((level, index) => (
+                  <span
+                    key={index}
+                    className="w-full rounded-full bg-gradient-to-t from-rose-600 via-rose-400 to-amber-300 opacity-90 transition-[height,opacity] duration-75 ease-out dark:from-rose-400 dark:via-rose-300 dark:to-amber-200"
+                    style={{
+                      height: `${Math.round(level * 100)}%`,
+                      opacity: 0.55 + level * 0.45,
+                    }}
+                  />
+                ))}
+              </div>
             </div>
           ) : null}
 
