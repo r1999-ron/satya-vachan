@@ -9,7 +9,8 @@ import {
   RefreshCw,
   Volume2,
 } from "lucide-react";
-import { requestJson } from "@/lib/api-client";
+import { isApiRequestErrorCode, requestJson } from "@/lib/api-client";
+import { cacheTtsAudio, getCachedTtsAudio } from "@/lib/tts-cache";
 import { cn } from "@/lib/utils";
 import { normalizeTtsResponse } from "@/lib/validators";
 import type { TtsResponse } from "@/types";
@@ -69,6 +70,20 @@ export function AudioPlayer({
       return audioUrl;
     }
 
+    const cachedAudio = force
+      ? undefined
+      : getCachedTtsAudio(trimmedText, variant);
+
+    if (cachedAudio) {
+      const cachedUrl = URL.createObjectURL(cachedAudio);
+      clearGeneratedUrl();
+      generatedUrlRef.current = cachedUrl;
+      setAudioUrl(cachedUrl);
+      setStatus("ready");
+      setError("");
+      return cachedUrl;
+    }
+
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -87,6 +102,7 @@ export function AudioPlayer({
 
       const blob = base64ToAudioBlob(payload.audioBase64, payload.mimeType);
       const nextUrl = URL.createObjectURL(blob);
+      cacheTtsAudio(trimmedText, variant, blob);
 
       clearGeneratedUrl();
       generatedUrlRef.current = nextUrl;
@@ -95,7 +111,7 @@ export function AudioPlayer({
 
       return nextUrl;
     } catch (caughtError) {
-      if (caughtError instanceof DOMException && caughtError.name === "AbortError") {
+      if (isApiRequestErrorCode(caughtError, "ABORTED")) {
         return null;
       }
 

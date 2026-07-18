@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { jsonApiError } from "@/lib/api-errors";
+import { guardAiRequest } from "@/lib/api-guard";
 import { getOpenAIClient, isOpenAIConfigured } from "@/lib/openai";
 import { validateAudioFile } from "@/lib/validators";
 
@@ -20,6 +21,12 @@ function getDurationMs(formData: FormData) {
 }
 
 export async function POST(request: Request) {
+  const guardResponse = guardAiRequest(request, "transcribe");
+
+  if (guardResponse) {
+    return guardResponse;
+  }
+
   if (!isOpenAIConfigured()) {
     return jsonApiError(
       "AI service is unavailable. Type your sentence to keep practicing.",

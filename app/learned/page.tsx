@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   BookOpen,
@@ -26,6 +26,8 @@ type RemovedWord = {
   index: number;
 };
 
+const UNDO_DISMISS_MS = 8_000;
+
 const sourceLabels: Record<SourceFilter, string> = {
   all: "All sources",
   seed: "Starter",
@@ -43,7 +45,7 @@ const difficultyLabels: Record<DifficultyFilter, string> = {
 };
 
 export default function LearnedPage() {
-  const { removeWord, saveWord, words } = useLearnedWords();
+  const { removeWord, restoreWord, words } = useLearnedWords();
   const [query, setQuery] = useState("");
   const [sourceFilter, setSourceFilter] = useState<SourceFilter>("all");
   const [difficultyFilter, setDifficultyFilter] =
@@ -103,13 +105,29 @@ export default function LearnedPage() {
     difficultyFilter !== "all" ||
     tagFilter !== "all";
 
-  const handleRemove = (word: LearnedWord, index: number) => {
+  useEffect(() => {
+    if (!removedWord) {
+      return;
+    }
+
+    const removedId = removedWord.word.id;
+    const timeout = window.setTimeout(() => {
+      setRemovedWord((current) =>
+        current?.word.id === removedId ? null : current,
+      );
+    }, UNDO_DISMISS_MS);
+
+    return () => window.clearTimeout(timeout);
+  }, [removedWord]);
+
+  const handleRemove = (word: LearnedWord) => {
     if (!word.id) {
       return;
     }
 
+    const index = words.findIndex((candidate) => candidate.id === word.id);
     removeWord(word.id);
-    setRemovedWord({ word, index });
+    setRemovedWord({ word, index: Math.max(0, index) });
   };
 
   const handleUndoRemove = () => {
@@ -117,16 +135,7 @@ export default function LearnedPage() {
       return;
     }
 
-    saveWord(
-      {
-        word: removedWord.word.word,
-        wordDev: removedWord.word.wordDev,
-        meaning: removedWord.word.meaning,
-        simpleAlternative: removedWord.word.simpleAlternative,
-        exampleSentence: removedWord.word.exampleSentence,
-      },
-      removedWord.word.source,
-    );
+    restoreWord(removedWord.word, removedWord.index);
     setRemovedWord(null);
   };
 
@@ -250,7 +259,7 @@ export default function LearnedPage() {
               key={word.id}
               index={index}
               word={word}
-              onRemove={() => handleRemove(word, index)}
+              onRemove={() => handleRemove(word)}
             />
           ))}
         </div>

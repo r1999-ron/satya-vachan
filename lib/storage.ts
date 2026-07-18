@@ -33,6 +33,7 @@ const EMPTY_STREAK: StreakState = {
 };
 
 const PRACTICE_HISTORY_LIMIT = 10;
+const COMPLETED_CHALLENGES_LIMIT = 60;
 const PREFERENCES_EVENT = "satya-vachan:preferences";
 
 type Preferences = {
@@ -169,10 +170,14 @@ function isStreakState(value: unknown): value is StreakState {
   );
 }
 
+function trimCompletedChallenges(dates: string[]) {
+  return Array.from(
+    new Set(dates.map((date) => date.trim()).filter(Boolean)),
+  ).slice(-COMPLETED_CHALLENGES_LIMIT);
+}
+
 function normalizeStreakState(streak: StreakState): StreakState {
-  const completedChallenges = Array.from(
-    new Set(streak.completedChallenges.map((date) => date.trim()).filter(Boolean)),
-  );
+  const completedChallenges = trimCompletedChallenges(streak.completedChallenges);
   const currentStreak = Math.max(0, Math.floor(streak.currentStreak));
   const longestStreak = Math.max(currentStreak, Math.floor(streak.longestStreak));
 
@@ -235,7 +240,8 @@ export function saveLearnedWord(
   source: LearnedWord["source"] = "manual",
 ): LearnedWord[] {
   const word = cleanRequired(input.word);
-  const wordDev = cleanRequired(input.wordDev || input.word);
+  const suppliedWordDev = cleanOptional(input.wordDev);
+  const wordDev = suppliedWordDev ?? word;
   const meaning = cleanRequired(input.meaning);
 
   if (!word || !meaning) {
@@ -252,10 +258,12 @@ export function saveLearnedWord(
     const existing = nextWords[duplicateIndex];
     nextWords[duplicateIndex] = {
       ...existing,
-      meaning: existing.meaning || meaning,
-      wordDev: existing.wordDev || wordDev,
-      simpleAlternative: existing.simpleAlternative || cleanOptional(input.simpleAlternative),
-      exampleSentence: existing.exampleSentence || cleanRequired(input.exampleSentence),
+      meaning,
+      wordDev: suppliedWordDev ?? existing.wordDev,
+      simpleAlternative:
+        cleanOptional(input.simpleAlternative) ?? existing.simpleAlternative,
+      exampleSentence:
+        cleanRequired(input.exampleSentence) || existing.exampleSentence,
     };
     writeJson(STORAGE_KEYS.learnedWords, nextWords);
     return nextWords;
@@ -286,6 +294,26 @@ export function removeLearnedWord(id: string): LearnedWord[] {
   return nextWords;
 }
 
+export function restoreLearnedWord(word: LearnedWord, index = 0): LearnedWord[] {
+  if (!isLearnedWord(word)) {
+    return loadLearnedWords();
+  }
+
+  const restoredWord = normalizeLearnedWord(word);
+  const normalizedWord = restoredWord.word.toLocaleLowerCase();
+  const currentWords = loadLearnedWords().filter(
+    (existing) =>
+      existing.id !== restoredWord.id &&
+      existing.word.toLocaleLowerCase() !== normalizedWord,
+  );
+  const restoredIndex = Math.max(0, Math.min(Math.floor(index), currentWords.length));
+  const nextWords = [...currentWords];
+  nextWords.splice(restoredIndex, 0, restoredWord);
+
+  writeJson(STORAGE_KEYS.learnedWords, nextWords);
+  return nextWords;
+}
+
 export function loadStreakState(): StreakState {
   const stored = readJson<unknown>(STORAGE_KEYS.streak, EMPTY_STREAK);
 
@@ -294,7 +322,13 @@ export function loadStreakState(): StreakState {
     return EMPTY_STREAK;
   }
 
-  return normalizeStreakState(stored);
+  const normalized = normalizeStreakState(stored);
+
+  if (JSON.stringify(normalized) !== JSON.stringify(stored)) {
+    writeJson(STORAGE_KEYS.streak, normalized);
+  }
+
+  return normalized;
 }
 
 function getPreviousDateKey(dateKey: string) {
@@ -311,9 +345,10 @@ export function completeTodaysChallenge(date: Date = new Date()): StreakState {
   if (previousState.lastCompletedDate === todayKey) {
     const nextState = {
       ...previousState,
-      completedChallenges: previousState.completedChallenges.includes(todayKey)
-        ? previousState.completedChallenges
-        : [...previousState.completedChallenges, todayKey],
+      completedChallenges: trimCompletedChallenges([
+        ...previousState.completedChallenges,
+        todayKey,
+      ]),
     };
     writeJson(STORAGE_KEYS.streak, nextState);
     return nextState;
@@ -326,9 +361,10 @@ export function completeTodaysChallenge(date: Date = new Date()): StreakState {
     currentStreak,
     longestStreak: Math.max(previousState.longestStreak, currentStreak),
     lastCompletedDate: todayKey,
-    completedChallenges: previousState.completedChallenges.includes(todayKey)
-      ? previousState.completedChallenges
-      : [...previousState.completedChallenges, todayKey],
+    completedChallenges: trimCompletedChallenges([
+      ...previousState.completedChallenges,
+      todayKey,
+    ]),
   };
 
   writeJson(STORAGE_KEYS.streak, nextState);
@@ -419,7 +455,19 @@ export function useLearnedWords() {
     return nextWords;
   }, []);
 
-  return { words, saveWord, removeWord, refreshWords: () => setWords(loadLearnedWords()) };
+  const restoreWord = useCallback((word: LearnedWord, index?: number) => {
+    const nextWords = restoreLearnedWord(word, index);
+    setWords(nextWords);
+    return nextWords;
+  }, []);
+
+  return {
+    words,
+    saveWord,
+    removeWord,
+    restoreWord,
+    refreshWords: () => setWords(loadLearnedWords()),
+  };
 }
 
 export function useStreak() {

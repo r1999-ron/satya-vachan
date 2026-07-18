@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { jsonApiError } from "@/lib/api-errors";
+import { guardAiRequest } from "@/lib/api-guard";
 import { getOpenAIClient, isOpenAIConfigured } from "@/lib/openai";
 import { validateTtsText } from "@/lib/validators";
 import type { TtsResponse } from "@/types";
@@ -21,6 +22,12 @@ type TtsRequestBody = {
 const TTS_VARIANTS = new Set<TtsVariant>(["natural", "elevated"]);
 
 export async function POST(request: Request) {
+  const guardResponse = guardAiRequest(request, "tts");
+
+  if (guardResponse) {
+    return guardResponse;
+  }
+
   let body: TtsRequestBody;
 
   try {

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getMockPracticeResponse } from "@/data/demo";
 import { jsonApiError } from "@/lib/api-errors";
+import { guardAiRequest } from "@/lib/api-guard";
 import {
   getOpenAIClient,
   isLocalDemoMockModeEnabled,
@@ -20,12 +21,19 @@ import {
 export const runtime = "nodejs";
 
 const TRANSFORM_MODEL = process.env.OPENAI_TRANSFORM_MODEL ?? "gpt-4o-mini";
+const TRANSFORM_MAX_TOKENS = 1_400;
 
 type TransformRequestBody = {
   transcript?: unknown;
 };
 
 export async function POST(request: Request) {
+  const guardResponse = guardAiRequest(request, "transform");
+
+  if (guardResponse) {
+    return guardResponse;
+  }
+
   let body: TransformRequestBody;
 
   try {
@@ -88,6 +96,7 @@ export async function POST(request: Request) {
       ],
       response_format: transformationResponseFormat,
       temperature: 0.45,
+      max_completion_tokens: TRANSFORM_MAX_TOKENS,
     });
 
     const content = completion.choices[0]?.message.content;

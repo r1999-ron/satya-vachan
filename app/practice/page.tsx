@@ -1,7 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
-import type { CSSProperties } from "react";
+import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
+import { useSearchParams } from "next/navigation";
 import {
   ArrowRight,
   Clock3,
@@ -18,25 +26,23 @@ import { HindiText } from "@/components/hindi/HindiText";
 import { TransformationResult } from "@/components/practice/TransformationResult";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { LoadingMeter } from "@/components/ui/LoadingMeter";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import {
   defaultTransformationExample,
   getDemoHints,
 } from "@/data/demo";
 import { wordCorpus } from "@/data/words";
+import { useTranscription } from "@/hooks/useTranscription";
 import { requestJson } from "@/lib/api-client";
-import { formatRecordingDuration, recordingToFile } from "@/lib/audio";
+import { formatRecordingDuration } from "@/lib/audio";
 import {
   type PracticeHistoryItem,
   useLearnedWords,
   usePracticeHistory,
 } from "@/lib/storage";
 import { cn } from "@/lib/utils";
-import {
-  isRecord,
-  normalizePracticeResponse,
-  validateTranscript,
-} from "@/lib/validators";
+import { normalizePracticeResponse, validateTranscript } from "@/lib/validators";
 import type {
   LearnedWordInput,
   PracticeResponse,
@@ -96,14 +102,50 @@ const initialPracticeState: PracticeState = {
   lastFailedStep: null,
 };
 
+function PracticePageFallback() {
+  return (
+    <GlassCard className="animate-floatIn p-6 sm:p-8" aria-busy="true">
+      <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-300">
+        Loading practice...
+      </p>
+    </GlassCard>
+  );
+}
+
 export default function PracticePage() {
+  return (
+    <Suspense fallback={<PracticePageFallback />}>
+      <PracticeContent />
+    </Suspense>
+  );
+}
+
+function PracticeContent() {
   const hints = getDemoHints(3);
+  const searchParams = useSearchParams();
+  const wordParam = searchParams.get("word")?.trim() ?? "";
   const resultRef = useRef<HTMLDivElement | null>(null);
   const { saveWord, words } = useLearnedWords();
   const { history, saveHistory } = usePracticeHistory();
   const [state, dispatch] = useReducer(practiceReducer, initialPracticeState);
   const [recorderResetKey, setRecorderResetKey] = useState(0);
-  const [practiceContext, setPracticeContext] = useState<WordEntry | string | null>(null);
+  const practiceContext = useMemo<WordEntry | string | null>(() => {
+    if (!wordParam) {
+      return null;
+    }
+
+    const normalizedWord = wordParam.toLocaleLowerCase();
+    return (
+      wordCorpus.find((entry) =>
+        [entry.id, entry.common, entry.elevated, ...entry.synonyms]
+          .flatMap((value) =>
+            typeof value === "string" ? [value] : [value.dev, value.roman],
+          )
+          .map((value) => value.trim().toLocaleLowerCase())
+          .includes(normalizedWord),
+      ) ?? wordParam
+    );
+  }, [wordParam]);
 
   const savedWordKeys = useMemo(
     () =>
@@ -134,28 +176,6 @@ export default function PracticePage() {
       });
     }
   }, [state.result]);
-
-  useEffect(() => {
-    const wordParam = new URLSearchParams(window.location.search).get("word")?.trim();
-
-    if (!wordParam) {
-      return;
-    }
-
-    const normalizedWord = wordParam.toLocaleLowerCase();
-    const matchingEntry = wordCorpus.find((entry) =>
-      [entry.id, entry.common, entry.elevated, ...entry.synonyms]
-        .flatMap((value) =>
-          typeof value === "string" ? [value] : [value.dev, value.roman],
-        )
-        .map((value) => value.toLocaleLowerCase())
-        .includes(normalizedWord),
-    );
-
-    queueMicrotask(() => {
-      setPracticeContext(matchingEntry ?? wordParam);
-    });
-  }, []);
 
   const isWordSaved = useCallback(
     (word: string) => savedWordKeys.has(word.trim().toLocaleLowerCase()),
@@ -191,8 +211,12 @@ export default function PracticePage() {
             normalizePracticeResponse(value, transcriptResult.value),
         });
 
-        saveHistory(payload);
-        dispatch({ type: "transformation_succeeded", result: payload });
+        const result = {
+          ...payload,
+          transcript: transcriptResult.value,
+        };
+        saveHistory(result);
+        dispatch({ type: "transformation_succeeded", result });
       } catch (caughtError) {
         dispatch({
           type: "transformation_failed",
@@ -206,48 +230,29 @@ export default function PracticePage() {
     [saveHistory, state.transcript],
   );
 
-  const transcribeRecording = useCallback(async (recording: RecordingResult) => {
+  const handleTranscriptionStart = useCallback((recording: RecordingResult) => {
     dispatch({ type: "transcription_started", recording });
-
-    try {
-      const formData = new FormData();
-      formData.append("file", recordingToFile(recording));
-      formData.append("durationMs", String(recording.durationMs));
-
-      const payload = await requestJson<{ transcript: string }>("/api/transcribe", {
-        method: "POST",
-        body: formData,
-        fallbackMessage: "Transcription failed. Please type your sentence.",
-        timeoutMs: 30_000,
-        validate: (value) => {
-          const transcript =
-            isRecord(value) && typeof value.transcript === "string"
-              ? value.transcript.trim()
-              : "";
-
-          return transcript ? { transcript } : null;
-        },
-      });
-
-      const nextTranscript = payload.transcript;
-
-      dispatch({
-        type: "transcription_succeeded",
-        transcript: nextTranscript,
-        notice: "Review the transcript, then polish the sentence.",
-      });
-    } catch (caughtError) {
-      dispatch({
-        type: "transcription_failed",
-        error:
-          caughtError instanceof Error
-            ? caughtError.message
-            : "Transcription failed. Please type your sentence.",
-        notice:
-          "The recording is still available. You can retry upload or type the sentence below.",
-      });
-    }
   }, []);
+  const handleTranscriptionSuccess = useCallback((transcript: string) => {
+    dispatch({
+      type: "transcription_succeeded",
+      transcript,
+      notice: "Review the transcript, then polish the sentence.",
+    });
+  }, []);
+  const handleTranscriptionError = useCallback((error: string) => {
+    dispatch({
+      type: "transcription_failed",
+      error,
+      notice:
+        "The recording is still available. You can retry upload or type the sentence below.",
+    });
+  }, []);
+  const transcribeRecording = useTranscription({
+    onError: handleTranscriptionError,
+    onStart: handleTranscriptionStart,
+    onSuccess: handleTranscriptionSuccess,
+  });
 
   const handleSelectHint = useCallback(
     (hint: string) => {
@@ -619,7 +624,6 @@ function practiceReducer(
         ...state,
         status: "resultReady",
         result: action.result,
-        transcript: action.result.transcript,
         transformError: "",
         lastFailedStep: null,
       };
@@ -685,20 +689,6 @@ function LoadingState({ status }: { status: PracticeStatus }) {
         </p>
         <LoadingMeter />
       </div>
-    </div>
-  );
-}
-
-function LoadingMeter() {
-  return (
-    <div className="mt-4 grid gap-2" aria-hidden="true">
-      {[0, 1, 2].map((index) => (
-        <span
-          key={index}
-          className="loading-sheen h-2 rounded-full bg-white/55 dark:bg-white/10"
-          style={{ "--sheen-delay": `${index * 120}ms` } as CSSProperties}
-        />
-      ))}
     </div>
   );
 }

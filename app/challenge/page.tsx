@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useMemo, useReducer, useState } from "react";
-import type { CSSProperties } from "react";
 import {
   AlertCircle,
   BookOpenCheck,
@@ -19,16 +18,18 @@ import {
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { HindiText } from "@/components/hindi/HindiText";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { LoadingMeter } from "@/components/ui/LoadingMeter";
 import { ProgressRing } from "@/components/ui/ProgressRing";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { getWordOfTheDay } from "@/data/words";
+import { useTranscription } from "@/hooks/useTranscription";
 import { requestJson } from "@/lib/api-client";
-import { formatRecordingDuration, recordingToFile } from "@/lib/audio";
+import { formatRecordingDuration } from "@/lib/audio";
 import { formatReadableDate } from "@/lib/dates";
 import { useLearnedWords, useStreak } from "@/lib/storage";
 import { cn } from "@/lib/utils";
+import { containsTargetWord } from "@/lib/word-match";
 import {
-  isRecord,
   normalizeChallengeResponse,
   validateTranscript,
 } from "@/lib/validators";
@@ -137,48 +138,29 @@ export default function ChallengePage() {
     [completeToday, completedToday],
   );
 
-  const transcribeRecording = useCallback(async (recording: RecordingResult) => {
+  const handleTranscriptionStart = useCallback((recording: RecordingResult) => {
     dispatch({ type: "transcription_started", recording });
-
-    try {
-      const formData = new FormData();
-      formData.append("file", recordingToFile(recording));
-      formData.append("durationMs", String(recording.durationMs));
-
-      const payload = await requestJson<{ transcript: string }>("/api/transcribe", {
-        method: "POST",
-        body: formData,
-        fallbackMessage: "Transcription failed. Please type your sentence.",
-        timeoutMs: 30_000,
-        validate: (value) => {
-          const transcript =
-            isRecord(value) && typeof value.transcript === "string"
-              ? value.transcript.trim()
-              : "";
-
-          return transcript ? { transcript } : null;
-        },
-      });
-
-      const nextTranscript = payload.transcript;
-
-      dispatch({
-        type: "transcription_succeeded",
-        transcript: nextTranscript,
-        notice: "Transcript ready. Edit it, then check the challenge.",
-      });
-    } catch (caughtError) {
-      dispatch({
-        type: "transcription_failed",
-        error:
-          caughtError instanceof Error
-            ? caughtError.message
-            : "Transcription failed. Please type your sentence.",
-        notice:
-          "The recording is still available. You can retry upload or type the sentence below.",
-      });
-    }
   }, []);
+  const handleTranscriptionSuccess = useCallback((transcript: string) => {
+    dispatch({
+      type: "transcription_succeeded",
+      transcript,
+      notice: "Transcript ready. Edit it, then check the challenge.",
+    });
+  }, []);
+  const handleTranscriptionError = useCallback((error: string) => {
+    dispatch({
+      type: "transcription_failed",
+      error,
+      notice:
+        "The recording is still available. You can retry upload or type the sentence below.",
+    });
+  }, []);
+  const transcribeRecording = useTranscription({
+    onError: handleTranscriptionError,
+    onStart: handleTranscriptionStart,
+    onSuccess: handleTranscriptionSuccess,
+  });
 
   const validateChallenge = useCallback(
     async (nextTranscript = state.transcript) => {
@@ -216,7 +198,10 @@ export default function ChallengePage() {
             normalizeChallengeResponse(value, transcriptResult.value),
         });
 
-        finishValidation(payload);
+        finishValidation({
+          ...payload,
+          transcript: transcriptResult.value,
+        });
       } catch {
         finishValidation(
           evaluateChallengeLocally(transcriptResult.value, todayWord),
@@ -660,7 +645,6 @@ function challengeReducer(
       return {
         ...state,
         status: action.result.acceptableUsage ? "completed" : "transcriptReady",
-        transcript: action.result.transcript,
         validationError: "",
         fallbackNotice: action.fallbackNotice ?? "",
         result: action.result,
@@ -768,20 +752,6 @@ function LoadingState({ status }: { status: ChallengeStatus }) {
         </p>
         <LoadingMeter />
       </div>
-    </div>
-  );
-}
-
-function LoadingMeter() {
-  return (
-    <div className="mt-4 grid gap-2" aria-hidden="true">
-      {[0, 1, 2].map((index) => (
-        <span
-          key={index}
-          className="loading-sheen h-2 rounded-full bg-white/55 dark:bg-white/10"
-          style={{ "--sheen-delay": `${index * 120}ms` } as CSSProperties}
-        />
-      ))}
     </div>
   );
 }
@@ -925,11 +895,11 @@ function StatusTile({
 }
 
 function getSentenceStarters(wordEntry: WordEntry) {
-  return [
-    `मेरा आज का ${wordEntry.elevated.dev} है...`,
-    `इस ${wordEntry.elevated.dev} को पूरा करने के लिए...`,
-    `मैंने ${wordEntry.elevated.dev} को ध्यान से...`,
-  ];
+  const starters = wordEntry.starters
+    .map((starter) => starter.dev.trim())
+    .filter(Boolean);
+
+  return starters.length > 0 ? starters : [wordEntry.elevatedExample.dev];
 }
 
 function evaluateChallengeLocally(
@@ -973,45 +943,6 @@ function evaluateChallengeLocally(
       "Sundar prayog. Target word vaakya mein spasht hai aur usage natural lag raha hai.",
     completed: true,
   };
-}
-
-function containsTargetWord(transcript: string, targetWord: string) {
-  const normalizedTranscript = normalizeForMatch(transcript);
-  const normalizedTarget = normalizeForMatch(targetWord);
-  const compactTranscript = compactLongVowels(normalizedTranscript);
-  const compactTarget = compactLongVowels(normalizedTarget);
-
-  return (
-    hasTokenMatch(normalizedTranscript, normalizedTarget) ||
-    hasTokenMatch(compactTranscript, compactTarget)
-  );
-}
-
-function hasTokenMatch(transcript: string, targetWord: string) {
-  if (!targetWord) {
-    return false;
-  }
-
-  const escapedTarget = targetWord.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return new RegExp(`(^|\\s)${escapedTarget}(?=$|\\s)`, "i").test(transcript);
-}
-
-function normalizeForMatch(value: string) {
-  return value
-    .toLocaleLowerCase()
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^\p{L}\p{N}]+/gu, " ")
-    .trim();
-}
-
-function compactLongVowels(value: string) {
-  return value
-    .replace(/aa/g, "a")
-    .replace(/ee/g, "i")
-    .replace(/ii/g, "i")
-    .replace(/oo/g, "u")
-    .replace(/uu/g, "u");
 }
 
 function statusLabel(status: ChallengeStatus) {

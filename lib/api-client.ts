@@ -36,8 +36,21 @@ export async function requestJson<T>(
 ): Promise<T> {
   const controller = new AbortController();
   const externalSignal = init.signal;
-  const abortFromExternal = () => controller.abort();
-  const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
+  let abortCause: "external" | "timeout" | null = externalSignal?.aborted
+    ? "external"
+    : null;
+  const abortFromExternal = () => {
+    if (!controller.signal.aborted) {
+      abortCause = "external";
+      controller.abort();
+    }
+  };
+  const timeout = window.setTimeout(() => {
+    if (!controller.signal.aborted) {
+      abortCause = "timeout";
+      controller.abort();
+    }
+  }, timeoutMs);
   const requestInit: RequestInit = {
     ...init,
     headers,
@@ -94,9 +107,16 @@ export async function requestJson<T>(
 
     return payload as T;
   } catch (caughtError) {
-    if (caughtError instanceof DOMException && caughtError.name === "AbortError") {
+    if (controller.signal.aborted) {
+      if (abortCause === "external") {
+        throw new ApiRequestError("The request was cancelled.", {
+          code: "ABORTED",
+        });
+      }
+
       throw new ApiRequestError(
         "This is taking longer than expected. Please retry in a moment.",
+        { code: "TIMEOUT" },
       );
     }
 
@@ -113,6 +133,10 @@ export async function requestJson<T>(
     externalSignal?.removeEventListener("abort", abortFromExternal);
     window.clearTimeout(timeout);
   }
+}
+
+export function isApiRequestErrorCode(error: unknown, code: string) {
+  return error instanceof ApiRequestError && error.code === code;
 }
 
 async function readJsonSafely(response: Response) {
