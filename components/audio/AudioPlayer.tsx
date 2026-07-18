@@ -13,7 +13,7 @@ import { isApiRequestErrorCode, requestJson } from "@/lib/api-client";
 import { cacheTtsAudio, getCachedTtsAudio } from "@/lib/tts-cache";
 import { cn } from "@/lib/utils";
 import { normalizeTtsResponse } from "@/lib/validators";
-import type { TtsResponse } from "@/types";
+import type { TtsResponse, VoicePreference } from "@/types";
 
 type AudioVariant = "natural" | "elevated";
 
@@ -24,6 +24,7 @@ type AudioPlayerProps = {
   onStatusChange?: (status: PlayerStatus) => void;
   text: string;
   variant?: AudioVariant;
+  voice?: VoicePreference;
 };
 
 type PlayerStatus = "idle" | "loading" | "ready" | "playing" | "error";
@@ -35,6 +36,7 @@ export function AudioPlayer({
   onStatusChange,
   text,
   variant = "natural",
+  voice = "female",
 }: AudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -72,7 +74,7 @@ export function AudioPlayer({
 
     const cachedAudio = force
       ? undefined
-      : getCachedTtsAudio(trimmedText, variant);
+      : getCachedTtsAudio(trimmedText, variant, voice);
 
     if (cachedAudio) {
       const cachedUrl = URL.createObjectURL(cachedAudio);
@@ -93,7 +95,7 @@ export function AudioPlayer({
     try {
       const payload = await requestJson<TtsResponse>("/api/tts", {
         method: "POST",
-        body: { text: trimmedText, variant },
+        body: { text: trimmedText, variant, voice },
         signal: controller.signal,
         fallbackMessage: "Audio generation failed. Please try again.",
         timeoutMs: 20_000,
@@ -102,7 +104,7 @@ export function AudioPlayer({
 
       const blob = base64ToAudioBlob(payload.audioBase64, payload.mimeType);
       const nextUrl = URL.createObjectURL(blob);
-      cacheTtsAudio(trimmedText, variant, blob);
+      cacheTtsAudio(trimmedText, variant, voice, blob);
 
       clearGeneratedUrl();
       generatedUrlRef.current = nextUrl;
@@ -127,7 +129,7 @@ export function AudioPlayer({
         abortRef.current = null;
       }
     }
-  }, [audioUrl, clearGeneratedUrl, isLoading, trimmedText, variant]);
+  }, [audioUrl, clearGeneratedUrl, isLoading, trimmedText, variant, voice]);
 
   useEffect(() => {
     return () => {

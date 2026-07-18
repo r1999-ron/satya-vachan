@@ -2,24 +2,30 @@ import { NextResponse } from "next/server";
 import { jsonApiError } from "@/lib/api-errors";
 import { guardAiRequest } from "@/lib/api-guard";
 import { getOpenAIClient, isOpenAIConfigured } from "@/lib/openai";
+import { PROMPTS } from "@/lib/prompts";
 import { validateTtsText } from "@/lib/validators";
 import type { TtsResponse } from "@/types";
 
 export const runtime = "nodejs";
 
 const TTS_MODEL = "gpt-4o-mini-tts";
-const TTS_VOICE = "sage";
-const TTS_INSTRUCTIONS =
-  "Speak in clear, polished Hindi with a calm teacher-like tone. Pronounce Sanskritized Hindi words carefully. Keep the delivery natural, not theatrical.";
+const TTS_INSTRUCTIONS = PROMPTS.tts.instruction;
+const TTS_SPEED = PROMPTS.tts.speed;
 
 type TtsVariant = "natural" | "elevated";
+type TtsVoicePreference = "female" | "male";
 
 type TtsRequestBody = {
   text?: unknown;
   variant?: unknown;
+  voice?: unknown;
 };
 
 const TTS_VARIANTS = new Set<TtsVariant>(["natural", "elevated"]);
+const TTS_VOICES: Record<TtsVoicePreference, "nova" | "onyx"> = {
+  female: "nova",
+  male: "onyx",
+};
 
 export async function POST(request: Request) {
   const guardResponse = guardAiRequest(request, "tts");
@@ -48,8 +54,9 @@ export async function POST(request: Request) {
 
   const text = textResult.value;
   const variant = getVariant(body.variant);
+  const voicePreference = getVoicePreference(body.voice);
 
-  if (!variant) {
+  if (!variant || !voicePreference) {
     return jsonApiError("Choose a recognized audio variant.", "INVALID_REQUEST", 400);
   }
 
@@ -70,13 +77,15 @@ export async function POST(request: Request) {
         feature: "text-to-speech",
         language: "hi",
         variant,
+        voicePreference,
       },
     }).audio.speech.create({
       model: TTS_MODEL,
-      voice: TTS_VOICE,
+      voice: TTS_VOICES[voicePreference],
       input: text,
       instructions: getInstructions(variant),
       response_format: "mp3",
+      speed: TTS_SPEED,
     });
     const audioBuffer = Buffer.from(await speech.arrayBuffer());
     const response: TtsResponse = {
@@ -104,6 +113,14 @@ function getVariant(value: unknown): TtsVariant | null {
   return typeof value === "string" && TTS_VARIANTS.has(value as TtsVariant)
     ? (value as TtsVariant)
     : null;
+}
+
+function getVoicePreference(value: unknown): TtsVoicePreference | null {
+  if (value === undefined || value === null || value === "") {
+    return "female";
+  }
+
+  return value === "female" || value === "male" ? value : null;
 }
 
 function getInstructions(variant: TtsVariant) {

@@ -6,11 +6,13 @@ import {
   isChallengeComplete,
   loadLearnedWords,
   loadPracticeHistory,
+  loadPreferences,
   loadStreakState,
   removeLearnedWord,
   restoreLearnedWord,
   saveLearnedWord,
   savePracticeHistory,
+  saveVoicePreference,
 } from "@/lib/storage";
 import { seedLearnedWords } from "@/data/demo";
 import type { PracticeResponse } from "@/types";
@@ -48,7 +50,12 @@ const storage = new MemoryStorage();
 function installWindow(localStorage: Storage = storage) {
   Object.defineProperty(globalThis, "window", {
     configurable: true,
-    value: { localStorage },
+    value: {
+      localStorage,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+      dispatchEvent: () => true,
+    },
   });
 }
 
@@ -85,6 +92,14 @@ describe("storage", () => {
     installWindow(blockedStorage);
 
     expect(canUseLocalStorage()).toBe(false);
+  });
+
+  it("defaults to a female voice and persists a selected voice", () => {
+    expect(loadPreferences()).toEqual({ script: "both", voice: "female" });
+
+    saveVoicePreference("male");
+
+    expect(loadPreferences()).toEqual({ script: "both", voice: "male" });
   });
 
   it("initializes learned words from the seed data when the key is missing", () => {
