@@ -1,4 +1,5 @@
 import { ArrowRight, Check, Plus } from "lucide-react";
+import { HindiText } from "@/components/hindi/HindiText";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { cn } from "@/lib/utils";
 import type { LearnedWordInput, WordReplacement } from "@/types";
@@ -30,23 +31,19 @@ export function WordReplacementCard({
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 space-y-3">
           <div className="flex flex-wrap items-center gap-2 text-lg font-bold">
-            <span lang="hi" className="text-wrap-anywhere text-zinc-600 line-through decoration-zinc-400/70 decoration-2 dark:text-zinc-400">
-              {replacement.original}
-            </span>
+            <HindiText text={replacement.original} kind="inline" className="text-wrap-anywhere text-zinc-600 line-through decoration-zinc-400/70 decoration-2 dark:text-zinc-400" />
             <ArrowRight
               className="text-amber-600"
               size={18}
               aria-hidden="true"
             />
-            <span lang="hi" className="text-wrap-anywhere text-ink dark:text-white">
-              {replacement.replacement}
-            </span>
+            <HindiText text={replacement.replacement} kind="inline" className="text-wrap-anywhere text-ink dark:text-white" />
             <StatusBadge tone="blue">{replacement.naturalness}</StatusBadge>
           </div>
-          <p lang="hi" className="text-wrap-anywhere text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+          <p className="text-wrap-anywhere text-sm font-semibold text-zinc-700 dark:text-zinc-300">
             {replacement.meaning}
           </p>
-          <p lang="hi" className="text-wrap-anywhere text-sm leading-7 text-zinc-600 dark:text-zinc-400">
+          <p lang="hi-Latn" className="text-wrap-anywhere text-sm leading-7 text-zinc-600 dark:text-zinc-400">
             {replacement.whyBetter}
           </p>
         </div>

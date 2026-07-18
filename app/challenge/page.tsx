@@ -17,6 +17,7 @@ import {
   type RecorderState,
 } from "@/components/audio/RecorderButton";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { HindiText } from "@/components/hindi/HindiText";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ProgressRing } from "@/components/ui/ProgressRing";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -31,7 +32,7 @@ import {
   normalizeChallengeResponse,
   validateTranscript,
 } from "@/lib/validators";
-import type { ChallengeResponse, RecordingResult, WordEntry } from "@/types";
+import type { ChallengeResponse, HindiText as HindiTextValue, RecordingResult, WordEntry } from "@/types";
 
 type ChallengeStatus =
   | "idle"
@@ -116,7 +117,7 @@ export default function ChallengePage() {
       words.some(
         (word) =>
           word.word.trim().toLocaleLowerCase() ===
-            todayWord.elevated.toLocaleLowerCase(),
+            todayWord.elevated.roman.toLocaleLowerCase(),
       ),
     [todayWord.elevated, words],
   );
@@ -205,7 +206,7 @@ export default function ChallengePage() {
           method: "POST",
           body: {
             transcript: transcriptResult.value,
-            targetWord: todayWord.elevated,
+            targetWord: todayWord.elevated.roman,
             wordEntry: todayWord,
           },
           fallbackMessage:
@@ -278,10 +279,11 @@ export default function ChallengePage() {
 
     saveWord(
       {
-        word: todayWord.elevated,
+        word: todayWord.elevated.roman,
+        wordDev: todayWord.elevated.dev,
         meaning: todayWord.englishMeaning,
-        simpleAlternative: todayWord.common,
-        exampleSentence: todayWord.elevatedExample,
+        simpleAlternative: todayWord.common.roman,
+        exampleSentence: todayWord.elevatedExample.roman,
       },
       "challenge",
     );
@@ -310,7 +312,7 @@ export default function ChallengePage() {
 
           <div className="mt-6">
             <h1 className="text-balance text-4xl font-bold tracking-[-0.035em] text-ink sm:text-5xl dark:text-white">
-              Use <span className="text-amber-700 dark:text-amber-300">{todayWord.elevated}</span> in a sentence.
+              Use <HindiText text={todayWord.elevated} kind="inline" className="text-amber-700 dark:text-amber-300" /> in a sentence.
             </h1>
           </div>
 
@@ -401,11 +403,10 @@ export default function ChallengePage() {
             </div>
 
             <textarea
-              lang="hi"
               value={state.transcript}
               disabled={isBusy}
               onChange={(event) => handleTranscriptChange(event.target.value)}
-              placeholder={`Use "${todayWord.elevated}" in one Hindi sentence...`}
+              placeholder={`Use “${todayWord.elevated.dev}” in one Hindi sentence...`}
               className="mt-5 min-h-36 w-full resize-y rounded-2xl border border-white/60 bg-white/55 p-4 text-sm font-semibold leading-7 text-ink outline-none transition placeholder:text-zinc-400 focus:border-amber-300 focus:ring-2 focus:ring-amber-400/35 disabled:cursor-not-allowed disabled:opacity-70 dark:border-white/12 dark:bg-white/8 dark:text-white dark:placeholder:text-zinc-500"
             />
 
@@ -493,7 +494,7 @@ export default function ChallengePage() {
           <ChallengeFeedback
             fallbackNotice={state.fallbackNotice}
             result={state.result}
-            targetWord={todayWord.elevated}
+            targetWord={todayWord.elevated.dev}
           />
         ) : null}
       </section>
@@ -528,21 +529,20 @@ export default function ChallengePage() {
               <span className="font-bold text-zinc-800 dark:text-zinc-100">
                 Simple:
               </span>{" "}
-              <span lang="hi">{todayWord.simpleExample}</span>
+              <HindiText text={todayWord.simpleExample} />
             </p>
             <p className="text-wrap-anywhere text-amber-900 dark:text-amber-100">
               <span className="font-bold">Polished:</span>{" "}
-              <span lang="hi">{todayWord.elevatedExample}</span>
+              <HindiText text={todayWord.elevatedExample} />
             </p>
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
             {todayWord.synonyms.map((synonym) => (
               <span
-                key={synonym}
-                lang="hi"
+                key={synonym.roman}
                 className="rounded-full bg-white/45 px-3 py-1 text-xs font-bold text-zinc-600 dark:bg-white/8 dark:text-zinc-300"
               >
-                {synonym}
+                <HindiText text={synonym} kind="inline" />
               </span>
             ))}
           </div>
@@ -688,7 +688,7 @@ function WordPanel({
 }: {
   featured?: boolean;
   label: string;
-  value: string;
+  value: HindiTextValue;
 }) {
   return (
     <div
@@ -709,15 +709,12 @@ function WordPanel({
       >
         {label}
       </p>
-      <p
-        lang="hi"
-        className={cn(
-          "mt-2 text-wrap-anywhere text-3xl font-bold",
-          featured ? "text-ink dark:text-white" : "text-zinc-700 dark:text-zinc-200",
-        )}
-      >
-        {value}
-      </p>
+      <HindiText
+        text={value}
+        kind="word"
+        className="mt-2"
+        devClassName={cn("text-3xl", featured ? "text-ink dark:text-white" : "text-zinc-700 dark:text-zinc-200")}
+      />
     </div>
   );
 }
@@ -734,7 +731,7 @@ function InfoPanel({
       <p className="text-sm font-bold text-zinc-800 dark:text-zinc-100">
         {title}
       </p>
-      <p lang="hi" className="mt-2 text-wrap-anywhere text-sm leading-7 text-zinc-700 dark:text-zinc-300">
+      <p className="mt-2 text-wrap-anywhere text-sm leading-7 text-zinc-700 dark:text-zinc-300">
         {children}
       </p>
     </div>
@@ -837,7 +834,7 @@ function ChallengeFeedback({
                 ? "That usage works nicely."
                 : `Use ${targetWord} a little more directly.`}
             </h2>
-            <p lang="hi" className="mt-2 text-wrap-anywhere text-sm leading-7 text-zinc-700 dark:text-zinc-300">
+            <p className="mt-2 text-wrap-anywhere text-sm leading-7 text-zinc-700 dark:text-zinc-300">
               {result.feedback}
             </p>
           </div>
@@ -868,7 +865,7 @@ function ChallengeFeedback({
           <p className="text-xs font-bold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
             Suggested version
           </p>
-          <p lang="hi" className="mt-2 text-wrap-anywhere text-sm font-semibold leading-7 text-ink dark:text-white">
+          <p className="mt-2 text-wrap-anywhere text-sm font-semibold leading-7 text-ink dark:text-white">
             {result.suggestedImprovement}
           </p>
         </div>
@@ -929,9 +926,9 @@ function StatusTile({
 
 function getSentenceStarters(wordEntry: WordEntry) {
   return [
-    `Mera aaj ka ${wordEntry.elevated} hai...`,
-    `Is ${wordEntry.elevated} ko poora karne ke liye...`,
-    `Maine ${wordEntry.elevated} ko dhyaan se...`,
+    `मेरा आज का ${wordEntry.elevated.dev} है...`,
+    `इस ${wordEntry.elevated.dev} को पूरा करने के लिए...`,
+    `मैंने ${wordEntry.elevated.dev} को ध्यान से...`,
   ];
 }
 
@@ -939,7 +936,9 @@ function evaluateChallengeLocally(
   transcript: string,
   wordEntry: WordEntry,
 ): ChallengeResponse {
-  const usedTargetWord = containsTargetWord(transcript, wordEntry.elevated);
+  const usedTargetWord =
+    containsTargetWord(transcript, wordEntry.elevated.roman) ||
+    containsTargetWord(transcript, wordEntry.elevated.dev);
   const reasonableLength =
     transcript.trim().length >= 18 && transcript.trim().split(/\s+/).length >= 4;
 
@@ -948,8 +947,8 @@ function evaluateChallengeLocally(
       transcript,
       usedTargetWord: false,
       acceptableUsage: false,
-      feedback: `Aapka vaakya achha aarambh hai. Is baar "${wordEntry.elevated}" shabd ko seedhe vaakya mein jod kar phir se koshish kijiye.`,
-      suggestedImprovement: `${wordEntry.elevated} shabd ka prayog karte hue ek poora vaakya kahiye.`,
+      feedback: `Aapka vaakya achha aarambh hai. Is baar "${wordEntry.elevated.dev}" shabd ko seedhe vaakya mein jod kar phir se koshish kijiye.`,
+      suggestedImprovement: `${wordEntry.elevated.dev} shabd ka prayog karte hue ek poora vaakya kahiye.`,
       completed: false,
     };
   }
@@ -961,7 +960,7 @@ function evaluateChallengeLocally(
       acceptableUsage: false,
       feedback:
         "Target word mil gaya. Ab ise thoda aur poore, natural vaakya mein istemal kijiye.",
-      suggestedImprovement: wordEntry.elevatedExample,
+      suggestedImprovement: wordEntry.elevatedExample.dev,
       completed: false,
     };
   }

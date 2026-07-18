@@ -1,13 +1,21 @@
 export type RegisterLevel = "common" | "formal" | "literary";
 
+export type HindiText = {
+  dev: string;
+  roman: string;
+  en?: string;
+};
+
+export type ScriptPreference = "dev" | "roman" | "both";
+
 export type WordEntry = {
   id: string;
-  common: string;
-  elevated: string;
+  common: HindiText;
+  elevated: HindiText;
   englishMeaning: string;
-  simpleExample: string;
-  elevatedExample: string;
-  synonyms: string[];
+  simpleExample: HindiText;
+  elevatedExample: HindiText;
+  synonyms: HindiText[];
   usageNote: string;
   challengePrompt: string;
   tags: string[];
@@ -15,8 +23,8 @@ export type WordEntry = {
 };
 
 export type WordReplacement = {
-  original: string;
-  replacement: string;
+  original: HindiText;
+  replacement: HindiText;
   meaning: string;
   whyBetter: string;
   naturalness: RegisterLevel;
@@ -24,8 +32,8 @@ export type WordReplacement = {
 
 export type PracticeResponse = {
   transcript: string;
-  naturalPolishedVersion: string;
-  elevatedVersion: string;
+  naturalPolishedVersion: HindiText;
+  elevatedVersion: HindiText;
   originalEleganceScore: number;
   improvedEleganceScore: number;
   feedback: string;
@@ -42,6 +50,7 @@ export type RecordingResult = {
 export type LearnedWord = {
   id: string;
   word: string;
+  wordDev: string;
   meaning: string;
   simpleAlternative?: string;
   exampleSentence: string;
@@ -51,6 +60,7 @@ export type LearnedWord = {
 
 export type LearnedWordInput = {
   word: string;
+  wordDev?: string;
   meaning: string;
   simpleAlternative?: string;
   exampleSentence: string;

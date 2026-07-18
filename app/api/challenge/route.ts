@@ -68,7 +68,7 @@ export async function POST(request: Request) {
 
   if (!isOpenAIConfigured()) {
     if (isLocalDemoMockModeEnabled()) {
-      return NextResponse.json(evaluateChallengeLocally(transcript, targetWord), {
+      return NextResponse.json(evaluateChallengeLocally(transcript, targetWord, wordEntry.elevated.dev), {
         headers: { "X-Satya-Vachan-Demo-Mode": "true" },
       });
     }
@@ -90,11 +90,11 @@ export async function POST(request: Request) {
           content: buildChallengeUserPrompt({
             transcript,
             targetWord,
-            commonWord: wordEntry.common,
+            commonWord: `${wordEntry.common.dev} (${wordEntry.common.roman})`,
             meaning: wordEntry.englishMeaning,
             usageNote: wordEntry.usageNote,
             challengePrompt: wordEntry.challengePrompt,
-            elevatedExample: wordEntry.elevatedExample,
+            elevatedExample: `${wordEntry.elevatedExample.dev} (${wordEntry.elevatedExample.roman})`,
           }),
         },
       ],
@@ -143,8 +143,9 @@ export async function POST(request: Request) {
   }
 }
 
-function evaluateChallengeLocally(transcript: string, targetWord: string) {
-  const usedTargetWord = containsTargetWord(transcript, targetWord);
+function evaluateChallengeLocally(transcript: string, targetWord: string, targetWordDev: string) {
+  const usedTargetWord =
+    containsTargetWord(transcript, targetWord) || containsTargetWord(transcript, targetWordDev);
   const reasonableLength =
     transcript.trim().length >= 18 && transcript.trim().split(/\s+/).length >= 4;
 
@@ -154,7 +155,7 @@ function evaluateChallengeLocally(transcript: string, targetWord: string) {
       usedTargetWord: false,
       acceptableUsage: false,
       feedback: `Demo mode: OpenAI is not configured, so this used a local check. Add "${targetWord}" directly to your sentence and try again.`,
-      suggestedImprovement: `${targetWord} shabd ka prayog karte hue ek poora vaakya kahiye.`,
+      suggestedImprovement: `${targetWordDev || targetWord} शब्द का प्रयोग करते हुए एक पूरा वाक्य कहिए।`,
       completed: false,
     };
   }

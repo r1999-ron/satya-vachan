@@ -1,6 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
+import { getSeedLearnedWords } from "@/data/demo";
 import { getTodayKey } from "@/lib/dates";
-import type { LearnedWord, LearnedWordInput, PracticeResponse, StreakState } from "@/types";
+import { DEFAULT_SCRIPT_PREFERENCE, isHindiText, makeHindiText } from "@/lib/hindi";
+import type {
+  LearnedWord,
+  LearnedWordInput,
+  PracticeResponse,
+  ScriptPreference,
+  StreakState,
+} from "@/types";
 
 export const STORAGE_KEYS = {
   learnedWords: "satya-vachan.learnedWords",
@@ -25,6 +33,11 @@ const EMPTY_STREAK: StreakState = {
 };
 
 const PRACTICE_HISTORY_LIMIT = 10;
+const PREFERENCES_EVENT = "satya-vachan:preferences";
+
+type Preferences = {
+  script: ScriptPreference;
+};
 
 export function canUseLocalStorage() {
   if (typeof window === "undefined") {
@@ -131,6 +144,7 @@ function normalizeLearnedWord(word: LearnedWord): LearnedWord {
   return {
     id: cleanRequired(word.id),
     word: cleanRequired(word.word),
+    wordDev: cleanRequired(word.wordDev || word.word),
     meaning: cleanRequired(word.meaning),
     simpleAlternative: cleanOptional(word.simpleAlternative),
     exampleSentence: cleanRequired(word.exampleSentence),
@@ -179,8 +193,8 @@ function isPracticeHistoryItem(value: unknown): value is PracticeHistoryItem {
     typeof value.id === "string" &&
     typeof value.savedAt === "string" &&
     typeof value.transcript === "string" &&
-    typeof value.naturalPolishedVersion === "string" &&
-    typeof value.elevatedVersion === "string" &&
+    (typeof value.naturalPolishedVersion === "string" || isHindiText(value.naturalPolishedVersion)) &&
+    (typeof value.elevatedVersion === "string" || isHindiText(value.elevatedVersion)) &&
     typeof value.improvedEleganceScore === "number"
   );
 }
@@ -208,7 +222,9 @@ function loadStoredLearnedWords(): LearnedWord[] {
 
 export function loadLearnedWords(): LearnedWord[] {
   if (!hasStoredLearnedWords()) {
-    return [];
+    const seedWords = getSeedLearnedWords().map(normalizeLearnedWord);
+    writeJson(STORAGE_KEYS.learnedWords, seedWords);
+    return seedWords;
   }
 
   return loadStoredLearnedWords();
@@ -219,13 +235,14 @@ export function saveLearnedWord(
   source: LearnedWord["source"] = "manual",
 ): LearnedWord[] {
   const word = cleanRequired(input.word);
+  const wordDev = cleanRequired(input.wordDev || input.word);
   const meaning = cleanRequired(input.meaning);
 
   if (!word || !meaning) {
     return loadLearnedWords();
   }
 
-  const storedWords = loadStoredLearnedWords();
+  const storedWords = loadLearnedWords();
   const duplicateIndex = storedWords.findIndex(
     (existing) => existing.word.trim().toLocaleLowerCase() === word.toLocaleLowerCase(),
   );
@@ -236,6 +253,7 @@ export function saveLearnedWord(
     nextWords[duplicateIndex] = {
       ...existing,
       meaning: existing.meaning || meaning,
+      wordDev: existing.wordDev || wordDev,
       simpleAlternative: existing.simpleAlternative || cleanOptional(input.simpleAlternative),
       exampleSentence: existing.exampleSentence || cleanRequired(input.exampleSentence),
     };
@@ -246,6 +264,7 @@ export function saveLearnedWord(
   const newWord: LearnedWord = {
     id: createId("learned"),
     word,
+    wordDev,
     meaning,
     simpleAlternative: cleanOptional(input.simpleAlternative),
     exampleSentence: cleanRequired(input.exampleSentence),
@@ -330,7 +349,20 @@ export function loadPracticeHistory(): PracticeHistoryItem[] {
     return [];
   }
 
-  const history = stored.filter(isPracticeHistoryItem).slice(0, PRACTICE_HISTORY_LIMIT);
+  const history = stored
+    .filter(isPracticeHistoryItem)
+    .map((item) => ({
+      ...item,
+      naturalPolishedVersion:
+        typeof item.naturalPolishedVersion === "string"
+          ? makeHindiText(item.naturalPolishedVersion, item.naturalPolishedVersion)
+          : item.naturalPolishedVersion,
+      elevatedVersion:
+        typeof item.elevatedVersion === "string"
+          ? makeHindiText(item.elevatedVersion, item.elevatedVersion)
+          : item.elevatedVersion,
+    }))
+    .slice(0, PRACTICE_HISTORY_LIMIT);
 
   if (history.length !== stored.length) {
     writeJson(STORAGE_KEYS.practiceHistory, history);
@@ -348,8 +380,8 @@ export function savePracticeHistory(response: PracticeResponse): PracticeHistory
     id: createId("practice"),
     savedAt: getTodayKey(),
     transcript: response.transcript.trim(),
-    naturalPolishedVersion: response.naturalPolishedVersion.trim(),
-    elevatedVersion: response.elevatedVersion.trim(),
+    naturalPolishedVersion: response.naturalPolishedVersion,
+    elevatedVersion: response.elevatedVersion,
     improvedEleganceScore: response.improvedEleganceScore,
   };
   const nextHistory = [item, ...loadPracticeHistory()].slice(0, PRACTICE_HISTORY_LIMIT);
@@ -443,4 +475,49 @@ export function usePracticeHistory() {
   }, []);
 
   return { history, saveHistory, refreshHistory: () => setHistory(loadPracticeHistory()) };
+}
+
+function isScriptPreference(value: unknown): value is ScriptPreference {
+  return value === "dev" || value === "roman" || value === "both";
+}
+
+export function loadPreferences(): Preferences {
+  const stored = readJson<unknown>(STORAGE_KEYS.preferences, {});
+  const script =
+    isRecord(stored) && isScriptPreference(stored.script)
+      ? stored.script
+      : DEFAULT_SCRIPT_PREFERENCE;
+
+  return { script };
+}
+
+export function saveScriptPreference(script: ScriptPreference) {
+  const preferences = { ...loadPreferences(), script };
+  writeJson(STORAGE_KEYS.preferences, preferences);
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent(PREFERENCES_EVENT, { detail: preferences }));
+  }
+  return preferences;
+}
+
+export function useScriptPreference() {
+  const [preference, setPreference] = useState<ScriptPreference>(DEFAULT_SCRIPT_PREFERENCE);
+
+  useEffect(() => {
+    const syncPreference = () => setPreference(loadPreferences().script);
+    syncPreference();
+    window.addEventListener("storage", syncPreference);
+    window.addEventListener(PREFERENCES_EVENT, syncPreference);
+    return () => {
+      window.removeEventListener("storage", syncPreference);
+      window.removeEventListener(PREFERENCES_EVENT, syncPreference);
+    };
+  }, []);
+
+  const setScriptPreference = useCallback((script: ScriptPreference) => {
+    saveScriptPreference(script);
+    setPreference(script);
+  }, []);
+
+  return { preference, setScriptPreference };
 }

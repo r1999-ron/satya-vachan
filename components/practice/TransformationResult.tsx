@@ -1,10 +1,11 @@
 "use client";
 
 import { AudioPlayer } from "@/components/audio/AudioPlayer";
+import { HindiText } from "@/components/hindi/HindiText";
 import { EleganceScore } from "@/components/practice/EleganceScore";
 import { WordReplacementCard } from "@/components/practice/WordReplacementCard";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import type { LearnedWordInput, PracticeResponse, WordReplacement } from "@/types";
+import type { HindiText as HindiTextValue, LearnedWordInput, PracticeResponse, WordReplacement } from "@/types";
 
 type TransformationResultProps = {
   isWordSaved: (word: string) => boolean;
@@ -32,7 +33,7 @@ export function TransformationResult({
           text={result.naturalPolishedVersion}
           tone="primary"
           variant="natural"
-          autoPrepare
+          autoPlay
           onAudioStatusChange={onAudioStatusChange}
         />
         <VersionPanel
@@ -46,7 +47,7 @@ export function TransformationResult({
 
       <div className="rounded-2xl border border-sky-200/70 bg-sky-100/40 p-4 dark:border-sky-300/20 dark:bg-sky-300/10">
         <StatusBadge tone="blue">Feedback</StatusBadge>
-        <p lang="hi" className="mt-3 text-wrap-anywhere text-sm leading-7 text-sky-950 dark:text-sky-100">
+        <p className="mt-3 text-wrap-anywhere text-sm leading-7 text-sky-950 dark:text-sky-100">
           {result.feedback}
         </p>
       </div>
@@ -63,7 +64,7 @@ export function TransformationResult({
 
             return (
               <WordReplacementCard
-                key={`${replacement.original}-${replacement.replacement}`}
+                key={`${replacement.original.roman}-${replacement.replacement.roman}`}
                 replacement={replacement}
                 saveableWord={saveableWord}
                 isSaved={isWordSaved(saveableWord.word)}
@@ -87,13 +88,13 @@ function VersionPanel({
   text,
   tone,
   variant,
-  autoPrepare = false,
+  autoPlay = false,
   onAudioStatusChange,
 }: {
-  autoPrepare?: boolean;
+  autoPlay?: boolean;
   label: string;
   onAudioStatusChange?: (status: "idle" | "loading" | "ready" | "playing" | "error") => void;
-  text: string;
+  text: HindiTextValue;
   tone: "primary" | "secondary";
   variant: "natural" | "elevated";
 }) {
@@ -118,24 +119,19 @@ function VersionPanel({
           {label}
         </p>
         <AudioPlayer
-          autoPrepare={autoPrepare}
-          key={`${variant}-${text}`}
+          autoPlay={autoPlay}
+          key={`${variant}-${text.dev}`}
           label="Listen"
           onStatusChange={onAudioStatusChange}
-          text={text}
+          text={text.dev}
           variant={variant}
         />
       </div>
-      <p
-        lang="hi"
-        className={
-          primary
-            ? "mt-3 text-wrap-anywhere text-lg font-bold leading-8 text-emerald-950 dark:text-emerald-100"
-            : "mt-3 text-wrap-anywhere text-sm font-semibold leading-7 text-zinc-700 dark:text-zinc-300"
-        }
-      >
-        {text}
-      </p>
+      <HindiText
+        text={text}
+        className="mt-3"
+        devClassName={primary ? "text-lg font-bold leading-8 text-emerald-950 dark:text-emerald-100" : "text-sm font-semibold leading-7 text-zinc-700 dark:text-zinc-300"}
+      />
     </div>
   );
 }
@@ -148,12 +144,13 @@ function getSaveableWord(
     result.saveableWords.find(
       (word) =>
         word.word.trim().toLocaleLowerCase() ===
-        replacement.replacement.trim().toLocaleLowerCase(),
+        replacement.replacement.roman.trim().toLocaleLowerCase(),
     ) ?? {
-      word: replacement.replacement,
+      word: replacement.replacement.roman,
+      wordDev: replacement.replacement.dev,
       meaning: replacement.meaning,
-      simpleAlternative: replacement.original,
-      exampleSentence: result.naturalPolishedVersion,
+      simpleAlternative: replacement.original.roman,
+      exampleSentence: result.naturalPolishedVersion.dev,
     }
   );
 }

@@ -1,5 +1,6 @@
 import type {
   ChallengeResponse,
+  HindiText,
   LearnedWordInput,
   PracticeResponse,
   RegisterLevel,
@@ -118,11 +119,18 @@ export function normalizePracticeResponse(
   const transcript =
     getTrimmedString(rawValue.transcript, VALIDATION_LIMITS.transcriptChars) ??
     fallbackTranscript.trim();
-  const naturalPolishedVersion = getTrimmedString(rawValue.naturalPolishedVersion);
-  const elevatedVersion = getTrimmedString(rawValue.elevatedVersion);
+  const naturalPolishedVersion = normalizeHindiText(rawValue.naturalPolishedVersion);
+  const elevatedVersion = normalizeHindiText(rawValue.elevatedVersion);
   const feedback = getTrimmedString(rawValue.feedback);
 
-  if (!transcript || !naturalPolishedVersion || !elevatedVersion || !feedback) {
+  if (
+    !transcript ||
+    !naturalPolishedVersion.dev ||
+    !naturalPolishedVersion.roman ||
+    !elevatedVersion.dev ||
+    !elevatedVersion.roman ||
+    !feedback
+  ) {
     return null;
   }
 
@@ -135,7 +143,7 @@ export function normalizePracticeResponse(
 
   if (
     improvedEleganceScore === originalEleganceScore &&
-    naturalPolishedVersion !== transcript
+    naturalPolishedVersion.roman !== transcript
   ) {
     improvedEleganceScore = Math.min(100, originalEleganceScore + 5);
   }
@@ -200,15 +208,15 @@ export function normalizeWordEntry(rawValue: unknown, targetWord: string): WordE
 
   return {
     id: getTrimmedString(rawValue.id) ?? targetWord,
-    common: getTrimmedString(rawValue.common) ?? "",
-    elevated: getTrimmedString(rawValue.elevated) ?? targetWord,
+    common: normalizeHindiText(rawValue.common, ""),
+    elevated: normalizeHindiText(rawValue.elevated, targetWord),
     englishMeaning: getTrimmedString(rawValue.englishMeaning) ?? "",
-    simpleExample: getTrimmedString(rawValue.simpleExample) ?? "",
-    elevatedExample: getTrimmedString(rawValue.elevatedExample) ?? "",
+    simpleExample: normalizeHindiText(rawValue.simpleExample, ""),
+    elevatedExample: normalizeHindiText(rawValue.elevatedExample, ""),
     synonyms: Array.isArray(rawValue.synonyms)
       ? rawValue.synonyms
-          .map((synonym) => getTrimmedString(synonym, 80))
-          .filter((synonym): synonym is string => Boolean(synonym))
+          .map((synonym) => normalizeHindiText(synonym))
+          .filter((synonym): synonym is HindiText => Boolean(synonym.dev && synonym.roman))
       : [],
     usageNote: getTrimmedString(rawValue.usageNote) ?? "",
     challengePrompt: getTrimmedString(rawValue.challengePrompt) ?? "",
@@ -254,11 +262,11 @@ function normalizeReplacement(rawValue: unknown): WordReplacement | null {
     return null;
   }
 
-  const original = getTrimmedString(rawValue.original, 120);
-  const replacement = getTrimmedString(rawValue.replacement, 120);
+  const original = normalizeHindiText(rawValue.original);
+  const replacement = normalizeHindiText(rawValue.replacement);
   const meaning = getTrimmedString(rawValue.meaning, 240);
 
-  if (!original || !replacement || !meaning) {
+  if (!original.dev || !original.roman || !replacement.dev || !replacement.roman || !meaning) {
     return null;
   }
 
@@ -268,7 +276,7 @@ function normalizeReplacement(rawValue: unknown): WordReplacement | null {
     meaning,
     whyBetter:
       getTrimmedString(rawValue.whyBetter, 400) ??
-      `${replacement} is a more polished option in this sentence.`,
+      `${replacement.roman} is a more polished option in this sentence.`,
     naturalness: getRegisterLevel(rawValue.naturalness),
   };
 }
@@ -279,10 +287,11 @@ function normalizeSaveableWord(rawValue: unknown): LearnedWordInput | null {
   }
 
   const word = getTrimmedString(rawValue.word, 120);
+  const wordDev = getTrimmedString(rawValue.wordDev, 120) ?? word;
   const meaning = getTrimmedString(rawValue.meaning, 240);
   const exampleSentence = getTrimmedString(rawValue.exampleSentence);
 
-  if (!word || !meaning || !exampleSentence) {
+  if (!word || !wordDev || !meaning || !exampleSentence) {
     return null;
   }
 
@@ -290,6 +299,7 @@ function normalizeSaveableWord(rawValue: unknown): LearnedWordInput | null {
 
   return {
     word,
+    wordDev,
     meaning,
     ...(simpleAlternative ? { simpleAlternative } : {}),
     exampleSentence,
@@ -299,17 +309,33 @@ function normalizeSaveableWord(rawValue: unknown): LearnedWordInput | null {
 function createFallbackWordEntry(targetWord: string): WordEntry {
   return {
     id: targetWord,
-    common: "",
-    elevated: targetWord,
+    common: { dev: "", roman: "" },
+    elevated: { dev: targetWord, roman: targetWord },
     englishMeaning: "",
-    simpleExample: "",
-    elevatedExample: "",
+    simpleExample: { dev: "", roman: "" },
+    elevatedExample: { dev: "", roman: "" },
     synonyms: [],
     usageNote: "",
     challengePrompt: "",
     tags: [],
     difficulty: "easy",
   };
+}
+
+function normalizeHindiText(rawValue: unknown, fallback = ""): HindiText {
+  if (typeof rawValue === "string") {
+    const text = getTrimmedString(rawValue) ?? fallback;
+    return { dev: text, roman: text };
+  }
+
+  if (isRecord(rawValue)) {
+    const dev = getTrimmedString(rawValue.dev) ?? fallback;
+    const roman = getTrimmedString(rawValue.roman) ?? fallback;
+    const en = getTrimmedString(rawValue.en, 400);
+    return { dev, roman, ...(en ? { en } : {}) };
+  }
+
+  return { dev: fallback, roman: fallback };
 }
 
 function getRegisterLevel(value: unknown): RegisterLevel {
