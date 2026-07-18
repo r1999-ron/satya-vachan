@@ -181,7 +181,7 @@ export default function HomePage() {
           </WordDetails>
         </div>
 
-        <div className="mt-5 grid items-center gap-4 rounded-2xl border border-zinc-900/8 bg-zinc-900/[0.025] p-4 [@media(max-width:767px)_and_(max-height:720px)]:mt-3 [@media(max-width:767px)_and_(max-height:720px)]:p-3 sm:mt-7 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-5 sm:border-t sm:bg-transparent sm:px-0 sm:pb-0 sm:pt-5 dark:border-white/10 dark:bg-white/[0.035] sm:dark:bg-transparent">
+        <div className="mt-5 grid items-center gap-4 rounded-2xl border border-zinc-900/8 bg-zinc-900/[0.025] p-4 [@media(max-width:767px)_and_(max-height:720px)]:mt-3 [@media(max-width:767px)_and_(max-height:720px)]:p-3 sm:mt-7 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-5 sm:p-5 dark:border-white/10 dark:bg-white/[0.035]">
           <p className="max-w-3xl text-sm font-semibold leading-6 text-zinc-600 sm:text-[15px] dark:text-zinc-300">
             {todayWord.challengePrompt}
           </p>
