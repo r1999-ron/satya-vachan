@@ -1,9 +1,12 @@
 import { Sparkles } from "lucide-react";
+import { HindiText } from "@/components/hindi/HindiText";
+import { useScriptPreference } from "@/lib/storage";
 import { cn } from "@/lib/utils";
+import type { HindiText as HindiTextValue } from "@/types";
 
 type HintPromptListProps = {
   disabled?: boolean;
-  hints: string[];
+  hints: HindiTextValue[];
   selectedHint: string;
   onSelect: (hint: string) => void;
 };
@@ -14,17 +17,20 @@ export function HintPromptList({
   selectedHint,
   onSelect,
 }: HintPromptListProps) {
+  const { preference } = useScriptPreference();
+
   return (
     <div className="grid gap-3 md:grid-cols-2">
       {hints.map((hint) => {
-        const selected = selectedHint === hint;
+        const selected = selectedHint === hint.dev || selectedHint === hint.roman;
+        const inputValue = preference === "roman" ? hint.roman : hint.dev;
 
         return (
           <button
-            key={hint}
+            key={hint.roman}
             type="button"
             disabled={disabled}
-            onClick={() => onSelect(hint)}
+            onClick={() => onSelect(inputValue)}
             className={cn(
               "group min-h-20 rounded-2xl border p-4 text-left text-sm font-semibold leading-7 transition focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:ring-offset-2 focus:ring-offset-paper active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 dark:focus:ring-offset-zinc-950",
               selected
@@ -43,7 +49,7 @@ export function HintPromptList({
               >
                 <Sparkles size={15} aria-hidden="true" />
               </span>
-              <span className="text-wrap-anywhere">{hint}</span>
+              <HindiText text={hint} showEnglish={false} />
             </span>
           </button>
         );

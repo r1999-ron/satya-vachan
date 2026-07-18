@@ -112,6 +112,7 @@ describe("storage", () => {
       {
         id: "saved-1",
         word: "satya",
+        wordDev: "satya",
         meaning: "truth",
         simpleAlternative: "sach",
         exampleSentence: "Satya matters.",
@@ -233,8 +234,8 @@ describe("storage", () => {
   it("saves bounded practice history and removes corrupt entries", () => {
     const response: PracticeResponse = {
       transcript: "  original  ",
-      naturalPolishedVersion: "  polished  ",
-      elevatedVersion: "  elevated  ",
+      naturalPolishedVersion: { dev: "परिष्कृत", roman: "polished", en: "polished" },
+      elevatedVersion: { dev: "उन्नत", roman: "elevated", en: "elevated" },
       originalEleganceScore: 40,
       improvedEleganceScore: 65,
       feedback: "nice",
@@ -254,8 +255,8 @@ describe("storage", () => {
     expect(history[0]).toMatchObject({
       savedAt: "2026-07-18",
       transcript: "sentence 11",
-      naturalPolishedVersion: "polished",
-      elevatedVersion: "elevated",
+      naturalPolishedVersion: { dev: "परिष्कृत", roman: "polished", en: "polished" },
+      elevatedVersion: { dev: "उन्नत", roman: "elevated", en: "elevated" },
       improvedEleganceScore: 65,
     });
 

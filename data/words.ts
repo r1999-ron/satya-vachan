@@ -1,9 +1,10 @@
+import { bilingualWordEntry, type LegacyWordEntry } from "@/data/bilingual-corpus";
 import type { WordEntry } from "@/types";
 import { getTodayKey } from "@/lib/dates";
 
 const WORD_OF_DAY_EPOCH = "2026-01-01";
 
-export const fallbackWordEntry: WordEntry = {
+const legacyFallbackWordEntry: LegacyWordEntry = {
   id: "fallback-karya",
   common: "kaam",
   elevated: "karya",
@@ -19,7 +20,9 @@ export const fallbackWordEntry: WordEntry = {
   difficulty: "easy",
 };
 
-export const wordCorpus = [
+export const fallbackWordEntry: WordEntry = bilingualWordEntry(legacyFallbackWordEntry);
+
+const legacyWordCorpus = [
   {
     id: "karya",
     common: "kaam",
@@ -920,7 +923,9 @@ export const wordCorpus = [
     tags: ["meaning", "reflection", "positive"],
     difficulty: "medium",
   },
-] satisfies WordEntry[];
+] satisfies LegacyWordEntry[];
+
+export const wordCorpus: WordEntry[] = legacyWordCorpus.map(bilingualWordEntry);
 
 function getDaysSinceEpoch(dateKey: string) {
   const [year, month, day] = dateKey.split("-").map(Number);
@@ -937,14 +942,20 @@ function validateWordCorpus(words: WordEntry[]) {
   for (const word of words) {
     const requiredFields = [
       word.id,
-      word.common,
-      word.elevated,
+      word.common.dev,
+      word.common.roman,
+      word.elevated.dev,
+      word.elevated.roman,
       word.englishMeaning,
-      word.simpleExample,
-      word.elevatedExample,
+      word.simpleExample.dev,
+      word.simpleExample.roman,
+      word.simpleExample.en,
+      word.elevatedExample.dev,
+      word.elevatedExample.roman,
+      word.elevatedExample.en,
       word.usageNote,
       word.challengePrompt,
-    ];
+    ].filter((field): field is string => typeof field === "string");
 
     if (requiredFields.some((field) => field.trim().length === 0)) {
       throw new Error(`Word corpus entry "${word.id || "unknown"}" is missing a required field.`);

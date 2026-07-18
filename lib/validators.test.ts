@@ -117,16 +117,16 @@ describe("validators", () => {
 
     expect(normalized).toMatchObject({
       transcript: "original transcript",
-      naturalPolishedVersion: "polished transcript",
-      elevatedVersion: "elevated transcript",
+      naturalPolishedVersion: { dev: "polished transcript", roman: "polished transcript" },
+      elevatedVersion: { dev: "elevated transcript", roman: "elevated transcript" },
       feedback: "useful feedback",
       originalEleganceScore: 92,
       improvedEleganceScore: 97,
     });
     expect(normalized?.replacements).toEqual([
       {
-        original: "good",
-        replacement: "excellent",
+        original: { dev: "good", roman: "good" },
+        replacement: { dev: "excellent", roman: "excellent" },
         meaning: "very good",
         whyBetter: "excellent is a more polished option in this sentence.",
         naturalness: "literary",
@@ -135,6 +135,7 @@ describe("validators", () => {
     expect(normalized?.saveableWords).toEqual([
       {
         word: "excellent",
+        wordDev: "excellent",
         meaning: "very good",
         simpleAlternative: "good",
         exampleSentence: "That was excellent work.",
@@ -209,17 +210,17 @@ describe("validators", () => {
       ),
     ).toMatchObject({
       id: "word-1",
-      common: "simple",
-      elevated: "elevated",
+      common: { dev: "simple", roman: "simple" },
+      elevated: { dev: "elevated", roman: "elevated" },
       englishMeaning: "meaning",
-      synonyms: ["one"],
+      synonyms: [{ dev: "one", roman: "one" }],
       tags: ["tag"],
       difficulty: "easy",
     });
 
     expect(normalizeWordEntry(null, "fallback")).toMatchObject({
       id: "fallback",
-      elevated: "fallback",
+      elevated: { dev: "fallback", roman: "fallback" },
       difficulty: "easy",
     });
   });

@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { HindiText } from "@/components/hindi/HindiText";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { wordCorpus } from "@/data/words";
 import { useLearnedWords } from "@/lib/storage";
@@ -73,6 +74,7 @@ export default function LearnedPage() {
         const meta = getCorpusMeta(word);
         const searchableText = [
           word.word,
+          word.wordDev,
           word.meaning,
           word.simpleAlternative,
           word.exampleSentence,
@@ -118,6 +120,7 @@ export default function LearnedPage() {
     saveWord(
       {
         word: removedWord.word.word,
+        wordDev: removedWord.word.wordDev,
         meaning: removedWord.word.meaning,
         simpleAlternative: removedWord.word.simpleAlternative,
         exampleSentence: removedWord.word.exampleSentence,
@@ -273,6 +276,10 @@ function LearnedWordCard({
   word: LearnedWord;
 }) {
   const meta = getCorpusMeta(word);
+  const displayWord = {
+    dev: word.wordDev === word.word && meta ? meta.elevated.dev : word.wordDev,
+    roman: word.word,
+  };
   const canRemove = Boolean(word.id);
 
   return (
@@ -285,9 +292,7 @@ function LearnedWordCard({
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-wrap-anywhere text-2xl font-bold text-ink dark:text-white">
-                {word.word}
-              </h2>
+              <h2><HindiText text={displayWord} kind="word" devClassName="text-2xl text-ink dark:text-white" /></h2>
               <StatusBadge tone={sourceTone(word.source)} className="shrink-0 capitalize">
                 {word.source}
               </StatusBadge>
@@ -463,10 +468,14 @@ function getCorpusMeta(word: LearnedWord) {
   return wordCorpus.find((entry) => {
     const candidates = [
       entry.id,
-      entry.common,
-      entry.elevated,
+      entry.common.dev,
+      entry.common.roman,
+      entry.elevated.dev,
+      entry.elevated.roman,
       ...entry.synonyms,
-    ].map(normalizeForLookup);
+    ].flatMap((value) =>
+      typeof value === "string" ? [value] : [value.dev, value.roman],
+    ).map(normalizeForLookup);
 
     return (
       candidates.includes(normalizedWord) ||

@@ -24,7 +24,11 @@ Content rules:
 - The improved score should usually be higher than the original score. If the original is already polished, equal or slightly higher is acceptable.
 - Include 2 to 6 reusable word replacements for typical sentences. For very short input, an empty or small list is fine.
 - Replacements should teach reusable vocabulary, not filler edits.
-- Saveable words should correspond to useful replacement words.`;
+- Return every generated Hindi sentence and replacement as { dev, roman, en }.
+- dev must be natural Devanagari Hindi and is the canonical text.
+- roman must be a consistent, readable transliteration of dev; do not invent a second phrasing.
+- en must be a concise English translation or gloss.
+- Saveable words should correspond to useful replacement words and include wordDev.`;
 
 export const TRANSFORMATION_USER_PROMPT = `Transform this transcript while preserving its meaning:
 
@@ -52,8 +56,26 @@ export const transformationResponseFormat = {
       ],
       properties: {
         transcript: { type: "string" },
-        naturalPolishedVersion: { type: "string" },
-        elevatedVersion: { type: "string" },
+        naturalPolishedVersion: {
+          type: "object",
+          additionalProperties: false,
+          required: ["dev", "roman", "en"],
+          properties: {
+            dev: { type: "string" },
+            roman: { type: "string" },
+            en: { type: "string" },
+          },
+        },
+        elevatedVersion: {
+          type: "object",
+          additionalProperties: false,
+          required: ["dev", "roman", "en"],
+          properties: {
+            dev: { type: "string" },
+            roman: { type: "string" },
+            en: { type: "string" },
+          },
+        },
         originalEleganceScore: { type: "integer", minimum: 0, maximum: 100 },
         improvedEleganceScore: { type: "integer", minimum: 0, maximum: 100 },
         feedback: { type: "string" },
@@ -71,8 +93,26 @@ export const transformationResponseFormat = {
               "naturalness",
             ],
             properties: {
-              original: { type: "string" },
-              replacement: { type: "string" },
+              original: {
+                type: "object",
+                additionalProperties: false,
+                required: ["dev", "roman", "en"],
+                properties: {
+                  dev: { type: "string" },
+                  roman: { type: "string" },
+                  en: { type: "string" },
+                },
+              },
+              replacement: {
+                type: "object",
+                additionalProperties: false,
+                required: ["dev", "roman", "en"],
+                properties: {
+                  dev: { type: "string" },
+                  roman: { type: "string" },
+                  en: { type: "string" },
+                },
+              },
               meaning: { type: "string" },
               whyBetter: { type: "string" },
               naturalness: {
@@ -88,9 +128,10 @@ export const transformationResponseFormat = {
           items: {
             type: "object",
             additionalProperties: false,
-            required: ["word", "meaning", "simpleAlternative", "exampleSentence"],
+            required: ["word", "wordDev", "meaning", "simpleAlternative", "exampleSentence"],
             properties: {
               word: { type: "string" },
+              wordDev: { type: "string" },
               meaning: { type: "string" },
               simpleAlternative: { type: "string" },
               exampleSentence: { type: "string" },

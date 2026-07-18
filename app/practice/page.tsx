@@ -14,6 +14,7 @@ import {
   type RecorderState,
 } from "@/components/audio/RecorderButton";
 import { HintPromptList } from "@/components/practice/HintPromptList";
+import { HindiText } from "@/components/hindi/HindiText";
 import { TransformationResult } from "@/components/practice/TransformationResult";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { GlassCard } from "@/components/ui/GlassCard";
@@ -144,6 +145,9 @@ export default function PracticePage() {
     const normalizedWord = wordParam.toLocaleLowerCase();
     const matchingEntry = wordCorpus.find((entry) =>
       [entry.id, entry.common, entry.elevated, ...entry.synonyms]
+        .flatMap((value) =>
+          typeof value === "string" ? [value] : [value.dev, value.roman],
+        )
         .map((value) => value.toLocaleLowerCase())
         .includes(normalizedWord),
     );
@@ -268,7 +272,7 @@ export default function PracticePage() {
     dispatch({
       type: "transcript_changed",
       transcript: value,
-      selectedHint: hints.includes(value) ? value : "",
+      selectedHint: hints.some((hint) => hint.dev === value || hint.roman === value) ? value : "",
     });
   };
 
@@ -298,7 +302,7 @@ export default function PracticePage() {
     const transcript =
       typeof practiceContext === "string"
         ? `Maine ${practiceContext} shabd ka prayog apne vaakya mein kiya.`
-        : practiceContext.elevatedExample;
+        : practiceContext.elevatedExample.dev;
 
     dispatch({
       type: "transcript_changed",
@@ -478,7 +482,6 @@ export default function PracticePage() {
           </div>
 
           <textarea
-            lang="hi"
             value={state.transcript}
             disabled={isBusy}
             onChange={(event) => handleTranscriptChange(event.target.value)}
@@ -740,7 +743,9 @@ function PracticeContextPrompt({
   disabled: boolean;
   onUse: () => void;
 }) {
-  const word = typeof context === "string" ? context : context.elevated;
+  const word = typeof context === "string"
+    ? { dev: context, roman: context }
+    : context.elevated;
   const meaning =
     typeof context === "string"
       ? "Use this saved word in a fresh sentence."
@@ -756,14 +761,12 @@ function PracticeContextPrompt({
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <StatusBadge tone="green">Practice word</StatusBadge>
-            <span lang="hi" className="text-wrap-anywhere text-lg font-bold text-ink dark:text-white">
-              {word}
-            </span>
+            <HindiText text={word} kind="inline" className="text-wrap-anywhere text-lg font-bold text-ink dark:text-white" />
           </div>
-          <p lang="hi" className="mt-2 text-wrap-anywhere text-sm font-semibold leading-6 text-emerald-950 dark:text-emerald-100">
+          <p className="mt-2 text-wrap-anywhere text-sm font-semibold leading-6 text-emerald-950 dark:text-emerald-100">
             {meaning}
           </p>
-          <p lang="hi" className="mt-1 text-wrap-anywhere text-xs leading-5 text-emerald-900 dark:text-emerald-100">
+          <p className="mt-1 text-wrap-anywhere text-xs leading-5 text-emerald-900 dark:text-emerald-100">
             {note}
           </p>
         </div>
@@ -820,12 +823,10 @@ function RecentPracticeHistory({
           >
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0">
-                <p lang="hi" className="text-wrap-anywhere text-sm font-bold leading-6 text-ink dark:text-white">
+                <p className="text-wrap-anywhere text-sm font-bold leading-6 text-ink dark:text-white">
                   {item.transcript}
                 </p>
-                <p lang="hi" className="mt-1 line-clamp-2 text-wrap-anywhere text-xs leading-5 text-zinc-600 dark:text-zinc-400">
-                  {item.naturalPolishedVersion}
-                </p>
+                <HindiText text={item.naturalPolishedVersion} className="mt-1 line-clamp-2" showEnglish={false} />
               </div>
               <button
                 type="button"

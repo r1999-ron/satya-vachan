@@ -4,7 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BookOpen, Home, Mic2, Sparkles } from "lucide-react";
 import { ResilienceStatus } from "@/components/ui/ResilienceStatus";
+import { useScriptPreference } from "@/lib/storage";
 import { cn } from "@/lib/utils";
+import type { ScriptPreference } from "@/types";
 
 const navItems = [
   { href: "/", label: "Home", icon: Home },
@@ -15,9 +17,10 @@ const navItems = [
 
 export function Header() {
   const pathname = usePathname();
+  const { preference, setScriptPreference } = useScriptPreference();
 
   return (
-    <header className="sticky top-0 z-30 hidden border-b border-zinc-900/5 bg-[#fbf8f2]/88 backdrop-blur-xl md:block dark:border-white/10 dark:bg-zinc-950/80">
+    <header className="sticky top-0 z-30 border-b border-zinc-900/5 bg-[#fbf8f2]/88 backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/80">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-5 px-6 py-3">
         <Link
           href="/"
@@ -31,7 +34,7 @@ export function Header() {
           </span>
         </Link>
 
-        <nav className="flex items-center gap-1" aria-label="Primary navigation">
+        <nav className="hidden items-center gap-1 md:flex" aria-label="Primary navigation">
           {navItems.map(({ href, label, icon: Icon }) => {
             const active = pathname === href;
 
@@ -54,8 +57,54 @@ export function Header() {
           })}
         </nav>
 
-        <ResilienceStatus />
+        <div className="flex shrink-0 items-center gap-3">
+          <ScriptPreferenceControl
+            preference={preference}
+            onChange={setScriptPreference}
+          />
+          <span className="hidden lg:block"><ResilienceStatus /></span>
+        </div>
       </div>
     </header>
+  );
+}
+
+function ScriptPreferenceControl({
+  onChange,
+  preference,
+}: {
+  onChange: (preference: ScriptPreference) => void;
+  preference: ScriptPreference;
+}) {
+  const options: { value: ScriptPreference; label: string; language?: string }[] = [
+    { value: "dev", label: "देव", language: "hi" },
+    { value: "roman", label: "Roman", language: "hi-Latn" },
+    { value: "both", label: "Both" },
+  ];
+
+  return (
+    <div
+      className="flex rounded-xl bg-zinc-900/[0.055] p-1 dark:bg-white/10"
+      role="group"
+      aria-label="Hindi script preference"
+    >
+      {options.map((option) => (
+        <button
+          key={option.value}
+          type="button"
+          lang={option.language}
+          onClick={() => onChange(option.value)}
+          aria-pressed={preference === option.value}
+          className={cn(
+            "rounded-lg px-2 py-1.5 text-[11px] font-bold transition sm:px-2.5",
+            preference === option.value
+              ? "bg-white text-zinc-950 shadow-sm dark:bg-zinc-800 dark:text-white"
+              : "text-zinc-500 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white",
+          )}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
   );
 }

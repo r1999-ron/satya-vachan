@@ -11,6 +11,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { HindiText } from "@/components/hindi/HindiText";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { getWordOfTheDay } from "@/data/words";
 import { formatReadableDate } from "@/lib/dates";
@@ -153,17 +154,16 @@ export default function HomePage() {
             <div className="flex flex-wrap gap-2">
               {todayWord.synonyms.map((synonym) => (
                 <span
-                  key={synonym}
-                  lang="hi"
+                  key={synonym.roman}
                   className="rounded-full bg-amber-100 px-3 py-1.5 text-xs font-bold text-amber-950 ring-1 ring-amber-200 dark:bg-amber-300/10 dark:text-amber-100 dark:ring-amber-300/20"
                 >
-                  {synonym}
+                  <HindiText text={synonym} kind="inline" />
                 </span>
               ))}
             </div>
           </WordDetails>
           <WordDetails label="Usage note">
-            <p lang="hi" className="text-sm font-semibold leading-6 text-zinc-700 dark:text-zinc-300">
+            <p className="text-sm font-semibold leading-6 text-zinc-700 dark:text-zinc-300">
               {todayWord.usageNote}
             </p>
           </WordDetails>
@@ -181,13 +181,13 @@ export default function HomePage() {
           </WordDetails>
         </div>
 
-        <div className="mt-5 flex items-center justify-between gap-3 rounded-2xl border border-zinc-900/8 bg-zinc-900/[0.025] p-4 [@media(max-width:767px)_and_(max-height:720px)]:mt-3 [@media(max-width:767px)_and_(max-height:720px)]:p-3 sm:mt-7 sm:border-t sm:bg-transparent sm:px-0 sm:pb-0 sm:pt-5 dark:border-white/10 dark:bg-white/[0.035] sm:dark:bg-transparent">
-          <p className="min-w-0 text-xs font-semibold leading-5 text-zinc-600 sm:text-sm dark:text-zinc-300">
+        <div className="mt-5 grid items-center gap-4 rounded-2xl border border-zinc-900/8 bg-zinc-900/[0.025] p-4 [@media(max-width:767px)_and_(max-height:720px)]:mt-3 [@media(max-width:767px)_and_(max-height:720px)]:p-3 sm:mt-7 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-5 sm:border-t sm:bg-transparent sm:px-0 sm:pb-0 sm:pt-5 dark:border-white/10 dark:bg-white/[0.035] sm:dark:bg-transparent">
+          <p className="max-w-3xl text-sm font-semibold leading-6 text-zinc-600 sm:text-[15px] dark:text-zinc-300">
             {todayWord.challengePrompt}
           </p>
           <Link
             href="/challenge"
-            className="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-xl bg-zinc-900 px-3 py-2 text-xs font-bold text-white transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-zinc-900/30 focus:ring-offset-2 active:translate-y-0 sm:min-h-11 sm:rounded-2xl sm:px-4 sm:text-sm dark:bg-white dark:text-zinc-950"
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-zinc-900/30 focus:ring-offset-2 active:translate-y-0 sm:w-auto sm:min-w-[11rem] sm:rounded-2xl sm:px-5 dark:bg-white dark:text-zinc-950"
           >
             <span className="sm:hidden">Use word</span>
             <span className="hidden sm:inline">Use this word</span>
@@ -260,7 +260,7 @@ function Metric({
   );
 }
 
-function Word({ value, featured = false }: { value: string; featured?: boolean }) {
+function Word({ value, featured = false }: { value: import("@/types").HindiText; featured?: boolean }) {
   return (
     <div
       className={
@@ -269,9 +269,11 @@ function Word({ value, featured = false }: { value: string; featured?: boolean }
           : "rounded-2xl bg-zinc-900/[0.035] px-4 py-4 ring-1 ring-zinc-900/[0.06] [@media(max-width:767px)_and_(max-height:720px)]:px-3 [@media(max-width:767px)_and_(max-height:720px)]:py-3 sm:px-5 sm:py-5 dark:bg-white/5 dark:ring-white/10"
       }
     >
-      <p lang="hi" className="text-wrap-anywhere text-[1.35rem] font-bold leading-tight text-ink [@media(max-width:767px)_and_(max-height:720px)]:text-lg sm:text-3xl dark:text-white">
-        {value}
-      </p>
+      <HindiText
+        text={value}
+        kind="word"
+        devClassName="text-[1.35rem] leading-relaxed text-ink [@media(max-width:767px)_and_(max-height:720px)]:text-lg sm:text-3xl dark:text-white"
+      />
     </div>
   );
 }
@@ -283,16 +285,14 @@ function Example({
 }: {
   featured?: boolean;
   label: string;
-  value: string;
+  value: import("@/types").HindiText;
 }) {
   return (
     <div>
       <p className={featured ? "text-xs font-bold text-amber-700 dark:text-amber-300" : "text-xs font-bold text-zinc-500 dark:text-zinc-400"}>
         {label}
       </p>
-      <p lang="hi" className="mt-1 text-wrap-anywhere text-sm font-semibold leading-7 text-zinc-700 dark:text-zinc-200">
-        {value}
-      </p>
+      <HindiText text={value} className="mt-1" />
     </div>
   );
 }
