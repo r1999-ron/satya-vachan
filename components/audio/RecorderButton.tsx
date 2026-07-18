@@ -5,9 +5,7 @@ import {
   AlertCircle,
   CheckCircle2,
   Mic,
-  RotateCcw,
   Square,
-  Upload,
 } from "lucide-react";
 import {
   DEFAULT_MAX_RECORDING_MS,
@@ -29,6 +27,9 @@ const INACTIVE_WAVEFORM_LEVELS = Array.from(
   () => 0.08,
 );
 
+const SILENCE_STOP_DELAY_MS = 5_000;
+const SILENCE_RMS_THRESHOLD = 0.015;
+
 type WindowWithLegacyAudioContext = Window &
   typeof globalThis & {
     webkitAudioContext?: typeof AudioContext;
@@ -47,8 +48,6 @@ type RecorderButtonProps = {
   className?: string;
   disabled?: boolean;
   maxDurationMs?: number;
-  onDiscard?: () => void;
-  onProcess?: (recording: RecordingResult) => void;
   onRecordingComplete?: (recording: RecordingResult) => void;
   onStateChange?: (state: RecorderState) => void;
 };
@@ -57,14 +56,11 @@ export function RecorderButton({
   className,
   disabled = false,
   maxDurationMs = DEFAULT_MAX_RECORDING_MS,
-  onDiscard,
-  onProcess,
   onRecordingComplete,
   onStateChange,
 }: RecorderButtonProps) {
   const [state, setState] = useState<RecorderState>("permission-needed");
   const [durationMs, setDurationMs] = useState(0);
-  const [recording, setRecording] = useState<RecordingResult | null>(null);
   const [error, setError] = useState("");
   const [waveformLevels, setWaveformLevels] = useState(
     INACTIVE_WAVEFORM_LEVELS,
@@ -80,6 +76,8 @@ export function RecorderButton({
   const audioSourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animationFrameRef = useRef<number | null>(null);
+  const silenceStartedAtRef = useRef<number | null>(null);
+  const stopRecordingRef = useRef<() => void>(() => undefined);
   const isMountedRef = useRef(true);
   const onStateChangeRef = useRef(onStateChange);
 
@@ -134,6 +132,7 @@ export function RecorderButton({
     if (isMountedRef.current) {
       setWaveformLevels(INACTIVE_WAVEFORM_LEVELS);
     }
+    silenceStartedAtRef.current = null;
   }, []);
 
   const startAudioVisualization = useCallback(
@@ -168,6 +167,7 @@ export function RecorderButton({
         }
 
         const frequencyData = new Uint8Array(analyser.frequencyBinCount);
+        const timeDomainData = new Uint8Array(analyser.fftSize);
         const updateWaveform = () => {
           if (
             !isMountedRef.current ||
@@ -178,6 +178,28 @@ export function RecorderButton({
 
           analyser.getByteFrequencyData(frequencyData);
           setWaveformLevels(getRecordingWaveformLevels(frequencyData));
+
+          if (stateRef.current === "recording") {
+            analyser.getByteTimeDomainData(timeDomainData);
+            const rms = Math.sqrt(
+              timeDomainData.reduce((total, sample) => {
+                const amplitude = (sample - 128) / 128;
+                return total + amplitude * amplitude;
+              }, 0) / timeDomainData.length,
+            );
+
+            if (rms < SILENCE_RMS_THRESHOLD) {
+              const now = performance.now();
+              silenceStartedAtRef.current ??= now;
+
+              if (now - silenceStartedAtRef.current >= SILENCE_STOP_DELAY_MS) {
+                stopRecordingRef.current();
+              }
+            } else {
+              silenceStartedAtRef.current = null;
+            }
+          }
+
           animationFrameRef.current = window.requestAnimationFrame(updateWaveform);
         };
 
@@ -216,6 +238,10 @@ export function RecorderButton({
     setRecorderState("error");
     setError("Recording stopped before audio was captured. Please try again.");
   }, [cleanupRecorder, clearTimers, setRecorderState]);
+
+  useEffect(() => {
+    stopRecordingRef.current = stopRecording;
+  }, [stopRecording]);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -263,9 +289,9 @@ export function RecorderButton({
 
     try {
       setError("");
-      setRecording(null);
       setDurationMs(0);
       chunksRef.current = [];
+      silenceStartedAtRef.current = null;
 
       const stream = await requestMicrophoneStream();
       const mimeType = getSupportedRecordingMimeType();
@@ -313,7 +339,6 @@ export function RecorderButton({
           Math.min(measuredDurationMs, maxDurationMs),
         );
 
-        setRecording(nextRecording);
         setDurationMs(nextRecording.durationMs);
         setRecorderState("recorded");
         onRecordingComplete?.(nextRecording);
@@ -347,28 +372,6 @@ export function RecorderButton({
 
       setError("Microphone access failed. You can still use typed practice.");
     }
-  };
-
-  const discardRecording = () => {
-    if (state === "recording" || state === "stopping") {
-      return;
-    }
-
-    setRecording(null);
-    setDurationMs(0);
-    setError("");
-    setRecorderState(isMediaRecorderSupported() ? "idle" : "unsupported");
-    onDiscard?.();
-  };
-
-  const processRecording = () => {
-    if (!recording) {
-      setError("Record a sentence first, or type it in the transcript box.");
-      setRecorderState("error");
-      return;
-    }
-
-    onProcess?.(recording);
   };
 
   if (state === "unsupported") {
@@ -489,30 +492,6 @@ export function RecorderButton({
             </p>
           ) : null}
 
-          <div className="mx-auto mt-4 flex max-w-md flex-col justify-center gap-2 sm:flex-row">
-            {state === "recorded" ? (
-              <>
-                <button
-                  type="button"
-                  onClick={processRecording}
-                  disabled={disabled || !recording}
-                  className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-emerald-900/10 transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-emerald-400/45 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:bg-zinc-500 dark:focus:ring-offset-zinc-950"
-                >
-                  <Upload size={16} aria-hidden="true" />
-                  Use recording
-                </button>
-                <button
-                  type="button"
-                  onClick={discardRecording}
-                  disabled={disabled}
-                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-zinc-900/10 bg-white/55 px-4 py-2 text-sm font-bold text-ink transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:ring-offset-2 focus:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/12 dark:bg-white/10 dark:text-white dark:focus:ring-offset-zinc-950"
-                >
-                  <RotateCcw size={16} aria-hidden="true" />
-                  Discard
-                </button>
-              </>
-            ) : null}
-          </div>
         </div>
       </div>
     </div>
@@ -539,17 +518,17 @@ function getTitle(state: RecorderState) {
 function getDescription(state: RecorderState, maxDurationLabel: string) {
   switch (state) {
     case "recording":
-      return `Speak naturally. Recording stops automatically at ${maxDurationLabel}.`;
+      return `Stops after 5 seconds of silence or at ${maxDurationLabel}.`;
     case "stopping":
       return "Preparing the audio for transcription.";
     case "recorded":
-      return "This recording is ready to transcribe.";
+      return "Starting transcription.";
     case "error":
       return "Try again, or continue with the typed transcript fallback.";
     case "permission-needed":
       return "Allow microphone access when prompted, or type below.";
     case "idle":
     default:
-      return `Record up to ${maxDurationLabel}, then use or discard it.`;
+      return `Record up to ${maxDurationLabel}.`;
   }
 }

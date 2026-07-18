@@ -6,7 +6,7 @@ export const RECORDING_MIME_TYPE_PREFERENCES = [
   "audio/mp4",
 ] as const;
 
-export const DEFAULT_MAX_RECORDING_MS = 30_000;
+export const DEFAULT_MAX_RECORDING_MS = 60_000;
 export const RECORDING_WAVEFORM_BAR_COUNT = 21;
 
 export function isMediaRecorderSupported() {

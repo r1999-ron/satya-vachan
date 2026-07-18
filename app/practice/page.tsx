@@ -27,7 +27,6 @@ import { getDemoHints, defaultTransformationExample } from "@/data/demo";
 import { getWordOfTheDay, wordCorpus } from "@/data/words";
 import { useTranscription } from "@/hooks/useTranscription";
 import { requestJson } from "@/lib/api-client";
-import { formatRecordingDuration } from "@/lib/audio";
 import {
   evaluateChallengeLocally,
   getSentenceStarters,
@@ -55,7 +54,6 @@ import type {
 type PracticeStatus =
   | "idle"
   | "recording"
-  | "recorded"
   | "transcribing"
   | "transcriptReady"
   | "validating"
@@ -74,7 +72,6 @@ type PracticeState = {
   selectedStarter: string;
   transcript: string;
   recordedAudio: RecordingResult | null;
-  recordingNotice: string;
   result: PracticeResponse | null;
   challengeResult: ChallengeResponse | null;
   challengeFallbackNotice: string;
@@ -86,8 +83,6 @@ type PracticeState = {
 
 type PracticeAction =
   | { type: "recording_started" }
-  | { type: "recording_complete"; recording: RecordingResult; notice: string }
-  | { type: "recording_discarded" }
   | {
       type: "transcript_changed";
       transcript: string;
@@ -95,8 +90,8 @@ type PracticeAction =
       selectedStarter?: string;
     }
   | { type: "transcription_started"; recording: RecordingResult }
-  | { type: "transcription_succeeded"; transcript: string; notice: string }
-  | { type: "transcription_failed"; error: string; notice: string }
+  | { type: "transcription_succeeded"; transcript: string }
+  | { type: "transcription_failed"; error: string }
   | { type: "transformation_started"; transcript: string }
   | { type: "transformation_succeeded"; result: PracticeResponse }
   | { type: "transformation_failed"; error: string }
@@ -116,7 +111,6 @@ const initialPracticeState: PracticeState = {
   selectedStarter: "",
   transcript: "",
   recordedAudio: null,
-  recordingNotice: "",
   result: null,
   challengeResult: null,
   challengeFallbackNotice: "",
@@ -314,8 +308,6 @@ function PracticeContent() {
       dispatch({
         type: "transcription_failed",
         error,
-        notice:
-          "The recording is still available. You can retry upload or type the sentence below.",
       });
     }, []),
     onStart: useCallback((recording: RecordingResult) => {
@@ -325,11 +317,8 @@ function PracticeContent() {
       dispatch({
         type: "transcription_succeeded",
         transcript,
-        notice: challengeMode
-          ? "Review the transcript, then check the challenge."
-          : "Review the transcript, then polish the sentence.",
       });
-    }, [challengeMode]),
+    }, []),
   });
 
   const handleSelectHint = useCallback((hint: string) => {
@@ -442,34 +431,13 @@ function PracticeContent() {
             key={recorderResetKey}
             className="border-0 bg-transparent p-0 dark:bg-transparent"
             disabled={isBusy}
-            onDiscard={() => dispatch({ type: "recording_discarded" })}
-            onProcess={(recording) => void transcribeRecording(recording)}
-            onRecordingComplete={(recording) =>
-              dispatch({
-                type: "recording_complete",
-                recording,
-                notice: "",
-              })
-            }
+            onRecordingComplete={(recording) => void transcribeRecording(recording)}
             onStateChange={(nextState: RecorderState) => {
               if (nextState === "recording") {
                 dispatch({ type: "recording_started" });
               }
             }}
           />
-          <p className="mt-3 text-center text-sm font-normal text-zinc-500 dark:text-zinc-400">
-            Tap to speak, or type below
-          </p>
-          {state.recordedAudio ? (
-            <p className="mt-2 text-center text-xs font-normal text-zinc-500 dark:text-zinc-400">
-              Saved · {formatRecordingDuration(state.recordedAudio.durationMs)}
-            </p>
-          ) : null}
-          {state.recordingNotice ? (
-            <p className="mx-auto mt-2 max-w-xl text-center text-xs font-normal leading-5 text-zinc-600 dark:text-zinc-400">
-              {state.recordingNotice}
-            </p>
-          ) : null}
           {state.transcriptionError ? (
             <ErrorNotice
               actionLabel={canRetryTranscription ? "Retry transcription" : undefined}
@@ -625,7 +593,6 @@ function practiceReducer(
         ...state,
         status: "recording",
         recordedAudio: null,
-        recordingNotice: "",
         transcriptionError: "",
         transformError: "",
         validationError: "",
@@ -633,30 +600,6 @@ function practiceReducer(
         challengeResult: null,
         challengeFallbackNotice: "",
         lastFailedStep: null,
-      };
-    case "recording_complete":
-      return {
-        ...state,
-        status: "recorded",
-        recordedAudio: action.recording,
-        recordingNotice: action.notice,
-        transcriptionError: "",
-        transformError: "",
-        validationError: "",
-        result: null,
-        challengeResult: null,
-        challengeFallbackNotice: "",
-        lastFailedStep: null,
-      };
-    case "recording_discarded":
-      return {
-        ...state,
-        status: state.transcript.trim() ? "transcriptReady" : "idle",
-        recordedAudio: null,
-        recordingNotice: "",
-        transcriptionError: "",
-        lastFailedStep:
-          state.lastFailedStep === "transcription" ? null : state.lastFailedStep,
       };
     case "transcript_changed":
       return {
@@ -665,7 +608,6 @@ function practiceReducer(
         selectedHint: action.selectedHint ?? "",
         selectedStarter: action.selectedStarter ?? "",
         transcript: action.transcript,
-        recordingNotice: "",
         transformError: "",
         validationError: "",
         result: null,
@@ -678,7 +620,6 @@ function practiceReducer(
         ...state,
         status: "transcribing",
         recordedAudio: action.recording,
-        recordingNotice: "Listening carefully...",
         transcriptionError: "",
         transformError: "",
         validationError: "",
@@ -694,7 +635,6 @@ function practiceReducer(
         transcript: action.transcript,
         selectedHint: "",
         selectedStarter: "",
-        recordingNotice: action.notice,
         transcriptionError: "",
         lastFailedStep: null,
       };
@@ -702,7 +642,6 @@ function practiceReducer(
       return {
         ...state,
         status: "error",
-        recordingNotice: action.notice,
         transcriptionError: action.error,
         lastFailedStep: "transcription",
       };
