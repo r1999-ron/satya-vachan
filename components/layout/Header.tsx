@@ -48,7 +48,7 @@ export function Header() {
             <span lang="hi" className="block truncate font-hindi text-lg font-bold leading-tight tracking-tight text-ink dark:text-white">
               सत्य-वचन
             </span>
-            <span lang="hi" className="mt-0.5 block truncate font-hindi text-[8px] font-semibold leading-[1.45] tracking-[0.02em] text-[#d97706] sm:text-[9px] sm:leading-[1.6] dark:text-amber-300">
+            <span lang="hi" className="mt-0.5 block truncate font-hindi text-[8px] font-semibold leading-[1.45] tracking-[0.02em] text-[#d97706] sm:text-[7px] sm:leading-[1.6] dark:text-amber-200">
               शुद्ध हिंदी बोलना सीखें
             </span>
           </span>
