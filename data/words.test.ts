@@ -6,7 +6,7 @@ const DEVANAGARI = /[\u0900-\u097f]/u;
 
 describe("bilingual word corpus", () => {
   it("provides both scripts and English example translations for every entry", () => {
-    expect(wordCorpus).toHaveLength(60);
+    expect(wordCorpus).toHaveLength(100);
 
     for (const entry of wordCorpus) {
       const words = [entry.common, entry.elevated, ...entry.synonyms];

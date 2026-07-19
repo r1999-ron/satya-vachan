@@ -1,7 +1,4 @@
-// This file is generated from data/word-corpus.csv. Do not edit it directly.
-import type { LegacyWordEntry } from "@/data/bilingual-corpus";
-
-export const generatedWordCorpus = [
+[
   {
     "id": "karya",
     "common": "kaam",
@@ -2202,4 +2199,4 @@ export const generatedWordCorpus = [
       "workplace"
     ]
   }
-] satisfies LegacyWordEntry[];
+]

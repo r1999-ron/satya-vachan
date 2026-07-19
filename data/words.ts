@@ -1,5 +1,5 @@
 import { bilingualWordEntry, type LegacyWordEntry } from "@/data/bilingual-corpus";
-import { generatedWordCorpus } from "@/data/word-corpus.generated";
+import generatedWordCorpus from "@/data/word-corpus.generated.json";
 import type { WordEntry } from "@/types";
 import { getTodayKey } from "@/lib/dates";
 
@@ -25,7 +25,7 @@ const legacyFallbackWordEntry: LegacyWordEntry = {
 
 export const fallbackWordEntry: WordEntry = bilingualWordEntry(legacyFallbackWordEntry);
 
-const legacyWordCorpus = generatedWordCorpus;
+const legacyWordCorpus = generatedWordCorpus as LegacyWordEntry[];
 
 export const wordCorpus: WordEntry[] = legacyWordCorpus.map(bilingualWordEntry);
 

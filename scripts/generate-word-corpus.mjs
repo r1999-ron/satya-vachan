@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const csvPath = path.join(projectRoot, "data", "word-corpus.csv");
 const outputPath = path.join(projectRoot, "data", "word-corpus.generated.ts");
+const jsonOutputPath = path.join(projectRoot, "data", "word-corpus.generated.json");
 const csv = await fs.readFile(csvPath, "utf8");
 const rows = parseCsv(csv);
 const [headerRow, ...dataRows] = rows;
@@ -16,15 +17,26 @@ const entries = dataRows
   .filter((row) => row.some((value) => value.trim()))
   .map((row, index) => toEntry(headers, row, index + 2));
 
-await fs.writeFile(
-  outputPath,
-  `// This file is generated from data/word-corpus.csv. Do not edit it directly.\n` +
-    `import type { LegacyWordEntry } from "@/data/bilingual-corpus";\n\n` +
-    `export const generatedWordCorpus = ${JSON.stringify(entries, null, 2)} satisfies LegacyWordEntry[];\n`,
-  "utf8",
-);
+const duplicateIds = entries
+  .map((entry) => entry.id)
+  .filter((id, index, ids) => ids.indexOf(id) !== index);
+if (duplicateIds.length > 0) {
+  throw new Error(`Word corpus contains duplicate ids: ${[...new Set(duplicateIds)].join(", ")}.`);
+}
 
-console.log(`Generated ${entries.length} entries from data/word-corpus.csv`);
+const serializedEntries = JSON.stringify(entries, null, 2);
+await Promise.all([
+  fs.writeFile(
+    outputPath,
+    `// This file is generated from data/word-corpus.csv. Do not edit it directly.\n` +
+      `import type { LegacyWordEntry } from "@/data/bilingual-corpus";\n\n` +
+      `export const generatedWordCorpus = ${serializedEntries} satisfies LegacyWordEntry[];\n`,
+    "utf8",
+  ),
+  fs.writeFile(jsonOutputPath, `${serializedEntries}\n`, "utf8"),
+]);
+
+console.log(`Generated ${entries.length} TypeScript and JSON entries from data/word-corpus.csv`);
 
 function toEntry(headers, row, rowNumber) {
   const values = Object.fromEntries(headers.map((header, index) => [header, row[index]?.trim() ?? ""]));
