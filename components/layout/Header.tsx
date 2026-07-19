@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Languages } from "lucide-react";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { ResilienceStatus } from "@/components/ui/ResilienceStatus";
 import { navItems } from "@/lib/nav";
 import { useScriptPreference, useStreak } from "@/lib/storage";
@@ -89,6 +90,7 @@ export function Header() {
             preference={preference}
             onChange={setScriptPreference}
           />
+          <ThemeToggle />
           <span className="hidden lg:block"><ResilienceStatus /></span>
         </div>
       </div>

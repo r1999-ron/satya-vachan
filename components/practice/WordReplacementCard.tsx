@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { ArrowRight, Check, Plus } from "lucide-react";
 import { HindiText } from "@/components/hindi/HindiText";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -7,6 +8,7 @@ import type { LearnedWordInput, WordReplacement } from "@/types";
 type WordReplacementCardProps = {
   disabled?: boolean;
   isSaved: boolean;
+  revealDelay?: number;
   replacement: WordReplacement;
   saveableWord: LearnedWordInput;
   onSave: (word: LearnedWordInput) => void;
@@ -15,6 +17,7 @@ type WordReplacementCardProps = {
 export function WordReplacementCard({
   disabled = false,
   isSaved,
+  revealDelay = 0,
   replacement,
   saveableWord,
   onSave,
@@ -22,16 +25,17 @@ export function WordReplacementCard({
   return (
     <div
       className={cn(
-        "rounded-2xl border p-4 transition duration-200",
+        "rounded-2xl border p-4 transition duration-200 motion-safe:animate-floatIn",
         isSaved
           ? "border-emerald-200/80 bg-emerald-100/42 motion-safe:animate-savePop dark:border-emerald-300/25 dark:bg-emerald-300/10"
           : "border-white/60 bg-white/36 hover:border-amber-200/80 hover:bg-white/46 dark:border-white/12 dark:bg-white/5 dark:hover:border-amber-300/20",
       )}
+      style={{ animationDelay: `${revealDelay}ms` } as CSSProperties}
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 space-y-3">
           <div className="flex flex-wrap items-center gap-2 text-lg font-bold">
-            <HindiText text={replacement.original} kind="inline" className="text-wrap-anywhere text-zinc-600 line-through decoration-zinc-400/70 decoration-2 dark:text-zinc-400" />
+            <HindiText text={replacement.original} kind="inline" className="text-wrap-anywhere text-rosewood/75 line-through decoration-rosewood/45 decoration-2 dark:text-[#d18b97]" />
             <ArrowRight
               className="text-amber-600"
               size={18}

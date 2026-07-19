@@ -17,10 +17,10 @@ import {
 } from "@/components/audio/RecorderButton";
 import { HindiText } from "@/components/hindi/HindiText";
 import { HintPromptList } from "@/components/practice/HintPromptList";
+import { PracticePipeline } from "@/components/practice/PracticePipeline";
 import { TransformationResult } from "@/components/practice/TransformationResult";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { LoadingMeter } from "@/components/ui/LoadingMeter";
 import { getDemoHints, defaultTransformationExample } from "@/data/demo";
 import { useTranscription } from "@/hooks/useTranscription";
 import { requestJson } from "@/lib/api-client";
@@ -260,6 +260,7 @@ function PracticeContent() {
   return (
     <div className="mx-auto max-w-4xl space-y-5">
       <GlassCard className="animate-floatIn p-5 sm:p-8">
+        <PracticePipeline status={state.status} />
         <div>
           <RecorderButton
             key={recorderResetKey}
@@ -500,7 +501,11 @@ function LoadingState({ status }: { status: PracticeStatus }) {
       </span>
       <div className="min-w-0 flex-1">
         <h2 className="text-lg font-bold text-ink dark:text-white">{copy.title}</h2>
-        <LoadingMeter />
+        <p className="mt-1 text-sm leading-6 text-zinc-600 dark:text-zinc-300">
+          {status === "transforming"
+            ? "Finding stronger words while keeping your meaning intact."
+            : "One moment while we prepare the next step."}
+        </p>
       </div>
     </div>
   );

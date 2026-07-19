@@ -30,16 +30,16 @@ export function BottomNav() {
                 active && !primary
                   ? "bg-zinc-900 text-white shadow-sm motion-safe:animate-savePop dark:bg-white dark:text-zinc-950"
                   : "text-zinc-600 hover:bg-black/5 active:scale-95 dark:text-zinc-300 dark:hover:bg-white/10",
-                primary && "font-bold text-zinc-900 dark:text-white",
+                primary && "relative -top-5 font-bold text-zinc-900 dark:text-white",
               )}
             >
               <span
                 className={cn(
-                  primary && "grid size-9 place-items-center rounded-full bg-zinc-900 text-white shadow-md shadow-zinc-900/20 dark:bg-white dark:text-zinc-950",
+                  primary && "grid size-14 place-items-center rounded-full border-4 border-[#f8f5ef] bg-zinc-900 text-white shadow-lg shadow-zinc-900/25 dark:border-zinc-950 dark:bg-white dark:text-zinc-950",
                   primary && active && "bg-amber-400 text-zinc-950 dark:bg-amber-300",
                 )}
               >
-                <Icon size={primary ? 20 : 18} aria-hidden="true" />
+                <Icon size={primary ? 24 : 18} aria-hidden="true" />
               </span>
               <span className="max-w-full truncate">{label}</span>
             </Link>
