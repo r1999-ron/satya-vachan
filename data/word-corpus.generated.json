@@ -1,2202 +1,4602 @@
 [
   {
-    "id": "karya",
-    "common": "kaam",
-    "elevated": "karya",
-    "simpleExample": "Aaj ka kaam thoda zyada hai, par shaam tak ho jayega.",
-    "elevatedExample": "Aaj karya thoda adhik hai, par shaam tak poora ho jayega.",
-    "scholarExample": "Aaj karya-bhaar adhik avashya hai, phir bhi ise sandhya tak sampann kar lenge.",
-    "difficulty": "easy",
+    "id": 1,
+    "common": {
+      "dev": "काम",
+      "roman": "kaam"
+    },
+    "elevated": {
+      "dev": "कार्य",
+      "roman": "karya"
+    },
+    "englishMeaning": "work, task, or purposeful action",
+    "simpleExample": {
+      "dev": "आज का काम थोड़ा ज़्यादा है, पर शाम तक हो जाएगा।",
+      "roman": "Aaj ka kaam thoda zyada hai, par shaam tak ho jayega."
+    },
+    "elevatedExample": {
+      "dev": "आज कार्य थोड़ा अधिक है, पर शाम तक पूरा हो जाएगा।",
+      "roman": "Aaj karya thoda adhik hai, par shaam tak poora ho jayega."
+    },
+    "scholarExample": {
+      "dev": "आज कार्य-भार अधिक अवश्य है, फिर भी इसे संध्या तक संपन्न कर लेंगे।",
+      "roman": "Aaj karya-bhaar adhik avashya hai, phir bhi ise sandhya tak sampann kar lenge."
+    },
     "synonyms": [
-      "kaarya",
-      "kartavya",
-      "prayojan"
+      {
+        "dev": "कर्तव्य",
+        "roman": "kartavya"
+      },
+      {
+        "dev": "प्रयोजन",
+        "roman": "prayojan"
+      },
+      {
+        "dev": "श्रम",
+        "roman": "shram"
+      }
     ],
     "usageNote": "Karya gives ordinary work a composed, purposeful tone without sounding heavy.",
-    "englishMeaning": "work, task, or purposeful action",
     "challengePrompt": "Aaj ke kisi mahatvapurn karya par ek spasht vaakya banaiye.",
     "tags": [
       "work",
       "daily speech",
       "professional"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "prayas",
-    "common": "koshish",
-    "elevated": "prayas",
-    "simpleExample": "Main kal se koshish kar raha hoon, aaj shayad baat ban jaaye.",
-    "elevatedExample": "Maine kal se prayas jaari rakha hai, aaj shayad baat ban jaaye.",
-    "scholarExample": "Mera prayas nirantar raha hai; sambhav hai aaj iska sukhad parinaam mile.",
-    "difficulty": "easy",
+    "id": 2,
+    "common": {
+      "dev": "कोशिश",
+      "roman": "koshish"
+    },
+    "elevated": {
+      "dev": "प्रयास",
+      "roman": "prayas"
+    },
+    "englishMeaning": "effort or attempt",
+    "simpleExample": {
+      "dev": "मैं कल से कोशिश कर रहा हूँ, आज शायद बात बन जाए।",
+      "roman": "Main kal se koshish kar raha hoon, aaj shayad baat ban jaaye."
+    },
+    "elevatedExample": {
+      "dev": "मैंने कल से प्रयास जारी रखा है, आज शायद बात बन जाए।",
+      "roman": "Maine kal se prayas jaari rakha hai, aaj shayad baat ban jaaye."
+    },
+    "scholarExample": {
+      "dev": "मेरा प्रयास निरंतर रहा है; संभव है आज इसका सुखद परिणाम मिले।",
+      "roman": "Mera prayas nirantar raha hai; sambhav hai aaj iska sukhad parinaam mile."
+    },
     "synonyms": [
-      "yatna",
-      "mehnat",
-      "chesta"
+      {
+        "dev": "यत्न",
+        "roman": "yatna"
+      },
+      {
+        "dev": "मेहनत",
+        "roman": "mehnat"
+      },
+      {
+        "dev": "चेष्टा",
+        "roman": "chesta"
+      }
     ],
     "usageNote": "Prayas is graceful in speech and writing, especially when describing sincere effort.",
-    "englishMeaning": "effort or attempt",
     "challengePrompt": "Kisi aise prayas ka zikr kijiye jisse aapko sudhaar mehsoos hua.",
     "tags": [
       "effort",
       "self improvement",
       "daily speech"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "sheeghra",
-    "common": "jaldi",
-    "elevated": "sheeghra",
-    "simpleExample": "Zara jaldi bata dena, mujhe nikalna bhi hai.",
-    "elevatedExample": "Kripya sheeghra bata dijiye, mujhe nikalna bhi hai.",
-    "scholarExample": "Kripya sheeghra suchit karein, kyunki mujhe prasthaan bhi karna hai.",
-    "difficulty": "easy",
+    "id": 3,
+    "common": {
+      "dev": "जल्दी",
+      "roman": "jaldi"
+    },
+    "elevated": {
+      "dev": "शीघ्र",
+      "roman": "sheeghra"
+    },
+    "englishMeaning": "soon, quickly, or without delay",
+    "simpleExample": {
+      "dev": "ज़रा जल्दी बता देना, मुझे निकलना भी है।",
+      "roman": "Zara jaldi bata dena, mujhe nikalna bhi hai."
+    },
+    "elevatedExample": {
+      "dev": "कृपया शीघ्र बता दीजिए, मुझे निकलना भी है।",
+      "roman": "Kripya sheeghra bata dijiye, mujhe nikalna bhi hai."
+    },
+    "scholarExample": {
+      "dev": "कृपया शीघ्र सूचित करें, क्योंकि मुझे प्रस्थान भी करना है।",
+      "roman": "Kripya sheeghra suchit karein, kyunki mujhe prasthaan bhi karna hai."
+    },
     "synonyms": [
-      "turant",
-      "tatkaal",
-      "jaldi"
+      {
+        "dev": "तुरंत",
+        "roman": "turant"
+      },
+      {
+        "dev": "तत्काल",
+        "roman": "tatkaal"
+      },
+      {
+        "dev": "अविलंब",
+        "roman": "avilamb"
+      }
     ],
     "usageNote": "Sheeghra feels courteous and precise; use it when speed matters but the tone should stay calm.",
-    "englishMeaning": "soon, quickly, or without delay",
     "challengePrompt": "Sheeghra shabd ka prayog karte hue kisi vinamra nivedan ka vaakya kahiye.",
     "tags": [
       "time",
       "polite speech",
       "requests"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "arth",
-    "common": "matlab",
-    "elevated": "arth",
-    "simpleExample": "Achchha, tumhari is baat ka matlab kya hai?",
-    "elevatedExample": "Achchha, aapki is baat ka arth kya hai?",
-    "scholarExample": "Kripya spasht kijiye, aapke kathan ka vaastavik arth kya hai?",
-    "difficulty": "easy",
+    "id": 4,
+    "common": {
+      "dev": "मतलब",
+      "roman": "matlab"
+    },
+    "elevated": {
+      "dev": "अर्थ",
+      "roman": "arth"
+    },
+    "englishMeaning": "meaning or significance",
+    "simpleExample": {
+      "dev": "अच्छा, तुम्हारी इस बात का मतलब क्या है?",
+      "roman": "Achchha, tumhari is baat ka matlab kya hai?"
+    },
+    "elevatedExample": {
+      "dev": "अच्छा, आपकी इस बात का अर्थ क्या है?",
+      "roman": "Achchha, aapki is baat ka arth kya hai?"
+    },
+    "scholarExample": {
+      "dev": "कृपया स्पष्ट कीजिए, आपके कथन का वास्तविक अर्थ क्या है?",
+      "roman": "Kripya spasht kijiye, aapke kathan ka vaastavik arth kya hai?"
+    },
     "synonyms": [
-      "maayne",
-      "bhaav",
-      "tatparya"
+      {
+        "dev": "मायने",
+        "roman": "maayne"
+      },
+      {
+        "dev": "भाव",
+        "roman": "bhaav"
+      },
+      {
+        "dev": "तात्पर्य",
+        "roman": "tatparya"
+      }
     ],
     "usageNote": "Arth is concise and elegant, useful whenever you are clarifying meaning.",
-    "englishMeaning": "meaning or significance",
     "challengePrompt": "Arth shabd ka prayog karte hue kisi vichaar ko samjhaiye.",
     "tags": [
       "meaning",
       "clarity",
       "conversation"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "arthaat",
-    "common": "yaani",
-    "elevated": "arthaat",
-    "simpleExample": "Yaani kal sabko thoda jaldi aana hai, theek?",
-    "elevatedExample": "Arthaat kal sabko thoda sheeghra aana hai, sahi?",
-    "scholarExample": "Arthaat sabhi ko kal nirdharit samay se poorv upasthit hona hai, hai na?",
-    "difficulty": "medium",
+    "id": 5,
+    "common": {
+      "dev": "यानी",
+      "roman": "yaani"
+    },
+    "elevated": {
+      "dev": "अर्थात्",
+      "roman": "arthaat"
+    },
+    "englishMeaning": "that is, namely, or in other words",
+    "simpleExample": {
+      "dev": "यानी कल सबको थोड़ा जल्दी आना है, ठीक?",
+      "roman": "Yaani kal sabko thoda jaldi aana hai, theek?"
+    },
+    "elevatedExample": {
+      "dev": "अर्थात् कल सबको थोड़ा शीघ्र आना है, सही?",
+      "roman": "Arthaat kal sabko thoda sheeghra aana hai, sahi?"
+    },
+    "scholarExample": {
+      "dev": "अर्थात् सभी को कल निर्धारित समय से पूर्व उपस्थित होना है, है न?",
+      "roman": "Arthaat sabhi ko kal nirdharit samay se poorv upasthit hona hai, hai na?"
+    },
     "synonyms": [
-      "yaani",
-      "tatparya yeh hai",
-      "is arth mein"
+      {
+        "dev": "यानी",
+        "roman": "yaani"
+      },
+      {
+        "dev": "तात्पर्य यह है",
+        "roman": "tatparya yeh hai"
+      },
+      {
+        "dev": "इस अर्थ में",
+        "roman": "is arth mein"
+      }
     ],
     "usageNote": "Arthaat is best for explaining or restating a point with poise.",
-    "englishMeaning": "that is, namely, or in other words",
     "challengePrompt": "Arthaat ka prayog karke kisi baat ko aur spasht kijiye.",
     "tags": [
       "clarity",
       "explanation",
       "formal"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "vichaar",
-    "common": "soch",
-    "elevated": "vichaar",
-    "simpleExample": "Meri soch yeh hai ki pehle chhota sa trial kar lete hain.",
-    "elevatedExample": "Mera vichaar hai ki pehle ek chhota parikshan kar lete hain.",
-    "scholarExample": "Mera vichaar hai ki poorn kriyanvayan se pehle seemit star par parikshan uchit rahega.",
-    "difficulty": "easy",
+    "id": 6,
+    "common": {
+      "dev": "सोच",
+      "roman": "soch"
+    },
+    "elevated": {
+      "dev": "विचार",
+      "roman": "vichaar"
+    },
+    "englishMeaning": "thought, idea, or considered view",
+    "simpleExample": {
+      "dev": "मेरी सोच यह है कि पहले छोटा-सा trial कर लेते हैं।",
+      "roman": "Meri soch yeh hai ki pehle chhota sa trial kar lete hain."
+    },
+    "elevatedExample": {
+      "dev": "मेरा विचार है कि पहले एक छोटा परीक्षण कर लेते हैं।",
+      "roman": "Mera vichaar hai ki pehle ek chhota parikshan kar lete hain."
+    },
+    "scholarExample": {
+      "dev": "मेरा विचार है कि पूर्ण क्रियान्वयन से पहले सीमित स्तर पर परीक्षण उचित रहेगा।",
+      "roman": "Mera vichaar hai ki poorn kriyanvayan se pehle seemit star par parikshan uchit rahega."
+    },
     "synonyms": [
-      "raay",
-      "manan",
-      "drishti"
+      {
+        "dev": "राय",
+        "roman": "raay"
+      },
+      {
+        "dev": "मनन",
+        "roman": "manan"
+      },
+      {
+        "dev": "दृष्टि",
+        "roman": "drishti"
+      }
     ],
     "usageNote": "Vichaar sounds mature and reflective, especially for opinions and ideas.",
-    "englishMeaning": "thought, idea, or considered view",
     "challengePrompt": "Kisi vishay par apna vichaar ek santulit vaakya mein kahiye.",
     "tags": [
       "ideas",
       "opinion",
       "reflection"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "drishtikon",
-    "common": "nazariya",
-    "elevated": "drishtikon",
-    "simpleExample": "Main tumhara nazariya samajh raha hoon, bas ek chinta hai.",
-    "elevatedExample": "Main aapka drishtikon samajh raha hoon, keval ek chinta hai.",
-    "scholarExample": "Main aapke drishtikon ka samman karta hoon; tathapi ek bindu par meri chinta bani hui hai.",
-    "difficulty": "medium",
+    "id": 7,
+    "common": {
+      "dev": "नज़रिया",
+      "roman": "nazariya"
+    },
+    "elevated": {
+      "dev": "दृष्टिकोण",
+      "roman": "drishtikon"
+    },
+    "englishMeaning": "perspective or point of view",
+    "simpleExample": {
+      "dev": "मैं तुम्हारा नज़रिया समझ रहा हूँ, बस एक चिंता है।",
+      "roman": "Main tumhara nazariya samajh raha hoon, bas ek chinta hai."
+    },
+    "elevatedExample": {
+      "dev": "मैं आपका दृष्टिकोण समझ रहा हूँ, केवल एक चिंता है।",
+      "roman": "Main aapka drishtikon samajh raha hoon, keval ek chinta hai."
+    },
+    "scholarExample": {
+      "dev": "मैं आपके दृष्टिकोण का सम्मान करता हूँ; तथापि एक बिंदु पर मेरी चिंता बनी हुई है।",
+      "roman": "Main aapke drishtikon ka samman karta hoon; tathapi ek bindu par meri chinta bani hui hai."
+    },
     "synonyms": [
-      "drishti",
-      "raay",
-      "pariprekshya"
+      {
+        "dev": "दृष्टि",
+        "roman": "drishti"
+      },
+      {
+        "dev": "राय",
+        "roman": "raay"
+      },
+      {
+        "dev": "परिप्रेक्ष्य",
+        "roman": "pariprekshya"
+      }
     ],
     "usageNote": "Drishtikon is ideal for thoughtful discussions where perspective matters.",
-    "englishMeaning": "perspective or point of view",
     "challengePrompt": "Apne drishtikon ko ek vinamra vaakya mein vyakt kijiye.",
     "tags": [
       "perspective",
       "discussion",
       "professional"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "uchit",
-    "common": "sahi",
-    "elevated": "uchit",
-    "simpleExample": "Abhi phone karna sahi rahega ya thoda ruk jaaun?",
-    "elevatedExample": "Abhi phone karna uchit rahega ya kuch der pratiksha karoon?",
-    "scholarExample": "Kya is samay sampark karna uchit hoga, athva mujhe kuch samay pratiksha karni chahiye?",
-    "difficulty": "easy",
+    "id": 8,
+    "common": {
+      "dev": "सही",
+      "roman": "sahi"
+    },
+    "elevated": {
+      "dev": "उचित",
+      "roman": "uchit"
+    },
+    "englishMeaning": "appropriate, proper, or suitable",
+    "simpleExample": {
+      "dev": "अभी phone करना सही रहेगा या थोड़ा रुक जाऊँ?",
+      "roman": "Abhi phone karna sahi rahega ya thoda ruk jaaun?"
+    },
+    "elevatedExample": {
+      "dev": "अभी phone करना उचित रहेगा या कुछ देर प्रतीक्षा करूँ?",
+      "roman": "Abhi phone karna uchit rahega ya kuch der pratiksha karoon?"
+    },
+    "scholarExample": {
+      "dev": "क्या इस समय संपर्क करना उचित होगा, अथवा मुझे कुछ समय प्रतीक्षा करनी चाहिए?",
+      "roman": "Kya is samay sampark karna uchit hoga, athva mujhe kuch samay pratiksha karni chahiye?"
+    },
     "synonyms": [
-      "upayukt",
-      "theek",
-      "anukul"
+      {
+        "dev": "उपयुक्त",
+        "roman": "upayukt"
+      },
+      {
+        "dev": "ठीक",
+        "roman": "theek"
+      },
+      {
+        "dev": "अनुकूल",
+        "roman": "anukul"
+      }
     ],
     "usageNote": "Uchit adds tact when you want to say something is right or suitable.",
-    "englishMeaning": "appropriate, proper, or suitable",
     "challengePrompt": "Uchit shabd ka prayog karke kisi salah ka vaakya banaiye.",
     "tags": [
       "judgment",
       "advice",
       "polite speech"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "avashyak",
-    "common": "zaroori",
-    "elevated": "avashyak",
-    "simpleExample": "Kal aana zaroori hai kya, ya online ho jayega?",
-    "elevatedExample": "Kya kal aana avashyak hai, ya kaam online ho jayega?",
-    "scholarExample": "Kya kal vyaktigat roop se upasthit hona avashyak hai, athva karya online sampann ho sakta hai?",
-    "difficulty": "easy",
+    "id": 9,
+    "common": {
+      "dev": "ज़रूरी",
+      "roman": "zaroori"
+    },
+    "elevated": {
+      "dev": "आवश्यक",
+      "roman": "avashyak"
+    },
+    "englishMeaning": "necessary or essential",
+    "simpleExample": {
+      "dev": "कल आना ज़रूरी है क्या, या online हो जाएगा?",
+      "roman": "Kal aana zaroori hai kya, ya online ho jayega?"
+    },
+    "elevatedExample": {
+      "dev": "क्या कल आना आवश्यक है, या काम online हो जाएगा?",
+      "roman": "Kya kal aana avashyak hai, ya kaam online ho jayega?"
+    },
+    "scholarExample": {
+      "dev": "क्या कल व्यक्तिगत रूप से उपस्थित होना आवश्यक है, अथवा कार्य online संपन्न हो सकता है?",
+      "roman": "Kya kal vyaktigat roop se upasthit hona avashyak hai, athva karya online sampann ho sakta hai?"
+    },
     "synonyms": [
-      "aavashyak",
-      "anivarya",
-      "mahatvapurn"
+      {
+        "dev": "अनिवार्य",
+        "roman": "anivarya"
+      },
+      {
+        "dev": "महत्वपूर्ण",
+        "roman": "mahatvapurn"
+      },
+      {
+        "dev": "अपरिहार्य",
+        "roman": "aparihaarya"
+      }
     ],
     "usageNote": "Avashyak sounds clear and composed without becoming too formal.",
-    "englishMeaning": "necessary or essential",
     "challengePrompt": "Kisi avashyak kaam ke baare mein ek seedha vaakya kahiye.",
     "tags": [
       "importance",
       "clarity",
       "daily speech"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "sahayata",
-    "common": "madad",
-    "elevated": "sahayata",
-    "simpleExample": "Ek minute, is form mein tumhari madad chahiye.",
-    "elevatedExample": "Ek kshan, is form ko bharne mein aapki sahayata chahiye.",
-    "scholarExample": "Kripya is prapatra ko poora karne mein meri sahayata karein; ek bindu spasht nahi hai.",
-    "difficulty": "easy",
+    "id": 10,
+    "common": {
+      "dev": "मदद",
+      "roman": "madad"
+    },
+    "elevated": {
+      "dev": "सहायता",
+      "roman": "sahayata"
+    },
+    "englishMeaning": "help or assistance",
+    "simpleExample": {
+      "dev": "एक minute, इस form में तुम्हारी मदद चाहिए।",
+      "roman": "Ek minute, is form mein tumhari madad chahiye."
+    },
+    "elevatedExample": {
+      "dev": "एक क्षण, इस form को भरने में आपकी सहायता चाहिए।",
+      "roman": "Ek kshan, is form ko bharne mein aapki sahayata chahiye."
+    },
+    "scholarExample": {
+      "dev": "कृपया इस प्रपत्र को पूरा करने में मेरी सहायता करें; एक बिंदु स्पष्ट नहीं है।",
+      "roman": "Kripya is prapatra ko poora karne mein meri sahayata karein; ek bindu spasht nahi hai."
+    },
     "synonyms": [
-      "madad",
-      "sahyog",
-      "samarthan"
+      {
+        "dev": "मदद",
+        "roman": "madad"
+      },
+      {
+        "dev": "सहयोग",
+        "roman": "sahyog"
+      },
+      {
+        "dev": "समर्थन",
+        "roman": "samarthan"
+      }
     ],
     "usageNote": "Sahayata keeps a request respectful and elegant.",
-    "englishMeaning": "help or assistance",
     "challengePrompt": "Sahayata maangte hue ek vinamra vaakya taiyar kijiye.",
     "tags": [
       "help",
       "requests",
       "polite speech"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "samasya",
-    "common": "problem",
-    "elevated": "samasya",
-    "simpleExample": "Yaar, login mein phir problem aa rahi hai.",
-    "elevatedExample": "Login mein phir se ek samasya aa rahi hai.",
-    "scholarExample": "Pravesh karte samay samasya punah utpann ho rahi hai; kripya takneeki jaanch kar dein.",
-    "difficulty": "easy",
+    "id": 11,
+    "common": {
+      "dev": "प्रॉब्लम",
+      "roman": "problem"
+    },
+    "elevated": {
+      "dev": "समस्या",
+      "roman": "samasya"
+    },
+    "englishMeaning": "problem, issue, or difficulty",
+    "simpleExample": {
+      "dev": "यार, login में फिर problem आ रही है।",
+      "roman": "Yaar, login mein phir problem aa rahi hai."
+    },
+    "elevatedExample": {
+      "dev": "Login में फिर से एक समस्या आ रही है।",
+      "roman": "Login mein phir se ek samasya aa rahi hai."
+    },
+    "scholarExample": {
+      "dev": "प्रवेश करते समय समस्या पुनः उत्पन्न हो रही है; कृपया तकनीकी जाँच कर दें।",
+      "roman": "Pravesh karte samay samasya punah utpann ho rahi hai; kripya takneeki jaanch kar dein."
+    },
     "synonyms": [
-      "pareshani",
-      "dikkat",
-      "vighn"
+      {
+        "dev": "परेशानी",
+        "roman": "pareshani"
+      },
+      {
+        "dev": "दिक्कत",
+        "roman": "dikkat"
+      },
+      {
+        "dev": "विघ्न",
+        "roman": "vighn"
+      }
     ],
     "usageNote": "Samasya replaces English-mixed phrasing cleanly while staying common in spoken Hindi.",
-    "englishMeaning": "problem, issue, or difficulty",
     "challengePrompt": "Kisi chhoti samasya ko shaant bhaav se varnit kijiye.",
     "tags": [
       "problem solving",
       "professional",
       "daily speech"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "samadhan",
-    "common": "solution",
-    "elevated": "samadhan",
-    "simpleExample": "Chalo, is dikkat ka koi simple solution dhoondhte hain.",
-    "elevatedExample": "Aaiye, is samasya ka koi saral samadhan dhoondhte hain.",
-    "scholarExample": "Aaiye, is samasya ka vyavaharik samadhan talaashein, jise turant apnaya ja sake.",
-    "difficulty": "easy",
+    "id": 12,
+    "common": {
+      "dev": "सॉल्यूशन",
+      "roman": "solution"
+    },
+    "elevated": {
+      "dev": "समाधान",
+      "roman": "samadhan"
+    },
+    "englishMeaning": "solution or resolution",
+    "simpleExample": {
+      "dev": "चलो, इस दिक्कत का कोई simple solution ढूँढते हैं।",
+      "roman": "Chalo, is dikkat ka koi simple solution dhoondhte hain."
+    },
+    "elevatedExample": {
+      "dev": "आइए, इस समस्या का कोई सरल समाधान ढूँढते हैं।",
+      "roman": "Aaiye, is samasya ka koi saral samadhan dhoondhte hain."
+    },
+    "scholarExample": {
+      "dev": "आइए, इस समस्या का व्यावहारिक समाधान तलाशें, जिसे तुरंत अपनाया जा सके।",
+      "roman": "Aaiye, is samasya ka vyavaharik samadhan talaashein, jise turant apnaya ja sake."
+    },
     "synonyms": [
-      "hal",
-      "upay",
-      "nivarana"
+      {
+        "dev": "हल",
+        "roman": "hal"
+      },
+      {
+        "dev": "उपाय",
+        "roman": "upay"
+      },
+      {
+        "dev": "निवारण",
+        "roman": "nivarana"
+      }
     ],
     "usageNote": "Samadhan is natural in meetings, planning, and thoughtful conversation.",
-    "englishMeaning": "solution or resolution",
     "challengePrompt": "Samadhan shabd ka prayog karte hue kisi upay ka vaakya kahiye.",
     "tags": [
       "problem solving",
       "professional",
       "clarity"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "spasht",
-    "common": "clear",
-    "elevated": "spasht",
-    "simpleExample": "Ab tumhari baat clear hai, pehle thodi uljhan thi.",
-    "elevatedExample": "Ab aapki baat spasht hai, pehle thodi uljhan thi.",
-    "scholarExample": "Ab aapka drishtikon poori tarah spasht hai; aarambh mein kuch aspashtata thi.",
-    "difficulty": "easy",
+    "id": 13,
+    "common": {
+      "dev": "क्लियर",
+      "roman": "clear"
+    },
+    "elevated": {
+      "dev": "स्पष्ट",
+      "roman": "spasht"
+    },
+    "englishMeaning": "clear, evident, or explicit",
+    "simpleExample": {
+      "dev": "अब तुम्हारी बात clear है, पहले थोड़ी उलझन थी।",
+      "roman": "Ab tumhari baat clear hai, pehle thodi uljhan thi."
+    },
+    "elevatedExample": {
+      "dev": "अब आपकी बात स्पष्ट है, पहले थोड़ी उलझन थी।",
+      "roman": "Ab aapki baat spasht hai, pehle thodi uljhan thi."
+    },
+    "scholarExample": {
+      "dev": "अब आपका दृष्टिकोण पूरी तरह स्पष्ट है; आरंभ में कुछ अस्पष्टता थी।",
+      "roman": "Ab aapka drishtikon poori tarah spasht hai; aarambh mein kuch aspashtata thi."
+    },
     "synonyms": [
-      "saaf",
-      "prakat",
-      "sugam"
+      {
+        "dev": "साफ़",
+        "roman": "saaf"
+      },
+      {
+        "dev": "प्रकट",
+        "roman": "prakat"
+      },
+      {
+        "dev": "सुगम",
+        "roman": "sugam"
+      }
     ],
     "usageNote": "Spasht is a useful everyday upgrade for clarity without sounding stiff.",
-    "englishMeaning": "clear, evident, or explicit",
     "challengePrompt": "Spasht shabd ke saath kisi nirdesh ya vichaar ko kahiye.",
     "tags": [
       "clarity",
       "communication",
       "professional"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "aspashtata",
-    "common": "confusion",
-    "elevated": "aspashtata",
-    "simpleExample": "Is message mein thodi confusion hai, date samajh nahi aa rahi.",
-    "elevatedExample": "Is sandesh mein kuch aspashtata hai, tareekh samajh nahi aa rahi.",
-    "scholarExample": "Sandesh mein tareekh ko lekar aspashtata hai; kripya nishchit dinank bata dein.",
-    "difficulty": "medium",
+    "id": 14,
+    "common": {
+      "dev": "कन्फ़्यूज़न",
+      "roman": "confusion"
+    },
+    "elevated": {
+      "dev": "अस्पष्टता",
+      "roman": "aspashtata"
+    },
+    "englishMeaning": "lack of clarity or ambiguity",
+    "simpleExample": {
+      "dev": "इस message में थोड़ी confusion है, date समझ नहीं आ रही।",
+      "roman": "Is message mein thodi confusion hai, date samajh nahi aa rahi."
+    },
+    "elevatedExample": {
+      "dev": "इस संदेश में कुछ अस्पष्टता है, तारीख़ समझ नहीं आ रही।",
+      "roman": "Is sandesh mein kuch aspashtata hai, tareekh samajh nahi aa rahi."
+    },
+    "scholarExample": {
+      "dev": "संदेश में तारीख़ को लेकर अस्पष्टता है; कृपया निश्चित दिनांक बता दें।",
+      "roman": "Sandesh mein tareekh ko lekar aspashtata hai; kripya nishchit dinank bata dein."
+    },
     "synonyms": [
-      "uljhan",
-      "asmanjas",
-      "sandigdhata"
+      {
+        "dev": "उलझन",
+        "roman": "uljhan"
+      },
+      {
+        "dev": "असमंजस",
+        "roman": "asmanjas"
+      },
+      {
+        "dev": "संदिग्धता",
+        "roman": "sandigdhata"
+      }
     ],
     "usageNote": "Aspashtata names confusion gracefully, especially when you want to stay diplomatic.",
-    "englishMeaning": "lack of clarity or ambiguity",
     "challengePrompt": "Aspashtata door karne ke liye ek vinamra vaakya banaiye.",
     "tags": [
       "clarity",
       "meetings",
       "professional"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "nirnay",
-    "common": "faisla",
-    "elevated": "nirnay",
-    "simpleExample": "Toh, aaj final faisla kar lein ya kal tak rukhein?",
-    "elevatedExample": "Toh, aaj antim nirnay lein ya kal tak pratiksha karein?",
-    "scholarExample": "Kya hum aaj hi antim nirnay lein, athva vichaar ke liye kal tak ka samay rakhein?",
-    "difficulty": "easy",
+    "id": 15,
+    "common": {
+      "dev": "फ़ैसला",
+      "roman": "faisla"
+    },
+    "elevated": {
+      "dev": "निर्णय",
+      "roman": "nirnay"
+    },
+    "englishMeaning": "decision",
+    "simpleExample": {
+      "dev": "तो, आज final फ़ैसला कर लें या कल तक रुकें?",
+      "roman": "Toh, aaj final faisla kar lein ya kal tak rukein?"
+    },
+    "elevatedExample": {
+      "dev": "तो, आज अंतिम निर्णय लें या कल तक प्रतीक्षा करें?",
+      "roman": "Toh, aaj antim nirnay lein ya kal tak pratiksha karein?"
+    },
+    "scholarExample": {
+      "dev": "क्या हम आज ही अंतिम निर्णय लें, अथवा विचार के लिए कल तक का समय रखें?",
+      "roman": "Kya hum aaj hi antim nirnay lein, athva vichaar ke liye kal tak ka samay rakhein?"
+    },
     "synonyms": [
-      "faisla",
-      "nishchay",
-      "tai"
+      {
+        "dev": "फ़ैसला",
+        "roman": "faisla"
+      },
+      {
+        "dev": "निश्चय",
+        "roman": "nishchay"
+      },
+      {
+        "dev": "तय",
+        "roman": "tay"
+      }
     ],
     "usageNote": "Nirnay is elegant and common enough for everyday formal speech.",
-    "englishMeaning": "decision",
     "challengePrompt": "Nirnay shabd ka prayog karte hue ek sthir vaakya kahiye.",
     "tags": [
       "decision",
       "planning",
       "professional"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "samay",
-    "common": "time",
-    "elevated": "samay",
-    "simpleExample": "Aaj time kam hai, baaki baat shaam ko karte hain.",
-    "elevatedExample": "Aaj samay kam hai, shesh baat shaam ko karte hain.",
-    "scholarExample": "Aaj samay seemit hai; atah shesh charcha sandhya mein karna uchit rahega.",
-    "difficulty": "easy",
+    "id": 16,
+    "common": {
+      "dev": "टाइम",
+      "roman": "time"
+    },
+    "elevated": {
+      "dev": "समय",
+      "roman": "samay"
+    },
+    "englishMeaning": "time",
+    "simpleExample": {
+      "dev": "आज time कम है, बाक़ी बात शाम को करते हैं।",
+      "roman": "Aaj time kam hai, baaki baat shaam ko karte hain."
+    },
+    "elevatedExample": {
+      "dev": "आज समय कम है, शेष बात शाम को करते हैं।",
+      "roman": "Aaj samay kam hai, shesh baat shaam ko karte hain."
+    },
+    "scholarExample": {
+      "dev": "आज समय सीमित है; अतः शेष चर्चा संध्या में करना उचित रहेगा।",
+      "roman": "Aaj samay seemit hai; atah shesh charcha sandhya mein karna uchit rahega."
+    },
     "synonyms": [
-      "waqt",
-      "avasar",
-      "ghadi"
+      {
+        "dev": "वक़्त",
+        "roman": "waqt"
+      },
+      {
+        "dev": "अवसर",
+        "roman": "avasar"
+      },
+      {
+        "dev": "घड़ी",
+        "roman": "ghadi"
+      }
     ],
     "usageNote": "Samay is one of the easiest upgrades from English-mixed everyday Hindi.",
-    "englishMeaning": "time",
     "challengePrompt": "Samay ka samman dikhate hue ek chhota vaakya kahiye.",
     "tags": [
       "time",
       "daily speech",
       "planning"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "avasar",
-    "common": "mauka",
-    "elevated": "avasar",
-    "simpleExample": "Agli baar mujhe bhi bolne ka mauka dena.",
-    "elevatedExample": "Agli baar mujhe bhi bolne ka avasar dijiye.",
-    "scholarExample": "Agli baithak mein mujhe bhi apna drishtikon rakhne ka avasar pradaan kijiye.",
-    "difficulty": "easy",
+    "id": 17,
+    "common": {
+      "dev": "मौका",
+      "roman": "mauka"
+    },
+    "elevated": {
+      "dev": "अवसर",
+      "roman": "avasar"
+    },
+    "englishMeaning": "opportunity or occasion",
+    "simpleExample": {
+      "dev": "अगली बार मुझे भी बोलने का मौका देना।",
+      "roman": "Agli baar mujhe bhi bolne ka mauka dena."
+    },
+    "elevatedExample": {
+      "dev": "अगली बार मुझे भी बोलने का अवसर दीजिए।",
+      "roman": "Agli baar mujhe bhi bolne ka avasar dijiye."
+    },
+    "scholarExample": {
+      "dev": "अगली बैठक में मुझे भी अपना दृष्टिकोण रखने का अवसर प्रदान कीजिए।",
+      "roman": "Agli baithak mein mujhe bhi apna drishtikon rakhne ka avasar pradaan kijiye."
+    },
     "synonyms": [
-      "mauka",
-      "sandhi",
-      "avkaash"
+      {
+        "dev": "मौका",
+        "roman": "mauka"
+      },
+      {
+        "dev": "संधि",
+        "roman": "sandhi"
+      },
+      {
+        "dev": "अवकाश",
+        "roman": "avkaash"
+      }
     ],
     "usageNote": "Avasar sounds optimistic and cultured while staying easy to understand.",
-    "englishMeaning": "opportunity or occasion",
     "challengePrompt": "Kisi naye avasar ke baare mein ek utsaahbhara vaakya kahiye.",
     "tags": [
       "opportunity",
       "growth",
       "positive"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "sambhav",
-    "common": "possible",
-    "elevated": "sambhav",
-    "simpleExample": "Thoda time mile toh yeh kaam possible hai.",
-    "elevatedExample": "Thoda samay mile toh yeh karya sambhav hai.",
-    "scholarExample": "Yadi kuch atirikt samay mile, toh is karya ko gunvatta ke saath poora karna sambhav hai.",
-    "difficulty": "easy",
+    "id": 18,
+    "common": {
+      "dev": "पॉसिबल",
+      "roman": "possible"
+    },
+    "elevated": {
+      "dev": "संभव",
+      "roman": "sambhav"
+    },
+    "englishMeaning": "possible or feasible",
+    "simpleExample": {
+      "dev": "थोड़ा time मिले तो यह काम possible है।",
+      "roman": "Thoda time mile toh yeh kaam possible hai."
+    },
+    "elevatedExample": {
+      "dev": "थोड़ा समय मिले तो यह कार्य संभव है।",
+      "roman": "Thoda samay mile toh yeh karya sambhav hai."
+    },
+    "scholarExample": {
+      "dev": "यदि कुछ अतिरिक्त समय मिले, तो इस कार्य को गुणवत्ता के साथ पूरा करना संभव है।",
+      "roman": "Yadi kuch atirikt samay mile, toh is karya ko gunvatta ke saath poora karna sambhav hai."
+    },
     "synonyms": [
-      "mumkin",
-      "sakya",
-      "ho sakta hai"
+      {
+        "dev": "मुमकिन",
+        "roman": "mumkin"
+      },
+      {
+        "dev": "शक्य",
+        "roman": "sakya"
+      },
+      {
+        "dev": "हो सकता है",
+        "roman": "ho sakta hai"
+      }
     ],
     "usageNote": "Sambhav keeps the sentence Hindi-forward and confident.",
-    "englishMeaning": "possible or feasible",
     "challengePrompt": "Sambhav shabd ka prayog karte hue kisi yojana par vaakya banaiye.",
     "tags": [
       "planning",
       "confidence",
       "professional"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "asambhav",
-    "common": "impossible",
-    "elevated": "asambhav",
-    "simpleExample": "Aaj hi sab karna impossible hai, kal subah tak de do.",
-    "elevatedExample": "Aaj hi sab poora karna asambhav hai, kal subah tak ka samay dijiye.",
-    "scholarExample": "Sampoorna karya aaj hi sampann karna asambhav hai; kripya kal pratah tak ki avadhi dein.",
-    "difficulty": "medium",
+    "id": 19,
+    "common": {
+      "dev": "इम्पॉसिबल",
+      "roman": "impossible"
+    },
+    "elevated": {
+      "dev": "असंभव",
+      "roman": "asambhav"
+    },
+    "englishMeaning": "impossible or not feasible",
+    "simpleExample": {
+      "dev": "आज ही सब करना impossible है, कल सुबह तक दे दो।",
+      "roman": "Aaj hi sab karna impossible hai, kal subah tak de do."
+    },
+    "elevatedExample": {
+      "dev": "आज ही सब पूरा करना असंभव है, कल सुबह तक का समय दीजिए।",
+      "roman": "Aaj hi sab poora karna asambhav hai, kal subah tak ka samay dijiye."
+    },
+    "scholarExample": {
+      "dev": "संपूर्ण कार्य आज ही संपन्न करना असंभव है; कृपया कल प्रातः तक की अवधि दें।",
+      "roman": "Sampoorna karya aaj hi sampann karna asambhav hai; kripya kal pratah tak ki avadhi dein."
+    },
     "synonyms": [
-      "namumkin",
-      "durlabh",
-      "akarya"
+      {
+        "dev": "नामुमकिन",
+        "roman": "namumkin"
+      },
+      {
+        "dev": "दुर्लभ",
+        "roman": "durlabh"
+      },
+      {
+        "dev": "दुष्कर",
+        "roman": "dushkar"
+      }
     ],
     "usageNote": "Asambhav is direct but composed; pair it with a reason for a softer tone.",
-    "englishMeaning": "impossible or not feasible",
     "challengePrompt": "Asambhav shabd ka prayog karte hue ek vinamra seema batayiye.",
     "tags": [
       "limits",
       "planning",
       "professional"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "sujhav",
-    "common": "suggestion",
-    "elevated": "sujhav",
-    "simpleExample": "Ek suggestion doon? Pehle customer se pooch lete hain.",
-    "elevatedExample": "Ek sujhav doon? Pehle grahak se pooch lete hain.",
-    "scholarExample": "Mera sujhav hai ki nirnay se poorv grahak ki apekshaen spasht roop se jaan li jaayen.",
-    "difficulty": "easy",
+    "id": 20,
+    "common": {
+      "dev": "सजेशन",
+      "roman": "suggestion"
+    },
+    "elevated": {
+      "dev": "सुझाव",
+      "roman": "sujhav"
+    },
+    "englishMeaning": "suggestion or recommendation",
+    "simpleExample": {
+      "dev": "एक suggestion दूँ? पहले customer से पूछ लेते हैं।",
+      "roman": "Ek suggestion doon? Pehle customer se pooch lete hain."
+    },
+    "elevatedExample": {
+      "dev": "एक सुझाव दूँ? पहले ग्राहक से पूछ लेते हैं।",
+      "roman": "Ek sujhav doon? Pehle grahak se pooch lete hain."
+    },
+    "scholarExample": {
+      "dev": "मेरा सुझाव है कि निर्णय से पूर्व ग्राहक की अपेक्षाएँ स्पष्ट रूप से जान ली जाएँ।",
+      "roman": "Mera sujhav hai ki nirnay se poorv grahak ki apekshaen spasht roop se jaan li jaayen."
+    },
     "synonyms": [
-      "salah",
-      "paramarsh",
-      "raay"
+      {
+        "dev": "सलाह",
+        "roman": "salah"
+      },
+      {
+        "dev": "परामर्श",
+        "roman": "paramarsh"
+      },
+      {
+        "dev": "राय",
+        "roman": "raay"
+      }
     ],
     "usageNote": "Sujhav sounds collaborative and clear in group conversations.",
-    "englishMeaning": "suggestion or recommendation",
     "challengePrompt": "Sujhav dete hue ek sahaj aur vinamra vaakya kahiye.",
     "tags": [
       "advice",
       "collaboration",
       "professional"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "uttar",
-    "common": "jawab",
-    "elevated": "uttar",
-    "simpleExample": "Maine kal poocha tha, abhi tak jawab nahi aaya.",
-    "elevatedExample": "Maine kal prashn bheja tha, abhi tak uttar nahi aaya.",
-    "scholarExample": "Maine kal prashn preshit kiya tha, parantu abhi tak koi uttar praapt nahi hua.",
-    "difficulty": "easy",
+    "id": 21,
+    "common": {
+      "dev": "जवाब",
+      "roman": "jawab"
+    },
+    "elevated": {
+      "dev": "उत्तर",
+      "roman": "uttar"
+    },
+    "englishMeaning": "answer or response",
+    "simpleExample": {
+      "dev": "मैंने कल पूछा था, अभी तक जवाब नहीं आया।",
+      "roman": "Maine kal poocha tha, abhi tak jawab nahi aaya."
+    },
+    "elevatedExample": {
+      "dev": "मैंने कल प्रश्न भेजा था, अभी तक उत्तर नहीं आया।",
+      "roman": "Maine kal prashn bheja tha, abhi tak uttar nahi aaya."
+    },
+    "scholarExample": {
+      "dev": "मैंने कल प्रश्न प्रेषित किया था, परंतु अभी तक कोई उत्तर प्राप्त नहीं हुआ।",
+      "roman": "Maine kal prashn preshit kiya tha, parantu abhi tak koi uttar praapt nahi hua."
+    },
     "synonyms": [
-      "pratikriya",
-      "jawab",
-      "samadhan"
+      {
+        "dev": "प्रतिक्रिया",
+        "roman": "pratikriya"
+      },
+      {
+        "dev": "जवाब",
+        "roman": "jawab"
+      },
+      {
+        "dev": "समाधान",
+        "roman": "samadhan"
+      }
     ],
     "usageNote": "Uttar is especially good when asking or responding politely.",
-    "englishMeaning": "answer or response",
     "challengePrompt": "Uttar shabd ka prayog karte hue ek prashn ka sandarbh dijiye.",
     "tags": [
       "response",
       "communication",
       "polite speech"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "prashn",
-    "common": "sawaal",
-    "elevated": "prashn",
-    "simpleExample": "Ek sawaal hai�yeh rule sab par lagega kya?",
-    "elevatedExample": "Ek prashn hai�kya yeh niyam sab par lagu hoga?",
-    "scholarExample": "Mera ek prashn hai: kya yeh niyam bina kisi apavaad ke sabhi par lagu hoga?",
-    "difficulty": "easy",
+    "id": 22,
+    "common": {
+      "dev": "सवाल",
+      "roman": "sawaal"
+    },
+    "elevated": {
+      "dev": "प्रश्न",
+      "roman": "prashn"
+    },
+    "englishMeaning": "question",
+    "simpleExample": {
+      "dev": "एक सवाल है — यह rule सब पर लगेगा क्या?",
+      "roman": "Ek sawaal hai — yeh rule sab par lagega kya?"
+    },
+    "elevatedExample": {
+      "dev": "एक प्रश्न है — क्या यह नियम सब पर लागू होगा?",
+      "roman": "Ek prashn hai — kya yeh niyam sab par lagu hoga?"
+    },
+    "scholarExample": {
+      "dev": "मेरा एक प्रश्न है: क्या यह नियम बिना किसी अपवाद के सभी पर लागू होगा?",
+      "roman": "Mera ek prashn hai: kya yeh niyam bina kisi apavaad ke sabhi par lagu hoga?"
+    },
     "synonyms": [
-      "sawaal",
-      "jigyasa",
-      "puchh-taach"
+      {
+        "dev": "सवाल",
+        "roman": "sawaal"
+      },
+      {
+        "dev": "जिज्ञासा",
+        "roman": "jigyasa"
+      },
+      {
+        "dev": "पूछताछ",
+        "roman": "puchh-taach"
+      }
     ],
     "usageNote": "Prashn is familiar, clean, and suitable for classrooms, meetings, and talks.",
-    "englishMeaning": "question",
     "challengePrompt": "Prashn shabd ka prayog karte hue ek vinamra sawaal poochhiye.",
     "tags": [
       "questions",
       "learning",
       "communication"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "uttam",
-    "common": "bahut achchha",
-    "elevated": "uttam",
-    "simpleExample": "Wah, tumne bahut achchha kaam kiya hai!",
-    "elevatedExample": "Wah, aapne uttam karya kiya hai!",
-    "scholarExample": "Aapka karya vaastav mein uttam hai; ismein parishram aur sookshmata dono dikhte hain.",
-    "difficulty": "easy",
+    "id": 23,
+    "common": {
+      "dev": "बहुत अच्छा",
+      "roman": "bahut achchha"
+    },
+    "elevated": {
+      "dev": "उत्तम",
+      "roman": "uttam"
+    },
+    "englishMeaning": "excellent or very good",
+    "simpleExample": {
+      "dev": "वाह, तुमने बहुत अच्छा काम किया है!",
+      "roman": "Wah, tumne bahut achchha kaam kiya hai!"
+    },
+    "elevatedExample": {
+      "dev": "वाह, आपने उत्तम कार्य किया है!",
+      "roman": "Wah, aapne uttam karya kiya hai!"
+    },
+    "scholarExample": {
+      "dev": "आपका कार्य वास्तव में उत्तम है; इसमें परिश्रम और सूक्ष्मता दोनों दिखते हैं।",
+      "roman": "Aapka karya vaastav mein uttam hai; ismein parishram aur sookshmata dono dikhte hain."
+    },
     "synonyms": [
-      "shreshth",
-      "badhiya",
-      "sarvottam"
+      {
+        "dev": "श्रेष्ठ",
+        "roman": "shreshth"
+      },
+      {
+        "dev": "बढ़िया",
+        "roman": "badhiya"
+      },
+      {
+        "dev": "सर्वोत्तम",
+        "roman": "sarvottam"
+      }
     ],
     "usageNote": "Uttam is appreciative and refined; use it for genuine praise.",
-    "englishMeaning": "excellent or very good",
     "challengePrompt": "Uttam shabd ka prayog karte hue kisi ka sarahniya kaam batayiye.",
     "tags": [
       "praise",
       "positive",
       "daily speech"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "sundar",
-    "common": "achchha",
-    "elevated": "sundar",
-    "simpleExample": "Tumne bahut achchha samjhaya, sabko baat samajh aa gayi.",
-    "elevatedExample": "Aapne bahut sundar dhang se samjhaya, sabko baat samajh aa gayi.",
-    "scholarExample": "Aapki sundar aur sugam vyakhya se vishay sabhi ke liye poori tarah spasht ho gaya.",
-    "difficulty": "easy",
+    "id": 24,
+    "common": {
+      "dev": "अच्छा",
+      "roman": "achchha"
+    },
+    "elevated": {
+      "dev": "सुंदर",
+      "roman": "sundar"
+    },
+    "englishMeaning": "beautiful, graceful, or pleasant",
+    "simpleExample": {
+      "dev": "तुमने बहुत अच्छा समझाया, सबको बात समझ आ गई।",
+      "roman": "Tumne bahut achchha samjhaya, sabko baat samajh aa gayi."
+    },
+    "elevatedExample": {
+      "dev": "आपने बहुत सुंदर ढंग से समझाया, सबको बात समझ आ गई।",
+      "roman": "Aapne bahut sundar dhang se samjhaya, sabko baat samajh aa gayi."
+    },
+    "scholarExample": {
+      "dev": "आपकी सुंदर और सुगम व्याख्या से विषय सभी के लिए पूरी तरह स्पष्ट हो गया।",
+      "roman": "Aapki sundar aur sugam vyakhya se vishay sabhi ke liye poori tarah spasht ho gaya."
+    },
     "synonyms": [
-      "manohar",
-      "sushobhit",
-      "sajag"
+      {
+        "dev": "मनोहर",
+        "roman": "manohar"
+      },
+      {
+        "dev": "रमणीय",
+        "roman": "ramaniya"
+      },
+      {
+        "dev": "सुरुचिपूर्ण",
+        "roman": "suruchipurn"
+      }
     ],
     "usageNote": "Sundar can praise words, ideas, or gestures, not only appearance.",
-    "englishMeaning": "beautiful, graceful, or pleasant",
     "challengePrompt": "Sundar shabd ka prayog karke kisi vichaar ki prashansa kijiye.",
     "tags": [
       "praise",
       "expression",
       "positive"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "sahaj",
-    "common": "easy",
-    "elevated": "sahaj",
-    "simpleExample": "App use karna easy hai, mummy bhi chala leti hain.",
-    "elevatedExample": "App ka upyog sahaj hai, mummy bhi ise chala leti hain.",
-    "scholarExample": "Is app ka upyog itna sahaj hai ki takneek se kam parichit vyakti bhi ise aasani se chala sakta hai.",
-    "difficulty": "easy",
+    "id": 25,
+    "common": {
+      "dev": "ईज़ी",
+      "roman": "easy"
+    },
+    "elevated": {
+      "dev": "सहज",
+      "roman": "sahaj"
+    },
+    "englishMeaning": "easy, natural, or effortless",
+    "simpleExample": {
+      "dev": "App use करना easy है, mummy भी चला लेती हैं।",
+      "roman": "App use karna easy hai, mummy bhi chala leti hain."
+    },
+    "elevatedExample": {
+      "dev": "App का उपयोग सहज है, mummy भी इसे चला लेती हैं।",
+      "roman": "App ka upyog sahaj hai, mummy bhi ise chala leti hain."
+    },
+    "scholarExample": {
+      "dev": "इस app का उपयोग इतना सहज है कि तकनीक से कम परिचित व्यक्ति भी इसे आसानी से चला सकता है।",
+      "roman": "Is app ka upyog itna sahaj hai ki takneek se kam parichit vyakti bhi ise aasani se chala sakta hai."
+    },
     "synonyms": [
-      "saral",
-      "sugam",
-      "prakritik"
+      {
+        "dev": "सरल",
+        "roman": "saral"
+      },
+      {
+        "dev": "सुगम",
+        "roman": "sugam"
+      },
+      {
+        "dev": "स्वाभाविक",
+        "roman": "swabhavik"
+      }
     ],
     "usageNote": "Sahaj is warmer than easy and suggests natural simplicity.",
-    "englishMeaning": "easy, natural, or effortless",
     "challengePrompt": "Sahaj shabd ka prayog karte hue kisi prakriya ko varnit kijiye.",
     "tags": [
       "ease",
       "process",
       "daily speech"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "kathin",
-    "common": "mushkil",
-    "elevated": "kathin",
-    "simpleExample": "Yeh chapter thoda mushkil hai, saath mein padhte hain.",
-    "elevatedExample": "Yeh adhyay thoda kathin hai, aaiye saath mein padhte hain.",
-    "scholarExample": "Yeh adhyay kathin avashya hai, par saath milkar padhenge toh samajhna sugam hoga.",
-    "difficulty": "easy",
+    "id": 26,
+    "common": {
+      "dev": "मुश्किल",
+      "roman": "mushkil"
+    },
+    "elevated": {
+      "dev": "कठिन",
+      "roman": "kathin"
+    },
+    "englishMeaning": "difficult or demanding",
+    "simpleExample": {
+      "dev": "यह chapter थोड़ा मुश्किल है, साथ में पढ़ते हैं।",
+      "roman": "Yeh chapter thoda mushkil hai, saath mein padhte hain."
+    },
+    "elevatedExample": {
+      "dev": "यह अध्याय थोड़ा कठिन है, आइए साथ में पढ़ते हैं।",
+      "roman": "Yeh adhyay thoda kathin hai, aaiye saath mein padhte hain."
+    },
+    "scholarExample": {
+      "dev": "यह अध्याय कठिन अवश्य है, पर साथ मिलकर पढ़ेंगे तो समझना सुगम होगा।",
+      "roman": "Yeh adhyay kathin avashya hai, par saath milkar padhenge toh samajhna sugam hoga."
+    },
     "synonyms": [
-      "dushkar",
-      "kashtkar",
-      "jatil"
+      {
+        "dev": "दुष्कर",
+        "roman": "dushkar"
+      },
+      {
+        "dev": "कष्टकर",
+        "roman": "kashtkar"
+      },
+      {
+        "dev": "जटिल",
+        "roman": "jatil"
+      }
     ],
     "usageNote": "Kathin is clear and balanced; it names difficulty without sounding dramatic.",
-    "englishMeaning": "difficult or demanding",
     "challengePrompt": "Kathin shabd ka prayog karte hue kisi chunauti par vaakya kahiye.",
     "tags": [
       "difficulty",
       "challenge",
       "daily speech"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "sankalp",
-    "common": "iraada",
-    "elevated": "sankalp",
-    "simpleExample": "Is saal mera iraada roz aadha ghanta padhne ka hai.",
-    "elevatedExample": "Is varsh mera sankalp roz aadha ghanta padhne ka hai.",
-    "scholarExample": "Is varsh maine pratidin aadha ghanta adhyayan karne ka dridh sankalp liya hai.",
-    "difficulty": "medium",
+    "id": 27,
+    "common": {
+      "dev": "इरादा",
+      "roman": "iraada"
+    },
+    "elevated": {
+      "dev": "संकल्प",
+      "roman": "sankalp"
+    },
+    "englishMeaning": "resolve or firm intention",
+    "simpleExample": {
+      "dev": "इस साल मेरा इरादा रोज़ आधा घंटा पढ़ने का है।",
+      "roman": "Is saal mera iraada roz aadha ghanta padhne ka hai."
+    },
+    "elevatedExample": {
+      "dev": "इस वर्ष मेरा संकल्प रोज़ आधा घंटा पढ़ने का है।",
+      "roman": "Is varsh mera sankalp roz aadha ghanta padhne ka hai."
+    },
+    "scholarExample": {
+      "dev": "इस वर्ष मैंने प्रतिदिन आधा घंटा अध्ययन करने का दृढ़ संकल्प लिया है।",
+      "roman": "Is varsh maine pratidin aadha ghanta adhyayan karne ka dridh sankalp liya hai."
+    },
     "synonyms": [
-      "nishchay",
-      "pratigya",
-      "dridh ichchha"
+      {
+        "dev": "निश्चय",
+        "roman": "nishchay"
+      },
+      {
+        "dev": "प्रतिज्ञा",
+        "roman": "pratigya"
+      },
+      {
+        "dev": "दृढ़ इच्छा",
+        "roman": "dridh ichchha"
+      }
     ],
     "usageNote": "Sankalp adds strength and dignity when speaking about commitment.",
-    "englishMeaning": "resolve or firm intention",
     "challengePrompt": "Apne kisi sankalp ko ek saaf vaakya mein vyakt kijiye.",
     "tags": [
       "commitment",
       "self improvement",
       "motivation"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "anubhav",
-    "common": "experience",
-    "elevated": "anubhav",
-    "simpleExample": "Trip kaisi thi? Mera experience toh kaafi achchha raha.",
-    "elevatedExample": "Yatra kaisi thi? Mera anubhav kaafi achchha raha.",
-    "scholarExample": "Yatra mere liye atyant sukhad anubhav rahi; maine bahut kuch naya bhi seekha.",
-    "difficulty": "easy",
+    "id": 28,
+    "common": {
+      "dev": "एक्सपीरियंस",
+      "roman": "experience"
+    },
+    "elevated": {
+      "dev": "अनुभव",
+      "roman": "anubhav"
+    },
+    "englishMeaning": "experience",
+    "simpleExample": {
+      "dev": "Trip कैसी थी? मेरा experience तो काफ़ी अच्छा रहा।",
+      "roman": "Trip kaisi thi? Mera experience toh kaafi achchha raha."
+    },
+    "elevatedExample": {
+      "dev": "यात्रा कैसी थी? मेरा अनुभव काफ़ी अच्छा रहा।",
+      "roman": "Yatra kaisi thi? Mera anubhav kaafi achchha raha."
+    },
+    "scholarExample": {
+      "dev": "यात्रा मेरे लिए अत्यंत सुखद अनुभव रही; मैंने बहुत कुछ नया भी सीखा।",
+      "roman": "Yatra mere liye atyant sukhad anubhav rahi; maine bahut kuch naya bhi seekha."
+    },
     "synonyms": [
-      "tajurba",
-      "anubhuti",
-      "gyaan"
+      {
+        "dev": "तजुर्बा",
+        "roman": "tajurba"
+      },
+      {
+        "dev": "अनुभूति",
+        "roman": "anubhuti"
+      },
+      {
+        "dev": "ज्ञान",
+        "roman": "gyaan"
+      }
     ],
     "usageNote": "Anubhav is natural in both personal reflection and professional settings.",
-    "englishMeaning": "experience",
     "challengePrompt": "Kisi yaadgaar anubhav ke baare mein ek vaakya kahiye.",
     "tags": [
       "experience",
       "reflection",
       "daily speech"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "samvaad",
-    "common": "baatcheet",
-    "elevated": "samvaad",
-    "simpleExample": "Is baat par shaant hokar baatcheet kar lete hain.",
-    "elevatedExample": "Is vishay par shaant hokar samvaad kar lete hain.",
-    "scholarExample": "Matbhed door karne ke liye is vishay par shaant aur khula samvaad karna uchit rahega.",
-    "difficulty": "medium",
+    "id": 29,
+    "common": {
+      "dev": "बातचीत",
+      "roman": "baatcheet"
+    },
+    "elevated": {
+      "dev": "संवाद",
+      "roman": "samvaad"
+    },
+    "englishMeaning": "dialogue or meaningful conversation",
+    "simpleExample": {
+      "dev": "इस बात पर शांत होकर बातचीत कर लेते हैं।",
+      "roman": "Is baat par shaant hokar baatcheet kar lete hain."
+    },
+    "elevatedExample": {
+      "dev": "इस विषय पर शांत होकर संवाद कर लेते हैं।",
+      "roman": "Is vishay par shaant hokar samvaad kar lete hain."
+    },
+    "scholarExample": {
+      "dev": "मतभेद दूर करने के लिए इस विषय पर शांत और खुला संवाद करना उचित रहेगा।",
+      "roman": "Matbhed door karne ke liye is vishay par shaant aur khula samvaad karna uchit rahega."
+    },
     "synonyms": [
-      "vaarta",
-      "baatcheet",
-      "charcha"
+      {
+        "dev": "वार्ता",
+        "roman": "vaarta"
+      },
+      {
+        "dev": "बातचीत",
+        "roman": "baatcheet"
+      },
+      {
+        "dev": "चर्चा",
+        "roman": "charcha"
+      }
     ],
     "usageNote": "Samvaad suggests respectful exchange, not just casual talking.",
-    "englishMeaning": "dialogue or meaningful conversation",
     "challengePrompt": "Samvaad shabd ka prayog karke kisi zaroori baatcheet ka zikr kijiye.",
     "tags": [
       "conversation",
       "respect",
       "collaboration"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "charcha",
-    "common": "discussion",
-    "elevated": "charcha",
-    "simpleExample": "Kal meeting mein budget par discussion karenge.",
-    "elevatedExample": "Kal baithak mein budget par charcha karenge.",
-    "scholarExample": "Kal ki baithak mein budget ke pramukh binduon par vistaar se charcha ki jayegi.",
-    "difficulty": "easy",
+    "id": 30,
+    "common": {
+      "dev": "डिस्कशन",
+      "roman": "discussion"
+    },
+    "elevated": {
+      "dev": "चर्चा",
+      "roman": "charcha"
+    },
+    "englishMeaning": "discussion or deliberation",
+    "simpleExample": {
+      "dev": "कल meeting में budget पर discussion करेंगे।",
+      "roman": "Kal meeting mein budget par discussion karenge."
+    },
+    "elevatedExample": {
+      "dev": "कल बैठक में budget पर चर्चा करेंगे।",
+      "roman": "Kal baithak mein budget par charcha karenge."
+    },
+    "scholarExample": {
+      "dev": "कल की बैठक में budget के प्रमुख बिंदुओं पर विस्तार से चर्चा की जाएगी।",
+      "roman": "Kal ki baithak mein budget ke pramukh binduon par vistaar se charcha ki jayegi."
+    },
     "synonyms": [
-      "samvaad",
-      "vichar-vimarsh",
-      "vaarta"
+      {
+        "dev": "संवाद",
+        "roman": "samvaad"
+      },
+      {
+        "dev": "विचार-विमर्श",
+        "roman": "vichar-vimarsh"
+      },
+      {
+        "dev": "वार्ता",
+        "roman": "vaarta"
+      }
     ],
     "usageNote": "Charcha is familiar and elegant for meetings, classes, and family decisions.",
-    "englishMeaning": "discussion or deliberation",
     "challengePrompt": "Charcha shabd ka prayog karte hue kisi vishay ka ullekh kijiye.",
     "tags": [
       "discussion",
       "meetings",
       "learning"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "vishay",
-    "common": "topic",
-    "elevated": "vishay",
-    "simpleExample": "Aaj ka topic thoda serious hai, dhyaan se sunna.",
-    "elevatedExample": "Aaj ka vishay thoda gambhir hai, dhyaan se suniye.",
-    "scholarExample": "Aaj ka vishay gambhir aur samvedansheel hai; kripya ekagrata se suniye.",
-    "difficulty": "easy",
+    "id": 31,
+    "common": {
+      "dev": "टॉपिक",
+      "roman": "topic"
+    },
+    "elevated": {
+      "dev": "विषय",
+      "roman": "vishay"
+    },
+    "englishMeaning": "topic or subject",
+    "simpleExample": {
+      "dev": "आज का topic थोड़ा serious है, ध्यान से सुनना।",
+      "roman": "Aaj ka topic thoda serious hai, dhyaan se sunna."
+    },
+    "elevatedExample": {
+      "dev": "आज का विषय थोड़ा गंभीर है, ध्यान से सुनिए।",
+      "roman": "Aaj ka vishay thoda gambhir hai, dhyaan se suniye."
+    },
+    "scholarExample": {
+      "dev": "आज का विषय गंभीर और संवेदनशील है; कृपया एकाग्रता से सुनिए।",
+      "roman": "Aaj ka vishay gambhir aur samvedansheel hai; kripya ekagrata se suniye."
+    },
     "synonyms": [
-      "mudda",
-      "prasang",
-      "adhyay"
+      {
+        "dev": "मुद्दा",
+        "roman": "mudda"
+      },
+      {
+        "dev": "प्रसंग",
+        "roman": "prasang"
+      },
+      {
+        "dev": "अध्याय",
+        "roman": "adhyay"
+      }
     ],
     "usageNote": "Vishay is a clean replacement for topic in most Hindi conversations.",
-    "englishMeaning": "topic or subject",
     "challengePrompt": "Vishay shabd ke saath kisi charcha ka aarambh kijiye.",
     "tags": [
       "topic",
       "learning",
       "clarity"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "rochak",
-    "common": "interesting",
-    "elevated": "rochak",
-    "simpleExample": "Yeh podcast kaafi interesting hai, tum bhi sunna.",
-    "elevatedExample": "Yeh podcast kaafi rochak hai, aap bhi suniyega.",
-    "scholarExample": "Yeh podcast atyant rochak hai; ismein vishay ko anek naye drishtikon se samjhaya gaya hai.",
-    "difficulty": "easy",
+    "id": 32,
+    "common": {
+      "dev": "इंटरेस्टिंग",
+      "roman": "interesting"
+    },
+    "elevated": {
+      "dev": "रोचक",
+      "roman": "rochak"
+    },
+    "englishMeaning": "interesting or engaging",
+    "simpleExample": {
+      "dev": "यह podcast काफ़ी interesting है, तुम भी सुनना।",
+      "roman": "Yeh podcast kaafi interesting hai, tum bhi sunna."
+    },
+    "elevatedExample": {
+      "dev": "यह podcast काफ़ी रोचक है, आप भी सुनिएगा।",
+      "roman": "Yeh podcast kaafi rochak hai, aap bhi suniyega."
+    },
+    "scholarExample": {
+      "dev": "यह podcast अत्यंत रोचक है; इसमें विषय को अनेक नए दृष्टिकोण से समझाया गया है।",
+      "roman": "Yeh podcast atyant rochak hai; ismein vishay ko anek naye drishtikon se samjhaya gaya hai."
+    },
     "synonyms": [
-      "dilchasp",
-      "manohar",
-      "akarshak"
+      {
+        "dev": "दिलचस्प",
+        "roman": "dilchasp"
+      },
+      {
+        "dev": "मनोहर",
+        "roman": "manohar"
+      },
+      {
+        "dev": "आकर्षक",
+        "roman": "akarshak"
+      }
     ],
     "usageNote": "Rochak is lively but still elegant; it works well for stories and ideas.",
-    "englishMeaning": "interesting or engaging",
     "challengePrompt": "Rochak shabd ka prayog karte hue kisi kahani ya vichaar ka varnan kijiye.",
     "tags": [
       "interest",
       "stories",
       "expression"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "mahatvapurn",
-    "common": "important",
-    "elevated": "mahatvapurn",
-    "simpleExample": "Kal ki meeting important hai, miss mat karna.",
-    "elevatedExample": "Kal ki baithak mahatvapurn hai, kripya chhodiye mat.",
-    "scholarExample": "Kal ki baithak atyant mahatvapurn hai; aapki upasthiti avashyak rahegi.",
-    "difficulty": "easy",
+    "id": 33,
+    "common": {
+      "dev": "इम्पॉर्टेंट",
+      "roman": "important"
+    },
+    "elevated": {
+      "dev": "महत्वपूर्ण",
+      "roman": "mahatvapurn"
+    },
+    "englishMeaning": "important or significant",
+    "simpleExample": {
+      "dev": "कल की meeting important है, miss मत करना।",
+      "roman": "Kal ki meeting important hai, miss mat karna."
+    },
+    "elevatedExample": {
+      "dev": "कल की बैठक महत्वपूर्ण है, कृपया छोड़िए मत।",
+      "roman": "Kal ki baithak mahatvapurn hai, kripya chhodiye mat."
+    },
+    "scholarExample": {
+      "dev": "कल की बैठक अत्यंत महत्वपूर्ण है; आपकी उपस्थिति आवश्यक रहेगी।",
+      "roman": "Kal ki baithak atyant mahatvapurn hai; aapki upasthiti avashyak rahegi."
+    },
     "synonyms": [
-      "avashyak",
-      "pramukh",
-      "mool"
+      {
+        "dev": "आवश्यक",
+        "roman": "avashyak"
+      },
+      {
+        "dev": "प्रमुख",
+        "roman": "pramukh"
+      },
+      {
+        "dev": "मूल",
+        "roman": "mool"
+      }
     ],
     "usageNote": "Mahatvapurn is useful when you want emphasis without exaggeration.",
-    "englishMeaning": "important or significant",
     "challengePrompt": "Mahatvapurn shabd ka prayog karte hue kisi prathamikta ko batayiye.",
     "tags": [
       "importance",
       "professional",
       "planning"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "pramukh",
-    "common": "main",
-    "elevated": "pramukh",
-    "simpleExample": "Abhi hamara main focus delivery time par hai.",
-    "elevatedExample": "Abhi hamara pramukh dhyaan vitran ke samay par hai.",
-    "scholarExample": "Vartamaan mein hamara pramukh lakshya nirdharit samay par gunvattapurn vitran sunishchit karna hai.",
-    "difficulty": "easy",
+    "id": 34,
+    "common": {
+      "dev": "मेन",
+      "roman": "main"
+    },
+    "elevated": {
+      "dev": "प्रमुख",
+      "roman": "pramukh"
+    },
+    "englishMeaning": "main, chief, or primary",
+    "simpleExample": {
+      "dev": "अभी हमारा main focus delivery time पर है।",
+      "roman": "Abhi hamara main focus delivery time par hai."
+    },
+    "elevatedExample": {
+      "dev": "अभी हमारा प्रमुख ध्यान वितरण के समय पर है।",
+      "roman": "Abhi hamara pramukh dhyaan vitran ke samay par hai."
+    },
+    "scholarExample": {
+      "dev": "वर्तमान में हमारा प्रमुख लक्ष्य निर्धारित समय पर गुणवत्तापूर्ण वितरण सुनिश्चित करना है।",
+      "roman": "Vartamaan mein hamara pramukh lakshya nirdharit samay par gunvattapurn vitran sunishchit karna hai."
+    },
     "synonyms": [
-      "mukhya",
-      "mool",
-      "kendriya"
+      {
+        "dev": "मुख्य",
+        "roman": "mukhya"
+      },
+      {
+        "dev": "मूल",
+        "roman": "mool"
+      },
+      {
+        "dev": "केंद्रीय",
+        "roman": "kendriya"
+      }
     ],
     "usageNote": "Pramukh helps replace English-mixed main while keeping the sentence concise.",
-    "englishMeaning": "main, chief, or primary",
     "challengePrompt": "Pramukh shabd ke saath apni kisi priority ka vaakya banaiye.",
     "tags": [
       "priority",
       "planning",
       "professional"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "lakshya",
-    "common": "goal",
-    "elevated": "lakshya",
-    "simpleExample": "Mera goal hai ki is mahine roz Hindi boloon.",
-    "elevatedExample": "Mera lakshya hai ki is maheene roz Hindi boloon.",
-    "scholarExample": "Is maas mera lakshya pratidin Hindi mein samvaad karke apni abhivyakti ko sahaj banana hai.",
-    "difficulty": "easy",
+    "id": 35,
+    "common": {
+      "dev": "गोल",
+      "roman": "goal"
+    },
+    "elevated": {
+      "dev": "लक्ष्य",
+      "roman": "lakshya"
+    },
+    "englishMeaning": "goal or objective",
+    "simpleExample": {
+      "dev": "मेरा goal है कि इस महीने रोज़ Hindi बोलूँ।",
+      "roman": "Mera goal hai ki is mahine roz Hindi boloon."
+    },
+    "elevatedExample": {
+      "dev": "मेरा लक्ष्य है कि इस महीने रोज़ हिंदी बोलूँ।",
+      "roman": "Mera lakshya hai ki is maheene roz Hindi boloon."
+    },
+    "scholarExample": {
+      "dev": "इस मास मेरा लक्ष्य प्रतिदिन हिंदी में संवाद करके अपनी अभिव्यक्ति को सहज बनाना है।",
+      "roman": "Is maas mera lakshya pratidin Hindi mein samvaad karke apni abhivyakti ko sahaj banana hai."
+    },
     "synonyms": [
-      "uddeshya",
-      "manzil",
-      "dhyey"
+      {
+        "dev": "उद्देश्य",
+        "roman": "uddeshya"
+      },
+      {
+        "dev": "मंज़िल",
+        "roman": "manzil"
+      },
+      {
+        "dev": "ध्येय",
+        "roman": "dhyey"
+      }
     ],
     "usageNote": "Lakshya feels purposeful and is common in aspirational speech.",
-    "englishMeaning": "goal or objective",
     "challengePrompt": "Apne kisi lakshya ko ek prernaadayak vaakya mein kahiye.",
     "tags": [
       "goals",
       "motivation",
       "self improvement"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "uddeshya",
-    "common": "purpose",
-    "elevated": "uddeshya",
-    "simpleExample": "Is exercise ka purpose kya hai, zara samjhaoge?",
-    "elevatedExample": "Is abhyas ka uddeshya kya hai, zara samjhaiye?",
-    "scholarExample": "Kripya spasht kijiye ki is abhyas ka uddeshya kya hai aur isse humein kya laabh milega.",
-    "difficulty": "medium",
+    "id": 36,
+    "common": {
+      "dev": "पर्पज़",
+      "roman": "purpose"
+    },
+    "elevated": {
+      "dev": "उद्देश्य",
+      "roman": "uddeshya"
+    },
+    "englishMeaning": "purpose or intent",
+    "simpleExample": {
+      "dev": "इस exercise का purpose क्या है, ज़रा समझाओगे?",
+      "roman": "Is exercise ka purpose kya hai, zara samjhaoge?"
+    },
+    "elevatedExample": {
+      "dev": "इस अभ्यास का उद्देश्य क्या है, ज़रा समझाइए?",
+      "roman": "Is abhyas ka uddeshya kya hai, zara samjhaiye?"
+    },
+    "scholarExample": {
+      "dev": "कृपया स्पष्ट कीजिए कि इस अभ्यास का उद्देश्य क्या है और इससे हमें क्या लाभ मिलेगा।",
+      "roman": "Kripya spasht kijiye ki is abhyas ka uddeshya kya hai aur isse humein kya laabh milega."
+    },
     "synonyms": [
-      "maqsad",
-      "prayojan",
-      "lakshya"
+      {
+        "dev": "मक़सद",
+        "roman": "maqsad"
+      },
+      {
+        "dev": "प्रयोजन",
+        "roman": "prayojan"
+      },
+      {
+        "dev": "लक्ष्य",
+        "roman": "lakshya"
+      }
     ],
     "usageNote": "Uddeshya adds depth when explaining why something matters.",
-    "englishMeaning": "purpose or intent",
     "challengePrompt": "Uddeshya shabd ka prayog karte hue kisi kaam ka kaaran batayiye.",
     "tags": [
       "purpose",
       "clarity",
       "reflection"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "parinaam",
-    "common": "result",
-    "elevated": "parinaam",
-    "simpleExample": "Mehnat ka result achchha aaya, sab khush hain.",
-    "elevatedExample": "Parishram ka parinaam achchha raha, sab prasann hain.",
-    "scholarExample": "Nirantar parishram ka parinaam utsaahjanak raha, jisse poori team prasann hai.",
-    "difficulty": "easy",
+    "id": 37,
+    "common": {
+      "dev": "रिज़ल्ट",
+      "roman": "result"
+    },
+    "elevated": {
+      "dev": "परिणाम",
+      "roman": "parinaam"
+    },
+    "englishMeaning": "result or outcome",
+    "simpleExample": {
+      "dev": "मेहनत का result अच्छा आया, सब ख़ुश हैं।",
+      "roman": "Mehnat ka result achchha aaya, sab khush hain."
+    },
+    "elevatedExample": {
+      "dev": "परिश्रम का परिणाम अच्छा रहा, सब प्रसन्न हैं।",
+      "roman": "Parishram ka parinaam achchha raha, sab prasann hain."
+    },
+    "scholarExample": {
+      "dev": "निरंतर परिश्रम का परिणाम उत्साहजनक रहा, जिससे पूरी team प्रसन्न है।",
+      "roman": "Nirantar parishram ka parinaam utsaahjanak raha, jisse poori team prasann hai."
+    },
     "synonyms": [
-      "natija",
-      "phal",
-      "prabhav"
+      {
+        "dev": "नतीजा",
+        "roman": "natija"
+      },
+      {
+        "dev": "फल",
+        "roman": "phal"
+      },
+      {
+        "dev": "प्रभाव",
+        "roman": "prabhav"
+      }
     ],
     "usageNote": "Parinaam is elegant and familiar, especially for outcomes and consequences.",
-    "englishMeaning": "result or outcome",
     "challengePrompt": "Parinaam shabd ka prayog karte hue kisi kriya ka asar batayiye.",
     "tags": [
       "results",
       "consequence",
       "professional"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "prabhav",
-    "common": "impact",
-    "elevated": "prabhav",
-    "simpleExample": "Is change ka team par bada impact padega.",
-    "elevatedExample": "Is parivartan ka team par bada prabhav padega.",
-    "scholarExample": "Is parivartan ka team ki karyapranali aur manobal par vyaapak prabhav pad sakta hai.",
-    "difficulty": "medium",
+    "id": 38,
+    "common": {
+      "dev": "इम्पैक्ट",
+      "roman": "impact"
+    },
+    "elevated": {
+      "dev": "प्रभाव",
+      "roman": "prabhav"
+    },
+    "englishMeaning": "impact, influence, or effect",
+    "simpleExample": {
+      "dev": "इस change का team पर बड़ा impact पड़ेगा।",
+      "roman": "Is change ka team par bada impact padega."
+    },
+    "elevatedExample": {
+      "dev": "इस परिवर्तन का team पर बड़ा प्रभाव पड़ेगा।",
+      "roman": "Is parivartan ka team par bada prabhav padega."
+    },
+    "scholarExample": {
+      "dev": "इस परिवर्तन का team की कार्यप्रणाली और मनोबल पर व्यापक प्रभाव पड़ सकता है।",
+      "roman": "Is parivartan ka team ki karyapranali aur manobal par vyaapak prabhav pad sakta hai."
+    },
     "synonyms": [
-      "asar",
-      "parinaam",
-      "prerak bal"
+      {
+        "dev": "असर",
+        "roman": "asar"
+      },
+      {
+        "dev": "परिणाम",
+        "roman": "parinaam"
+      },
+      {
+        "dev": "प्रेरक बल",
+        "roman": "prerak bal"
+      }
     ],
     "usageNote": "Prabhav is strong but natural, useful for decisions and communication.",
-    "englishMeaning": "impact, influence, or effect",
     "challengePrompt": "Prabhav shabd ka prayog karke kisi nirnay ke asar ko kahiye.",
     "tags": [
       "impact",
       "decision",
       "professional"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "sambandh",
-    "common": "relation",
-    "elevated": "sambandh",
-    "simpleExample": "Is baat ka hamare issue se kya relation hai?",
-    "elevatedExample": "Is baat ka hamari samasya se kya sambandh hai?",
-    "scholarExample": "Kripya spasht karein ki is tathya ka vartamaan samasya se kya pratyaksh sambandh hai.",
-    "difficulty": "easy",
+    "id": 39,
+    "common": {
+      "dev": "रिलेशन",
+      "roman": "relation"
+    },
+    "elevated": {
+      "dev": "संबंध",
+      "roman": "sambandh"
+    },
+    "englishMeaning": "relationship or connection",
+    "simpleExample": {
+      "dev": "इस बात का हमारे issue से क्या relation है?",
+      "roman": "Is baat ka hamare issue se kya relation hai?"
+    },
+    "elevatedExample": {
+      "dev": "इस बात का हमारी समस्या से क्या संबंध है?",
+      "roman": "Is baat ka hamari samasya se kya sambandh hai?"
+    },
+    "scholarExample": {
+      "dev": "कृपया स्पष्ट करें कि इस तथ्य का वर्तमान समस्या से क्या प्रत्यक्ष संबंध है।",
+      "roman": "Kripya spasht karein ki is tathya ka vartamaan samasya se kya pratyaksh sambandh hai."
+    },
     "synonyms": [
-      "rishta",
-      "jod",
-      "nataa"
+      {
+        "dev": "रिश्ता",
+        "roman": "rishta"
+      },
+      {
+        "dev": "जोड़",
+        "roman": "jod"
+      },
+      {
+        "dev": "नाता",
+        "roman": "nataa"
+      }
     ],
     "usageNote": "Sambandh neatly expresses connection between ideas, people, or topics.",
-    "englishMeaning": "relationship or connection",
     "challengePrompt": "Sambandh shabd ka prayog karte hue do baaton ko jodiye.",
     "tags": [
       "connection",
       "ideas",
       "communication"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "vishwas",
-    "common": "trust",
-    "elevated": "vishwas",
-    "simpleExample": "Mujhe tum par trust hai, tum sambhaal loge.",
-    "elevatedExample": "Mujhe aap par vishwas hai, aap ise sambhaal lenge.",
-    "scholarExample": "Mujhe aapki kshamata par poorn vishwas hai; aap yeh zimmedari kushalta se nibha lenge.",
-    "difficulty": "easy",
+    "id": 40,
+    "common": {
+      "dev": "ट्रस्ट",
+      "roman": "trust"
+    },
+    "elevated": {
+      "dev": "विश्वास",
+      "roman": "vishwas"
+    },
+    "englishMeaning": "trust or belief",
+    "simpleExample": {
+      "dev": "मुझे तुम पर trust है, तुम संभाल लोगे।",
+      "roman": "Mujhe tum par trust hai, tum sambhaal loge."
+    },
+    "elevatedExample": {
+      "dev": "मुझे आप पर विश्वास है, आप इसे संभाल लेंगे।",
+      "roman": "Mujhe aap par vishwas hai, aap ise sambhaal lenge."
+    },
+    "scholarExample": {
+      "dev": "मुझे आपकी क्षमता पर पूर्ण विश्वास है; आप यह ज़िम्मेदारी कुशलता से निभा लेंगे।",
+      "roman": "Mujhe aapki kshamata par poorn vishwas hai; aap yeh zimmedari kushalta se nibha lenge."
+    },
     "synonyms": [
-      "bharosa",
-      "aastha",
-      "shraddha"
+      {
+        "dev": "भरोसा",
+        "roman": "bharosa"
+      },
+      {
+        "dev": "आस्था",
+        "roman": "aastha"
+      },
+      {
+        "dev": "श्रद्धा",
+        "roman": "shraddha"
+      }
     ],
     "usageNote": "Vishwas is warm, direct, and suitable for personal or professional trust.",
-    "englishMeaning": "trust or belief",
     "challengePrompt": "Vishwas shabd ka prayog karte hue ek sakaratmak vaakya kahiye.",
     "tags": [
       "trust",
       "relationships",
       "positive"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "aadar",
-    "common": "respect",
-    "elevated": "aadar",
-    "simpleExample": "Main unki mehnat ka respect karta hoon, sach mein.",
-    "elevatedExample": "Main unke parishram ka aadar karta hoon, sach mein.",
-    "scholarExample": "Main unke nirantar parishram aur samarpan ka hriday se aadar karta hoon.",
-    "difficulty": "easy",
+    "id": 41,
+    "common": {
+      "dev": "रिस्पेक्ट",
+      "roman": "respect"
+    },
+    "elevated": {
+      "dev": "आदर",
+      "roman": "aadar"
+    },
+    "englishMeaning": "respect or regard",
+    "simpleExample": {
+      "dev": "मैं उनकी मेहनत का respect करता हूँ, सच में।",
+      "roman": "Main unki mehnat ka respect karta hoon, sach mein."
+    },
+    "elevatedExample": {
+      "dev": "मैं उनके परिश्रम का आदर करता हूँ, सच में।",
+      "roman": "Main unke parishram ka aadar karta hoon, sach mein."
+    },
+    "scholarExample": {
+      "dev": "मैं उनके निरंतर परिश्रम और समर्पण का हृदय से आदर करता हूँ।",
+      "roman": "Main unke nirantar parishram aur samarpan ka hriday se aadar karta hoon."
+    },
     "synonyms": [
-      "samman",
-      "maan",
-      "shraddha"
+      {
+        "dev": "सम्मान",
+        "roman": "samman"
+      },
+      {
+        "dev": "मान",
+        "roman": "maan"
+      },
+      {
+        "dev": "श्रद्धा",
+        "roman": "shraddha"
+      }
     ],
     "usageNote": "Aadar is slightly softer than samman and works well for sincere appreciation.",
-    "englishMeaning": "respect or regard",
     "challengePrompt": "Aadar shabd ka prayog karke kisi ki mehnat ko sarahiye.",
     "tags": [
       "respect",
       "relationships",
       "appreciation"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "samman",
-    "common": "izzat",
-    "elevated": "samman",
-    "simpleExample": "Baat chahe jo ho, sabki izzat karni chahiye.",
-    "elevatedExample": "Matbhed chahe jo ho, sabka samman karna chahiye.",
-    "scholarExample": "Vichaaron mein matbhed ho sakta hai, phir bhi pratyek vyakti ka samman bana rehna chahiye.",
-    "difficulty": "easy",
+    "id": 42,
+    "common": {
+      "dev": "इज़्ज़त",
+      "roman": "izzat"
+    },
+    "elevated": {
+      "dev": "सम्मान",
+      "roman": "samman"
+    },
+    "englishMeaning": "honor or respect",
+    "simpleExample": {
+      "dev": "बात चाहे जो हो, सबकी इज़्ज़त करनी चाहिए।",
+      "roman": "Baat chahe jo ho, sabki izzat karni chahiye."
+    },
+    "elevatedExample": {
+      "dev": "मतभेद चाहे जो हो, सबका सम्मान करना चाहिए।",
+      "roman": "Matbhed chahe jo ho, sabka samman karna chahiye."
+    },
+    "scholarExample": {
+      "dev": "विचारों में मतभेद हो सकता है, फिर भी प्रत्येक व्यक्ति का सम्मान बना रहना चाहिए।",
+      "roman": "Vichaaron mein matbhed ho sakta hai, phir bhi pratyek vyakti ka samman bana rehna chahiye."
+    },
     "synonyms": [
-      "aadar",
-      "maan",
-      "gaurav"
+      {
+        "dev": "आदर",
+        "roman": "aadar"
+      },
+      {
+        "dev": "मान",
+        "roman": "maan"
+      },
+      {
+        "dev": "गौरव",
+        "roman": "gaurav"
+      }
     ],
     "usageNote": "Samman is dignified and widely understood in everyday speech.",
-    "englishMeaning": "honor or respect",
     "challengePrompt": "Samman shabd ke saath ek samvedansheel vaakya kahiye.",
     "tags": [
       "respect",
       "values",
       "daily speech"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "sanyam",
-    "common": "control",
-    "elevated": "sanyam",
-    "simpleExample": "Gussa aa raha ho toh thoda control rakhna.",
-    "elevatedExample": "Gussa aaye toh thoda sanyam rakhna.",
-    "scholarExample": "Kathin paristhiti mein bhi sanyam banaye rakhna samajhdari aur paripakvata ka parichay hai.",
-    "difficulty": "medium",
+    "id": 43,
+    "common": {
+      "dev": "कंट्रोल",
+      "roman": "control"
+    },
+    "elevated": {
+      "dev": "संयम",
+      "roman": "sanyam"
+    },
+    "englishMeaning": "restraint, composure, or self-control",
+    "simpleExample": {
+      "dev": "ग़ुस्सा आ रहा हो तो थोड़ा control रखना।",
+      "roman": "Gussa aa raha ho toh thoda control rakhna."
+    },
+    "elevatedExample": {
+      "dev": "ग़ुस्सा आए तो थोड़ा संयम रखना।",
+      "roman": "Gussa aaye toh thoda sanyam rakhna."
+    },
+    "scholarExample": {
+      "dev": "कठिन परिस्थिति में भी संयम बनाए रखना समझदारी और परिपक्वता का परिचय है।",
+      "roman": "Kathin paristhiti mein bhi sanyam banaye rakhna samajhdari aur paripakvata ka parichay hai."
+    },
     "synonyms": [
-      "niyantran",
-      "dhairya",
-      "santulan"
+      {
+        "dev": "नियंत्रण",
+        "roman": "niyantran"
+      },
+      {
+        "dev": "धैर्य",
+        "roman": "dhairya"
+      },
+      {
+        "dev": "संतुलन",
+        "roman": "santulan"
+      }
     ],
     "usageNote": "Sanyam is elegant for emotional balance and disciplined conduct.",
-    "englishMeaning": "restraint, composure, or self-control",
     "challengePrompt": "Sanyam shabd ka prayog karte hue kisi kathin pal ka varnan kijiye.",
     "tags": [
       "emotion",
       "discipline",
       "values"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "dhairya",
-    "common": "patience",
-    "elevated": "dhairya",
-    "simpleExample": "Thoda patience rakho, kaam bas hone wala hai.",
-    "elevatedExample": "Thoda dhairya rakhiye, karya bas poora hone wala hai.",
-    "scholarExample": "Kripya kuch aur dhairya rakhein; karya antim charan mein hai aur sheeghra sampann ho jayega.",
-    "difficulty": "easy",
+    "id": 44,
+    "common": {
+      "dev": "पेशेंस",
+      "roman": "patience"
+    },
+    "elevated": {
+      "dev": "धैर्य",
+      "roman": "dhairya"
+    },
+    "englishMeaning": "patience or calm endurance",
+    "simpleExample": {
+      "dev": "थोड़ा patience रखो, काम बस होने वाला है।",
+      "roman": "Thoda patience rakho, kaam bas hone wala hai."
+    },
+    "elevatedExample": {
+      "dev": "थोड़ा धैर्य रखिए, कार्य बस पूरा होने वाला है।",
+      "roman": "Thoda dhairya rakhiye, karya bas poora hone wala hai."
+    },
+    "scholarExample": {
+      "dev": "कृपया कुछ और धैर्य रखें; कार्य अंतिम चरण में है और शीघ्र संपन्न हो जाएगा।",
+      "roman": "Kripya kuch aur dhairya rakhein; karya antim charan mein hai aur sheeghra sampann ho jayega."
+    },
     "synonyms": [
-      "sabr",
-      "sahan-shakti",
-      "sanyam"
+      {
+        "dev": "सब्र",
+        "roman": "sabr"
+      },
+      {
+        "dev": "सहनशक्ति",
+        "roman": "sahan-shakti"
+      },
+      {
+        "dev": "संयम",
+        "roman": "sanyam"
+      }
     ],
     "usageNote": "Dhairya feels steady and thoughtful, especially during challenges.",
-    "englishMeaning": "patience or calm endurance",
     "challengePrompt": "Dhairya shabd ka prayog karte hue ek shaant salah dijiye.",
     "tags": [
       "patience",
       "challenge",
       "values"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "sahas",
-    "common": "himmat",
-    "elevated": "sahas",
-    "simpleExample": "Jo sahi hai woh bolo, thodi himmat dikhao.",
-    "elevatedExample": "Jo uchit hai woh kahiye, thoda sahas dikhaiye.",
-    "scholarExample": "Paristhiti kathin ho tab bhi satya ke paksh mein bolne ka sahas rakhiye.",
-    "difficulty": "easy",
+    "id": 45,
+    "common": {
+      "dev": "हिम्मत",
+      "roman": "himmat"
+    },
+    "elevated": {
+      "dev": "साहस",
+      "roman": "sahas"
+    },
+    "englishMeaning": "courage",
+    "simpleExample": {
+      "dev": "जो सही है वो बोलो, थोड़ी हिम्मत दिखाओ।",
+      "roman": "Jo sahi hai woh bolo, thodi himmat dikhao."
+    },
+    "elevatedExample": {
+      "dev": "जो उचित है वह कहिए, थोड़ा साहस दिखाइए।",
+      "roman": "Jo uchit hai woh kahiye, thoda sahas dikhaiye."
+    },
+    "scholarExample": {
+      "dev": "परिस्थिति कठिन हो तब भी सत्य के पक्ष में बोलने का साहस रखिए।",
+      "roman": "Paristhiti kathin ho tab bhi satya ke paksh mein bolne ka sahas rakhiye."
+    },
     "synonyms": [
-      "himmat",
-      "veerata",
-      "nirbhayata"
+      {
+        "dev": "हिम्मत",
+        "roman": "himmat"
+      },
+      {
+        "dev": "वीरता",
+        "roman": "veerata"
+      },
+      {
+        "dev": "निर्भयता",
+        "roman": "nirbhayata"
+      }
     ],
     "usageNote": "Sahas gives courage a dignified, inspiring tone.",
-    "englishMeaning": "courage",
     "challengePrompt": "Sahas shabd ka prayog karte hue kisi sahi nirnay ka zikr kijiye.",
     "tags": [
       "courage",
       "values",
       "motivation"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "zimmedari",
-    "common": "responsibility",
-    "elevated": "zimmedari",
-    "simpleExample": "Yeh meri responsibility hai, main dekh lunga.",
-    "elevatedExample": "Yeh meri zimmedari hai, main ise sambhaal loonga.",
-    "scholarExample": "Is karya ki poori zimmedari meri hai; main ise samay par aur theek dhang se poora karunga.",
-    "difficulty": "easy",
+    "id": 46,
+    "common": {
+      "dev": "रिस्पॉन्सिबिलिटी",
+      "roman": "responsibility"
+    },
+    "elevated": {
+      "dev": "ज़िम्मेदारी",
+      "roman": "zimmedari"
+    },
+    "englishMeaning": "responsibility or accountability",
+    "simpleExample": {
+      "dev": "यह मेरी responsibility है, मैं देख लूँगा।",
+      "roman": "Yeh meri responsibility hai, main dekh lunga."
+    },
+    "elevatedExample": {
+      "dev": "यह मेरी ज़िम्मेदारी है, मैं इसे संभाल लूँगा।",
+      "roman": "Yeh meri zimmedari hai, main ise sambhaal loonga."
+    },
+    "scholarExample": {
+      "dev": "इस कार्य की पूरी ज़िम्मेदारी मेरी है; मैं इसे समय पर और ठीक ढंग से पूरा करूँगा।",
+      "roman": "Is karya ki poori zimmedari meri hai; main ise samay par aur theek dhang se poora karunga."
+    },
     "synonyms": [
-      "uttardayitva",
-      "kartavya",
-      "farz"
+      {
+        "dev": "उत्तरदायित्व",
+        "roman": "uttardayitva"
+      },
+      {
+        "dev": "कर्तव्य",
+        "roman": "kartavya"
+      },
+      {
+        "dev": "फ़र्ज़",
+        "roman": "farz"
+      }
     ],
     "usageNote": "Zimmedari is natural, strong, and useful for ownership.",
-    "englishMeaning": "responsibility or accountability",
     "challengePrompt": "Zimmedari shabd ka prayog karte hue apni bhumika batayiye.",
     "tags": [
       "responsibility",
       "work",
       "values"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "vinamra",
-    "common": "polite",
-    "elevated": "vinamra",
-    "simpleExample": "Tumhara tone thoda polite rahe toh baat ban jayegi.",
-    "elevatedExample": "Aapka swar thoda vinamra rahe toh baat ban jayegi.",
-    "scholarExample": "Yadi aapka swar vinamra aur shabd santulit hon, toh samvaad adhik prabhavi rahega.",
-    "difficulty": "easy",
+    "id": 47,
+    "common": {
+      "dev": "पोलाइट",
+      "roman": "polite"
+    },
+    "elevated": {
+      "dev": "विनम्र",
+      "roman": "vinamra"
+    },
+    "englishMeaning": "polite or humble",
+    "simpleExample": {
+      "dev": "तुम्हारा tone थोड़ा polite रहे तो बात बन जाएगी।",
+      "roman": "Tumhara tone thoda polite rahe toh baat ban jayegi."
+    },
+    "elevatedExample": {
+      "dev": "आपका स्वर थोड़ा विनम्र रहे तो बात बन जाएगी।",
+      "roman": "Aapka swar thoda vinamra rahe toh baat ban jayegi."
+    },
+    "scholarExample": {
+      "dev": "यदि आपका स्वर विनम्र और शब्द संतुलित हों, तो संवाद अधिक प्रभावी रहेगा।",
+      "roman": "Yadi aapka swar vinamra aur shabd santulit hon, toh samvaad adhik prabhavi rahega."
+    },
     "synonyms": [
-      "namra",
-      "sabhya",
-      "shisht"
+      {
+        "dev": "नम्र",
+        "roman": "namra"
+      },
+      {
+        "dev": "सभ्य",
+        "roman": "sabhya"
+      },
+      {
+        "dev": "शिष्ट",
+        "roman": "shisht"
+      }
     ],
     "usageNote": "Vinamra is excellent for describing tone, requests, and behavior.",
-    "englishMeaning": "polite or humble",
     "challengePrompt": "Vinamra shabd ka prayog karte hue ek nivedan kijiye.",
     "tags": [
       "politeness",
       "tone",
       "requests"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "sabhya",
-    "common": "decent",
-    "elevated": "sabhya",
-    "simpleExample": "Party mein sabka behavior decent tha, achchha laga.",
-    "elevatedExample": "Samaaroh mein sabka vyavahar sabhya tha, achchha laga.",
-    "scholarExample": "Samaaroh mein sabhi ka sabhya aur maryadit vyavahar dekhkar prasannata hui.",
-    "difficulty": "medium",
+    "id": 48,
+    "common": {
+      "dev": "डिसेंट",
+      "roman": "decent"
+    },
+    "elevated": {
+      "dev": "सभ्य",
+      "roman": "sabhya"
+    },
+    "englishMeaning": "civil, courteous, or refined",
+    "simpleExample": {
+      "dev": "Party में सबका behavior decent था, अच्छा लगा।",
+      "roman": "Party mein sabka behavior decent tha, achchha laga."
+    },
+    "elevatedExample": {
+      "dev": "समारोह में सबका व्यवहार सभ्य था, अच्छा लगा।",
+      "roman": "Samaaroh mein sabka vyavahar sabhya tha, achchha laga."
+    },
+    "scholarExample": {
+      "dev": "समारोह में सभी का सभ्य और मर्यादित व्यवहार देखकर प्रसन्नता हुई।",
+      "roman": "Samaaroh mein sabhi ka sabhya aur maryadit vyavahar dekhkar prasannata hui."
+    },
     "synonyms": [
-      "shisht",
-      "sanskari",
-      "vinamra"
+      {
+        "dev": "शिष्ट",
+        "roman": "shisht"
+      },
+      {
+        "dev": "संस्कारी",
+        "roman": "sanskari"
+      },
+      {
+        "dev": "विनम्र",
+        "roman": "vinamra"
+      }
     ],
     "usageNote": "Sabhya describes conduct that is courteous and socially graceful.",
-    "englishMeaning": "civil, courteous, or refined",
     "challengePrompt": "Sabhya shabd ke saath achchhe vyavahar ka vaakya banaiye.",
     "tags": [
       "conduct",
       "politeness",
       "values"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "vyavahar",
-    "common": "behavior",
-    "elevated": "vyavahar",
-    "simpleExample": "Woh senior hain, par unka behavior bilkul friendly hai.",
-    "elevatedExample": "Woh varishth hain, par unka vyavahar bahut mitravat hai.",
-    "scholarExample": "Varishth pad par hote hue bhi unka vyavahar sahaj, vinamra aur sahyogpoorn hai.",
-    "difficulty": "easy",
+    "id": 49,
+    "common": {
+      "dev": "बिहेवियर",
+      "roman": "behavior"
+    },
+    "elevated": {
+      "dev": "व्यवहार",
+      "roman": "vyavahar"
+    },
+    "englishMeaning": "behavior or conduct",
+    "simpleExample": {
+      "dev": "वो senior हैं, पर उनका behavior बिल्कुल friendly है।",
+      "roman": "Woh senior hain, par unka behavior bilkul friendly hai."
+    },
+    "elevatedExample": {
+      "dev": "वे वरिष्ठ हैं, पर उनका व्यवहार बहुत मित्रवत है।",
+      "roman": "Woh varishth hain, par unka vyavahar bahut mitravat hai."
+    },
+    "scholarExample": {
+      "dev": "वरिष्ठ पद पर होते हुए भी उनका व्यवहार सहज, विनम्र और सहयोगपूर्ण है।",
+      "roman": "Varishth pad par hote hue bhi unka vyavahar sahaj, vinamra aur sahyogpoorn hai."
+    },
     "synonyms": [
-      "aacharan",
-      "bartav",
-      "ravayya"
+      {
+        "dev": "आचरण",
+        "roman": "aacharan"
+      },
+      {
+        "dev": "बर्ताव",
+        "roman": "bartav"
+      },
+      {
+        "dev": "रवैया",
+        "roman": "ravayya"
+      }
     ],
     "usageNote": "Vyavahar is common and refined, useful for personal and social settings.",
-    "englishMeaning": "behavior or conduct",
     "challengePrompt": "Vyavahar shabd ka prayog karte hue kisi gun ka varnan kijiye.",
     "tags": [
       "conduct",
       "relationships",
       "daily speech"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "parivartan",
-    "common": "change",
-    "elevated": "parivartan",
-    "simpleExample": "Routine mein thoda change chahiye, bore ho gaya hoon.",
-    "elevatedExample": "Dinacharya mein thoda parivartan chahiye, main oob gaya hoon.",
-    "scholarExample": "Ekrasata door karne ke liye dinacharya mein sakaratmak parivartan laana avashyak lagta hai.",
-    "difficulty": "easy",
+    "id": 50,
+    "common": {
+      "dev": "चेंज",
+      "roman": "change"
+    },
+    "elevated": {
+      "dev": "परिवर्तन",
+      "roman": "parivartan"
+    },
+    "englishMeaning": "change or transformation",
+    "simpleExample": {
+      "dev": "Routine में थोड़ा change चाहिए, bore हो गया हूँ।",
+      "roman": "Routine mein thoda change chahiye, bore ho gaya hoon."
+    },
+    "elevatedExample": {
+      "dev": "दिनचर्या में थोड़ा परिवर्तन चाहिए, मैं ऊब गया हूँ।",
+      "roman": "Dinacharya mein thoda parivartan chahiye, main oob gaya hoon."
+    },
+    "scholarExample": {
+      "dev": "एकरसता दूर करने के लिए दिनचर्या में सकारात्मक परिवर्तन लाना आवश्यक लगता है।",
+      "roman": "Ekrasata door karne ke liye dinacharya mein sakaratmak parivartan laana avashyak lagta hai."
+    },
     "synonyms": [
-      "badlav",
-      "rupantaran",
-      "sanshodhan"
+      {
+        "dev": "बदलाव",
+        "roman": "badlav"
+      },
+      {
+        "dev": "रूपांतरण",
+        "roman": "rupantaran"
+      },
+      {
+        "dev": "संशोधन",
+        "roman": "sanshodhan"
+      }
     ],
     "usageNote": "Parivartan sounds constructive, especially for improvement and reform.",
-    "englishMeaning": "change or transformation",
     "challengePrompt": "Parivartan shabd ka prayog karke kisi sudhaar ka zikr kijiye.",
     "tags": [
       "change",
       "improvement",
       "planning"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "sudhaar",
-    "common": "improvement",
-    "elevated": "sudhaar",
-    "simpleExample": "Presentation achchhi hai, bas opening mein improvement chahiye.",
-    "elevatedExample": "Prastuti achchhi hai, bas aarambh mein sudhaar chahiye.",
-    "scholarExample": "Prastuti prabhavi hai; keval prarambhik bhaag mein kuch sudhaar se iska prabhav aur badh sakta hai.",
-    "difficulty": "easy",
+    "id": 51,
+    "common": {
+      "dev": "इम्प्रूवमेंट",
+      "roman": "improvement"
+    },
+    "elevated": {
+      "dev": "सुधार",
+      "roman": "sudhaar"
+    },
+    "englishMeaning": "improvement or correction",
+    "simpleExample": {
+      "dev": "Presentation अच्छी है, बस opening में improvement चाहिए।",
+      "roman": "Presentation achchhi hai, bas opening mein improvement chahiye."
+    },
+    "elevatedExample": {
+      "dev": "प्रस्तुति अच्छी है, बस आरंभ में सुधार चाहिए।",
+      "roman": "Prastuti achchhi hai, bas aarambh mein sudhaar chahiye."
+    },
+    "scholarExample": {
+      "dev": "प्रस्तुति प्रभावी है; केवल प्रारंभिक भाग में कुछ सुधार से इसका प्रभाव और बढ़ सकता है।",
+      "roman": "Prastuti prabhavi hai; keval prarambhik bhaag mein kuch sudhaar se iska prabhav aur badh sakta hai."
+    },
     "synonyms": [
-      "unnati",
-      "sansthan",
-      "behtari"
+      {
+        "dev": "उन्नति",
+        "roman": "unnati"
+      },
+      {
+        "dev": "संशोधन",
+        "roman": "sanshodhan"
+      },
+      {
+        "dev": "बेहतरी",
+        "roman": "behtari"
+      }
     ],
     "usageNote": "Sudhaar is supportive and practical; it fits the app's aspirational tone.",
-    "englishMeaning": "improvement or correction",
     "challengePrompt": "Sudhaar shabd ka prayog karte hue ek rachanatmak vaakya kahiye.",
     "tags": [
       "improvement",
       "learning",
       "feedback"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "unnati",
-    "common": "progress",
-    "elevated": "unnati",
-    "simpleExample": "Tumhari Hindi mein progress saaf dikh rahi hai.",
-    "elevatedExample": "Aapki Hindi mein unnati spasht dikh rahi hai.",
-    "scholarExample": "Aapki Hindi mein nirantar unnati dikh rahi hai; abhivyakti pehle se adhik sahaj aur spasht hai.",
-    "difficulty": "easy",
+    "id": 52,
+    "common": {
+      "dev": "प्रोग्रेस",
+      "roman": "progress"
+    },
+    "elevated": {
+      "dev": "उन्नति",
+      "roman": "unnati"
+    },
+    "englishMeaning": "progress or advancement",
+    "simpleExample": {
+      "dev": "तुम्हारी Hindi में progress साफ़ दिख रही है।",
+      "roman": "Tumhari Hindi mein progress saaf dikh rahi hai."
+    },
+    "elevatedExample": {
+      "dev": "आपकी हिंदी में उन्नति स्पष्ट दिख रही है।",
+      "roman": "Aapki Hindi mein unnati spasht dikh rahi hai."
+    },
+    "scholarExample": {
+      "dev": "आपकी हिंदी में निरंतर उन्नति दिख रही है; अभिव्यक्ति पहले से अधिक सहज और स्पष्ट है।",
+      "roman": "Aapki Hindi mein nirantar unnati dikh rahi hai; abhivyakti pehle se adhik sahaj aur spasht hai."
+    },
     "synonyms": [
-      "pragati",
-      "vikas",
-      "sudhaar"
+      {
+        "dev": "प्रगति",
+        "roman": "pragati"
+      },
+      {
+        "dev": "विकास",
+        "roman": "vikas"
+      },
+      {
+        "dev": "सुधार",
+        "roman": "sudhaar"
+      }
     ],
     "usageNote": "Unnati has an aspirational quality and works beautifully for learning.",
-    "englishMeaning": "progress or advancement",
     "challengePrompt": "Unnati shabd ka prayog karte hue apni seekh par vaakya kahiye.",
     "tags": [
       "progress",
       "learning",
       "motivation"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "yojana",
-    "common": "plan",
-    "elevated": "yojana",
-    "simpleExample": "Weekend ka plan kya hai, kahin bahar chalna hai?",
-    "elevatedExample": "Saptaahant ki yojana kya hai, kahin bahar chalna hai?",
-    "scholarExample": "Saptaahant ke liye kya yojana hai? Yadi sab sahmat hon toh ek chhoti yatra rakhi ja sakti hai.",
-    "difficulty": "easy",
+    "id": 53,
+    "common": {
+      "dev": "प्लान",
+      "roman": "plan"
+    },
+    "elevated": {
+      "dev": "योजना",
+      "roman": "yojana"
+    },
+    "englishMeaning": "plan or scheme",
+    "simpleExample": {
+      "dev": "Weekend का plan क्या है, कहीं बाहर चलना है?",
+      "roman": "Weekend ka plan kya hai, kahin bahar chalna hai?"
+    },
+    "elevatedExample": {
+      "dev": "सप्ताहांत की योजना क्या है, कहीं बाहर चलना है?",
+      "roman": "Saptaahant ki yojana kya hai, kahin bahar chalna hai?"
+    },
+    "scholarExample": {
+      "dev": "सप्ताहांत के लिए क्या योजना है? यदि सब सहमत हों तो एक छोटी यात्रा रखी जा सकती है।",
+      "roman": "Saptaahant ke liye kya yojana hai? Yadi sab sahmat hon toh ek chhoti yatra rakhi ja sakti hai."
+    },
     "synonyms": [
-      "rananeeti",
-      "vidhi",
-      "karyakram"
+      {
+        "dev": "रणनीति",
+        "roman": "rananeeti"
+      },
+      {
+        "dev": "विधि",
+        "roman": "vidhi"
+      },
+      {
+        "dev": "कार्यक्रम",
+        "roman": "karyakram"
+      }
     ],
     "usageNote": "Yojana is a natural Hindi replacement for plan in everyday contexts.",
-    "englishMeaning": "plan or scheme",
     "challengePrompt": "Yojana shabd ka prayog karte hue agle kadam ka varnan kijiye.",
     "tags": [
       "planning",
       "work",
       "daily speech"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "disha",
-    "common": "direction",
-    "elevated": "disha",
-    "simpleExample": "Team ko clear direction mil jaaye toh kaam tez hoga.",
-    "elevatedExample": "Team ko spasht disha mil jaaye toh karya tez hoga.",
-    "scholarExample": "Team ko spasht disha aur nirdharit prathamiktaen milen, toh karya adhik kushalta se aage badhega.",
-    "difficulty": "easy",
+    "id": 54,
+    "common": {
+      "dev": "डायरेक्शन",
+      "roman": "direction"
+    },
+    "elevated": {
+      "dev": "दिशा",
+      "roman": "disha"
+    },
+    "englishMeaning": "direction or guiding path",
+    "simpleExample": {
+      "dev": "Team को clear direction मिल जाए तो काम तेज़ होगा।",
+      "roman": "Team ko clear direction mil jaaye toh kaam tez hoga."
+    },
+    "elevatedExample": {
+      "dev": "Team को स्पष्ट दिशा मिल जाए तो कार्य तेज़ होगा।",
+      "roman": "Team ko spasht disha mil jaaye toh karya tez hoga."
+    },
+    "scholarExample": {
+      "dev": "Team को स्पष्ट दिशा और निर्धारित प्राथमिकताएँ मिलें, तो कार्य अधिक कुशलता से आगे बढ़ेगा।",
+      "roman": "Team ko spasht disha aur nirdharit prathamiktaen milen, toh karya adhik kushalta se aage badhega."
+    },
     "synonyms": [
-      "marg",
-      "raah",
-      "nirdesh"
+      {
+        "dev": "मार्ग",
+        "roman": "marg"
+      },
+      {
+        "dev": "राह",
+        "roman": "raah"
+      },
+      {
+        "dev": "निर्देश",
+        "roman": "nirdesh"
+      }
     ],
     "usageNote": "Disha is concise and graceful for guidance, planning, or purpose.",
-    "englishMeaning": "direction or guiding path",
     "challengePrompt": "Disha shabd ka prayog karte hue kisi margdarshan par vaakya kahiye.",
     "tags": [
       "guidance",
       "planning",
       "leadership"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "margdarshan",
-    "common": "guidance",
-    "elevated": "margdarshan",
-    "simpleExample": "Is career decision mein aapki guidance chahiye.",
-    "elevatedExample": "Is career nirnay mein aapka margdarshan chahiye.",
-    "scholarExample": "Is mahatvapurn jeevan-vritti nirnay mein aapka anubhavi margdarshan mere liye atyant upyogi hoga.",
-    "difficulty": "medium",
+    "id": 55,
+    "common": {
+      "dev": "गाइडेंस",
+      "roman": "guidance"
+    },
+    "elevated": {
+      "dev": "मार्गदर्शन",
+      "roman": "margdarshan"
+    },
+    "englishMeaning": "guidance or direction",
+    "simpleExample": {
+      "dev": "इस career decision में आपकी guidance चाहिए।",
+      "roman": "Is career decision mein aapki guidance chahiye."
+    },
+    "elevatedExample": {
+      "dev": "इस career निर्णय में आपका मार्गदर्शन चाहिए।",
+      "roman": "Is career nirnay mein aapka margdarshan chahiye."
+    },
+    "scholarExample": {
+      "dev": "इस महत्वपूर्ण जीवन-वृत्ति निर्णय में आपका अनुभवी मार्गदर्शन मेरे लिए अत्यंत उपयोगी होगा।",
+      "roman": "Is mahatvapurn jeevan-vritti nirnay mein aapka anubhavi margdarshan mere liye atyant upyogi hoga."
+    },
     "synonyms": [
-      "salah",
-      "disha",
-      "paramarsh"
+      {
+        "dev": "सलाह",
+        "roman": "salah"
+      },
+      {
+        "dev": "दिशा",
+        "roman": "disha"
+      },
+      {
+        "dev": "परामर्श",
+        "roman": "paramarsh"
+      }
     ],
     "usageNote": "Margdarshan is respectful and warm when seeking advice from someone experienced.",
-    "englishMeaning": "guidance or direction",
     "challengePrompt": "Margdarshan maangte hue ek vinamra vaakya kahiye.",
     "tags": [
       "guidance",
       "respect",
       "learning"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "paramarsh",
-    "common": "advice",
-    "elevated": "paramarsh",
-    "simpleExample": "Investment se pehle expert ki advice le lete hain.",
-    "elevatedExample": "Nivesh se pehle visheshagya ka paramarsh le lete hain.",
-    "scholarExample": "Vittiya nirnay lene se poorv kisi anubhavi visheshagya ka paramarsh praapt karna uchit rahega.",
-    "difficulty": "medium",
+    "id": 56,
+    "common": {
+      "dev": "एडवाइस",
+      "roman": "advice"
+    },
+    "elevated": {
+      "dev": "परामर्श",
+      "roman": "paramarsh"
+    },
+    "englishMeaning": "counsel or considered advice",
+    "simpleExample": {
+      "dev": "Investment से पहले expert की advice ले लेते हैं।",
+      "roman": "Investment se pehle expert ki advice le lete hain."
+    },
+    "elevatedExample": {
+      "dev": "निवेश से पहले विशेषज्ञ का परामर्श ले लेते हैं।",
+      "roman": "Nivesh se pehle visheshagya ka paramarsh le lete hain."
+    },
+    "scholarExample": {
+      "dev": "वित्तीय निर्णय लेने से पूर्व किसी अनुभवी विशेषज्ञ का परामर्श प्राप्त करना उचित रहेगा।",
+      "roman": "Vittiya nirnay lene se poorv kisi anubhavi visheshagya ka paramarsh praapt karna uchit rahega."
+    },
     "synonyms": [
-      "salah",
-      "sujhav",
-      "margdarshan"
+      {
+        "dev": "सलाह",
+        "roman": "salah"
+      },
+      {
+        "dev": "सुझाव",
+        "roman": "sujhav"
+      },
+      {
+        "dev": "मार्गदर्शन",
+        "roman": "margdarshan"
+      }
     ],
     "usageNote": "Paramarsh is more formal than salah and suits thoughtful or expert advice.",
-    "englishMeaning": "counsel or considered advice",
     "challengePrompt": "Paramarsh shabd ka prayog karte hue kisi se salah maangiye.",
     "tags": [
       "advice",
       "formal",
       "learning"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "santulan",
-    "common": "balance",
-    "elevated": "santulan",
-    "simpleExample": "Kaam aur ghar ka balance banana mushkil ho raha hai.",
-    "elevatedExample": "Karya aur ghar ke beech santulan banana kathin ho raha hai.",
-    "scholarExample": "Vyavasaayik zimmedariyon aur parivaarik jeevan ke beech santulan banaye rakhna chunautipurn ho raha hai.",
-    "difficulty": "medium",
+    "id": 57,
+    "common": {
+      "dev": "बैलेंस",
+      "roman": "balance"
+    },
+    "elevated": {
+      "dev": "संतुलन",
+      "roman": "santulan"
+    },
+    "englishMeaning": "balance or equilibrium",
+    "simpleExample": {
+      "dev": "काम और घर का balance बनाना मुश्किल हो रहा है।",
+      "roman": "Kaam aur ghar ka balance banana mushkil ho raha hai."
+    },
+    "elevatedExample": {
+      "dev": "कार्य और घर के बीच संतुलन बनाना कठिन हो रहा है।",
+      "roman": "Karya aur ghar ke beech santulan banana kathin ho raha hai."
+    },
+    "scholarExample": {
+      "dev": "व्यावसायिक ज़िम्मेदारियों और पारिवारिक जीवन के बीच संतुलन बनाए रखना चुनौतीपूर्ण हो रहा है।",
+      "roman": "Vyavasaayik zimmedariyon aur parivaarik jeevan ke beech santulan banaye rakhna chunautipurn ho raha hai."
+    },
     "synonyms": [
-      "samanjasya",
-      "sanyam",
-      "santushti"
+      {
+        "dev": "सामंजस्य",
+        "roman": "samanjasya"
+      },
+      {
+        "dev": "संयम",
+        "roman": "sanyam"
+      },
+      {
+        "dev": "संतुष्टि",
+        "roman": "santushti"
+      }
     ],
     "usageNote": "Santulan is elegant and useful for lifestyle, tone, and judgment.",
-    "englishMeaning": "balance or equilibrium",
     "challengePrompt": "Santulan shabd ka prayog karte hue jeevan ya kaam par vaakya kahiye.",
     "tags": [
       "balance",
       "life",
       "reflection"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "abhivyakti",
-    "common": "expression",
-    "elevated": "abhivyakti",
-    "simpleExample": "Jab tum dheere bolte ho toh expression clear rehti hai.",
-    "elevatedExample": "Jab aap dheere bolte hain toh abhivyakti spasht rehti hai.",
-    "scholarExample": "Santulit gati se bolne par aapki abhivyakti adhik spasht, prabhavi aur sahaj lagti hai.",
-    "difficulty": "medium",
+    "id": 58,
+    "common": {
+      "dev": "एक्सप्रेशन",
+      "roman": "expression"
+    },
+    "elevated": {
+      "dev": "अभिव्यक्ति",
+      "roman": "abhivyakti"
+    },
+    "englishMeaning": "expression or articulation",
+    "simpleExample": {
+      "dev": "जब तुम धीरे बोलते हो तो expression clear रहती है।",
+      "roman": "Jab tum dheere bolte ho toh expression clear rehti hai."
+    },
+    "elevatedExample": {
+      "dev": "जब आप धीरे बोलते हैं तो अभिव्यक्ति स्पष्ट रहती है।",
+      "roman": "Jab aap dheere bolte hain toh abhivyakti spasht rehti hai."
+    },
+    "scholarExample": {
+      "dev": "संतुलित गति से बोलने पर आपकी अभिव्यक्ति अधिक स्पष्ट, प्रभावी और सहज लगती है।",
+      "roman": "Santulit gati se bolne par aapki abhivyakti adhik spasht, prabhavi aur sahaj lagti hai."
+    },
     "synonyms": [
-      "prakatikaran",
-      "vyakti",
-      "bolne ka dhang"
+      {
+        "dev": "प्रकटीकरण",
+        "roman": "prakatikaran"
+      },
+      {
+        "dev": "वक्तव्य",
+        "roman": "vaktavya"
+      },
+      {
+        "dev": "बोलने का ढंग",
+        "roman": "bolne ka dhang"
+      }
     ],
     "usageNote": "Abhivyakti is central to elegant speech and works well for language learning.",
-    "englishMeaning": "expression or articulation",
     "challengePrompt": "Abhivyakti shabd ka prayog karte hue bhasha ke mahatva par vaakya kahiye.",
     "tags": [
       "expression",
       "language",
       "learning"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "upyogi",
-    "common": "helpful",
-    "elevated": "upyogi",
-    "simpleExample": "Yeh tip kaafi helpful hai, main aaj hi try karunga.",
-    "elevatedExample": "Yeh sujhav kaafi upyogi hai, main aaj hi apnaunga.",
-    "scholarExample": "Yeh sujhav atyant upyogi aur vyavaharik hai; main ise aaj se hi apne abhyas mein shamil karunga.",
-    "difficulty": "easy",
+    "id": 59,
+    "common": {
+      "dev": "हेल्पफुल",
+      "roman": "helpful"
+    },
+    "elevated": {
+      "dev": "उपयोगी",
+      "roman": "upyogi"
+    },
+    "englishMeaning": "useful or helpful",
+    "simpleExample": {
+      "dev": "यह tip काफ़ी helpful है, मैं आज ही try करूँगा।",
+      "roman": "Yeh tip kaafi helpful hai, main aaj hi try karunga."
+    },
+    "elevatedExample": {
+      "dev": "यह सुझाव काफ़ी उपयोगी है, मैं आज ही अपनाऊँगा।",
+      "roman": "Yeh sujhav kaafi upyogi hai, main aaj hi apnaunga."
+    },
+    "scholarExample": {
+      "dev": "यह सुझाव अत्यंत उपयोगी और व्यावहारिक है; मैं इसे आज से ही अपने अभ्यास में शामिल करूँगा।",
+      "roman": "Yeh sujhav atyant upyogi aur vyavaharik hai; main ise aaj se hi apne abhyas mein shamil karunga."
+    },
     "synonyms": [
-      "laabhdayak",
-      "sahayak",
-      "kaam ka"
+      {
+        "dev": "लाभदायक",
+        "roman": "laabhdayak"
+      },
+      {
+        "dev": "सहायक",
+        "roman": "sahayak"
+      },
+      {
+        "dev": "काम का",
+        "roman": "kaam ka"
+      }
     ],
     "usageNote": "Upyogi is a crisp upgrade for helpful, especially in practical contexts.",
-    "englishMeaning": "useful or helpful",
     "challengePrompt": "Upyogi shabd ka prayog karte hue kisi salah ki prashansa kijiye.",
     "tags": [
       "useful",
       "advice",
       "positive"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "sarthak",
-    "common": "meaningful",
-    "elevated": "sarthak",
-    "simpleExample": "Aaj ki baatcheet meaningful thi, kaafi clarity mili.",
-    "elevatedExample": "Aaj ka samvaad sarthak tha, kaafi spashtata mili.",
-    "scholarExample": "Aaj ka samvaad vaastav mein sarthak raha; isse anek uljhanein door hui aur aage ki disha spasht hui.",
-    "difficulty": "medium",
+    "id": 60,
+    "common": {
+      "dev": "मीनिंगफुल",
+      "roman": "meaningful"
+    },
+    "elevated": {
+      "dev": "सार्थक",
+      "roman": "sarthak"
+    },
+    "englishMeaning": "meaningful or worthwhile",
+    "simpleExample": {
+      "dev": "आज की बातचीत meaningful थी, काफ़ी clarity मिली।",
+      "roman": "Aaj ki baatcheet meaningful thi, kaafi clarity mili."
+    },
+    "elevatedExample": {
+      "dev": "आज का संवाद सार्थक था, काफ़ी स्पष्टता मिली।",
+      "roman": "Aaj ka samvaad sarthak tha, kaafi spashtata mili."
+    },
+    "scholarExample": {
+      "dev": "आज का संवाद वास्तव में सार्थक रहा; इससे अनेक उलझनें दूर हुईं और आगे की दिशा स्पष्ट हुई।",
+      "roman": "Aaj ka samvaad vaastav mein sarthak raha; isse anek uljhanein door hui aur aage ki disha spasht hui."
+    },
     "synonyms": [
-      "arthapurn",
-      "moolyavaan",
-      "upayogi"
+      {
+        "dev": "अर्थपूर्ण",
+        "roman": "arthapurn"
+      },
+      {
+        "dev": "मूल्यवान",
+        "roman": "moolyavaan"
+      },
+      {
+        "dev": "उपयोगी",
+        "roman": "upayogi"
+      }
     ],
     "usageNote": "Sarthak feels refined and heartfelt when describing time, work, or conversation.",
-    "englishMeaning": "meaningful or worthwhile",
     "challengePrompt": "Sarthak shabd ka prayog karte hue kisi anubhav ko varnit kijiye.",
     "tags": [
       "meaning",
       "reflection",
       "positive"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "sahmati",
-    "common": "haan",
-    "elevated": "sahmati",
-    "simpleExample": "Haan, mujhe tumhara plan theek lag raha hai.",
-    "elevatedExample": "Is yojana par meri sahmati hai, yeh theek lag rahi hai.",
-    "scholarExample": "Vichaar karne ke baad is yojana ko meri poorn sahmati hai; aap aage badh sakte hain.",
-    "difficulty": "easy",
+    "id": 61,
+    "common": {
+      "dev": "हाँ",
+      "roman": "haan"
+    },
+    "elevated": {
+      "dev": "सहमति",
+      "roman": "sahmati"
+    },
+    "englishMeaning": "agreement or consent",
+    "simpleExample": {
+      "dev": "हाँ, मुझे तुम्हारा plan ठीक लग रहा है।",
+      "roman": "Haan, mujhe tumhara plan theek lag raha hai."
+    },
+    "elevatedExample": {
+      "dev": "इस योजना पर मेरी सहमति है, यह ठीक लग रही है।",
+      "roman": "Is yojana par meri sahmati hai, yeh theek lag rahi hai."
+    },
+    "scholarExample": {
+      "dev": "विचार करने के बाद इस योजना को मेरी पूर्ण सहमति है; आप आगे बढ़ सकते हैं।",
+      "roman": "Vichaar karne ke baad is yojana ko meri poorn sahmati hai; aap aage badh sakte hain."
+    },
     "synonyms": [
-      "sweekriti",
-      "anumodan",
-      "razamandi"
+      {
+        "dev": "स्वीकृति",
+        "roman": "sweekriti"
+      },
+      {
+        "dev": "अनुमोदन",
+        "roman": "anumodan"
+      },
+      {
+        "dev": "रज़ामंदी",
+        "roman": "razamandi"
+      }
     ],
     "usageNote": "Sahmati states agreement clearly while keeping the exchange collaborative.",
-    "englishMeaning": "agreement or consent",
     "challengePrompt": "Sahmati vyakt karte hue kisi yojana par ek vaakya kahiye.",
     "tags": [
       "agreement",
       "collaboration",
       "conversation"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "asahmati",
-    "common": "main nahi maanta",
-    "elevated": "asahmati",
-    "simpleExample": "Main nahi maanta ki abhi price badhana chahiye.",
-    "elevatedExample": "Abhi moolya badhane par meri asahmati hai.",
-    "scholarExample": "Vartamaan paristhitiyon mein moolya-vriddhi ke prastaav par meri vinamra asahmati hai.",
-    "difficulty": "medium",
+    "id": 62,
+    "common": {
+      "dev": "मैं नहीं मानता",
+      "roman": "main nahi maanta"
+    },
+    "elevated": {
+      "dev": "असहमति",
+      "roman": "asahmati"
+    },
+    "englishMeaning": "disagreement or dissent",
+    "simpleExample": {
+      "dev": "मैं नहीं मानता कि अभी price बढ़ाना चाहिए।",
+      "roman": "Main nahi maanta ki abhi price badhana chahiye."
+    },
+    "elevatedExample": {
+      "dev": "अभी मूल्य बढ़ाने पर मेरी असहमति है।",
+      "roman": "Abhi moolya badhane par meri asahmati hai."
+    },
+    "scholarExample": {
+      "dev": "वर्तमान परिस्थितियों में मूल्य-वृद्धि के प्रस्ताव पर मेरी विनम्र असहमति है।",
+      "roman": "Vartamaan paristhitiyon mein moolya-vriddhi ke prastaav par meri vinamra asahmati hai."
+    },
     "synonyms": [
-      "matbhed",
-      "virodh",
-      "aapatti"
+      {
+        "dev": "मतभेद",
+        "roman": "matbhed"
+      },
+      {
+        "dev": "विरोध",
+        "roman": "virodh"
+      },
+      {
+        "dev": "आपत्ति",
+        "roman": "aapatti"
+      }
     ],
     "usageNote": "Asahmati lets you disagree directly without making the tone confrontational.",
-    "englishMeaning": "disagreement or dissent",
     "challengePrompt": "Asahmati vyakt karte hue ek vinamra vaakya banaiye.",
     "tags": [
       "disagreement",
       "tact",
       "professional"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "anurodh",
-    "common": "request",
-    "elevated": "anurodh",
-    "simpleExample": "Meri ek request hai, file aaj bhej dena.",
-    "elevatedExample": "Mera ek anurodh hai, file aaj bhej dijiye.",
-    "scholarExample": "Mera vinamra anurodh hai ki sambandhit file aaj hi preshit kar dein.",
-    "difficulty": "easy",
+    "id": 63,
+    "common": {
+      "dev": "रिक्वेस्ट",
+      "roman": "request"
+    },
+    "elevated": {
+      "dev": "अनुरोध",
+      "roman": "anurodh"
+    },
+    "englishMeaning": "request or appeal",
+    "simpleExample": {
+      "dev": "मेरी एक request है, file आज भेज देना।",
+      "roman": "Meri ek request hai, file aaj bhej dena."
+    },
+    "elevatedExample": {
+      "dev": "मेरा एक अनुरोध है, file आज भेज दीजिए।",
+      "roman": "Mera ek anurodh hai, file aaj bhej dijiye."
+    },
+    "scholarExample": {
+      "dev": "मेरा विनम्र अनुरोध है कि संबंधित file आज ही प्रेषित कर दें।",
+      "roman": "Mera vinamra anurodh hai ki sambandhit file aaj hi preshit kar dein."
+    },
     "synonyms": [
-      "nivedan",
-      "prarthana",
-      "guzaarish"
+      {
+        "dev": "निवेदन",
+        "roman": "nivedan"
+      },
+      {
+        "dev": "प्रार्थना",
+        "roman": "prarthana"
+      },
+      {
+        "dev": "गुज़ारिश",
+        "roman": "guzaarish"
+      }
     ],
     "usageNote": "Anurodh makes a request courteous and suitable for everyday professional speech.",
-    "englishMeaning": "request or appeal",
     "challengePrompt": "Anurodh karte hue kisi se ek kaam kahiye.",
     "tags": [
       "requests",
       "polite speech",
       "work"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "nivedan",
-    "common": "guzaarish",
-    "elevated": "nivedan",
-    "simpleExample": "Ek guzaarish hai, phone silent kar lo.",
-    "elevatedExample": "Ek nivedan hai, kripya phone silent kar lijiye.",
-    "scholarExample": "Sabhi se vinamra nivedan hai ki karyakram ke dauraan apne phone maun rakhein.",
-    "difficulty": "easy",
+    "id": 64,
+    "common": {
+      "dev": "गुज़ारिश",
+      "roman": "guzaarish"
+    },
+    "elevated": {
+      "dev": "निवेदन",
+      "roman": "nivedan"
+    },
+    "englishMeaning": "polite request or submission",
+    "simpleExample": {
+      "dev": "एक गुज़ारिश है, phone silent कर लो।",
+      "roman": "Ek guzaarish hai, phone silent kar lo."
+    },
+    "elevatedExample": {
+      "dev": "एक निवेदन है, कृपया phone silent कर लीजिए।",
+      "roman": "Ek nivedan hai, kripya phone silent kar lijiye."
+    },
+    "scholarExample": {
+      "dev": "सभी से विनम्र निवेदन है कि कार्यक्रम के दौरान अपने phone मौन रखें।",
+      "roman": "Sabhi se vinamra nivedan hai ki karyakram ke dauraan apne phone maun rakhein."
+    },
     "synonyms": [
-      "anurodh",
-      "prarthana",
-      "vinati"
+      {
+        "dev": "अनुरोध",
+        "roman": "anurodh"
+      },
+      {
+        "dev": "प्रार्थना",
+        "roman": "prarthana"
+      },
+      {
+        "dev": "विनती",
+        "roman": "vinati"
+      }
     ],
     "usageNote": "Nivedan is warm and respectful when addressing one person or a group.",
-    "englishMeaning": "polite request or submission",
     "challengePrompt": "Nivedan shabd ke saath ek sabhya ghoshna kijiye.",
     "tags": [
       "requests",
       "public speaking",
       "courtesy"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "anumati",
-    "common": "permission",
-    "elevated": "anumati",
-    "simpleExample": "Kya mujhe kal ghar se kaam karne ki permission mil sakti hai?",
-    "elevatedExample": "Kya mujhe kal ghar se karya karne ki anumati mil sakti hai?",
-    "scholarExample": "Kya aap mujhe kal ghar se karya karne ki anumati pradaan kar sakte hain?",
-    "difficulty": "easy",
+    "id": 65,
+    "common": {
+      "dev": "परमिशन",
+      "roman": "permission"
+    },
+    "elevated": {
+      "dev": "अनुमति",
+      "roman": "anumati"
+    },
+    "englishMeaning": "permission or authorization",
+    "simpleExample": {
+      "dev": "क्या मुझे कल घर से काम करने की permission मिल सकती है?",
+      "roman": "Kya mujhe kal ghar se kaam karne ki permission mil sakti hai?"
+    },
+    "elevatedExample": {
+      "dev": "क्या मुझे कल घर से कार्य करने की अनुमति मिल सकती है?",
+      "roman": "Kya mujhe kal ghar se karya karne ki anumati mil sakti hai?"
+    },
+    "scholarExample": {
+      "dev": "क्या आप मुझे कल घर से कार्य करने की अनुमति प्रदान कर सकते हैं?",
+      "roman": "Kya aap mujhe kal ghar se karya karne ki anumati pradaan kar sakte hain?"
+    },
     "synonyms": [
-      "sweekriti",
-      "ijaazat",
-      "manzoori"
+      {
+        "dev": "स्वीकृति",
+        "roman": "sweekriti"
+      },
+      {
+        "dev": "इजाज़त",
+        "roman": "ijaazat"
+      },
+      {
+        "dev": "मंज़ूरी",
+        "roman": "manzoori"
+      }
     ],
     "usageNote": "Anumati is a clear Hindi alternative for permission in requests.",
-    "englishMeaning": "permission or authorization",
     "challengePrompt": "Anumati maangte hue ek vinamra prashn poochhiye.",
     "tags": [
       "permission",
       "requests",
       "workplace"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "pratiksha",
-    "common": "wait",
-    "elevated": "pratiksha",
-    "simpleExample": "Bas do minute wait karo, main aa raha hoon.",
-    "elevatedExample": "Bas do minute pratiksha kijiye, main aa raha hoon.",
-    "scholarExample": "Kripya do minute pratiksha karein; main sheeghra hi wahan pahunch raha hoon.",
-    "difficulty": "easy",
+    "id": 66,
+    "common": {
+      "dev": "वेट",
+      "roman": "wait"
+    },
+    "elevated": {
+      "dev": "प्रतीक्षा",
+      "roman": "pratiksha"
+    },
+    "englishMeaning": "waiting or anticipation",
+    "simpleExample": {
+      "dev": "बस दो minute wait करो, मैं आ रहा हूँ।",
+      "roman": "Bas do minute wait karo, main aa raha hoon."
+    },
+    "elevatedExample": {
+      "dev": "बस दो minute प्रतीक्षा कीजिए, मैं आ रहा हूँ।",
+      "roman": "Bas do minute pratiksha kijiye, main aa raha hoon."
+    },
+    "scholarExample": {
+      "dev": "कृपया दो minute प्रतीक्षा करें; मैं शीघ्र ही वहाँ पहुँच रहा हूँ।",
+      "roman": "Kripya do minute pratiksha karein; main sheeghra hi wahan pahunch raha hoon."
+    },
     "synonyms": [
-      "intezaar",
-      "avakaash",
-      "thehraav"
+      {
+        "dev": "इंतज़ार",
+        "roman": "intezaar"
+      },
+      {
+        "dev": "अवकाश",
+        "roman": "avakaash"
+      },
+      {
+        "dev": "ठहराव",
+        "roman": "thehraav"
+      }
     ],
     "usageNote": "Pratiksha sounds composed and polite when asking someone to wait.",
-    "englishMeaning": "waiting or anticipation",
     "challengePrompt": "Pratiksha karne ko kehte hue ek vinamra vaakya banaiye.",
     "tags": [
       "time",
       "requests",
       "courtesy"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "vilamb",
-    "common": "der",
-    "elevated": "vilamb",
-    "simpleExample": "Sorry, aaj thodi der ho gayi.",
-    "elevatedExample": "Kshama kijiye, aaj thoda vilamb ho gaya.",
-    "scholarExample": "Aaj pahunchne mein hue vilamb ke liye kshama chahta hoon; maarg mein baadha thi.",
-    "difficulty": "easy",
+    "id": 67,
+    "common": {
+      "dev": "देर",
+      "roman": "der"
+    },
+    "elevated": {
+      "dev": "विलंब",
+      "roman": "vilamb"
+    },
+    "englishMeaning": "delay or lateness",
+    "simpleExample": {
+      "dev": "Sorry, आज थोड़ी देर हो गई।",
+      "roman": "Sorry, aaj thodi der ho gayi."
+    },
+    "elevatedExample": {
+      "dev": "क्षमा कीजिए, आज थोड़ा विलंब हो गया।",
+      "roman": "Kshama kijiye, aaj thoda vilamb ho gaya."
+    },
+    "scholarExample": {
+      "dev": "आज पहुँचने में हुए विलंब के लिए क्षमा चाहता हूँ; मार्ग में बाधा थी।",
+      "roman": "Aaj pahunchne mein hue vilamb ke liye kshama chahta hoon; maarg mein baadha thi."
+    },
     "synonyms": [
-      "deri",
-      "avarodh",
-      "sthagan"
+      {
+        "dev": "देरी",
+        "roman": "deri"
+      },
+      {
+        "dev": "अवरोध",
+        "roman": "avarodh"
+      },
+      {
+        "dev": "स्थगन",
+        "roman": "sthagan"
+      }
     ],
     "usageNote": "Vilamb is useful for calmly acknowledging a delay.",
-    "englishMeaning": "delay or lateness",
     "challengePrompt": "Vilamb ka kaaran batate hue ek vaakya kahiye.",
     "tags": [
       "time",
       "apology",
       "professional"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "tatpar",
-    "common": "ready",
-    "elevated": "tatpar",
-    "simpleExample": "Main ready hoon, bas batao kab nikalna hai.",
-    "elevatedExample": "Main tatpar hoon, bas bataiye kab nikalna hai.",
-    "scholarExample": "Main prasthaan ke liye poori tarah tatpar hoon; kripya samay bata dijiye.",
-    "difficulty": "medium",
+    "id": 68,
+    "common": {
+      "dev": "रेडी",
+      "roman": "ready"
+    },
+    "elevated": {
+      "dev": "तत्पर",
+      "roman": "tatpar"
+    },
+    "englishMeaning": "ready and willing",
+    "simpleExample": {
+      "dev": "मैं ready हूँ, बस बताओ कब निकलना है।",
+      "roman": "Main ready hoon, bas batao kab nikalna hai."
+    },
+    "elevatedExample": {
+      "dev": "मैं तत्पर हूँ, बस बताइए कब निकलना है।",
+      "roman": "Main tatpar hoon, bas bataiye kab nikalna hai."
+    },
+    "scholarExample": {
+      "dev": "मैं प्रस्थान के लिए पूरी तरह तत्पर हूँ; कृपया समय बता दीजिए।",
+      "roman": "Main prasthaan ke liye poori tarah tatpar hoon; kripya samay bata dijiye."
+    },
     "synonyms": [
-      "taiyaar",
-      "utsuk",
-      "prastut"
+      {
+        "dev": "तैयार",
+        "roman": "taiyaar"
+      },
+      {
+        "dev": "उत्सुक",
+        "roman": "utsuk"
+      },
+      {
+        "dev": "प्रस्तुत",
+        "roman": "prastut"
+      }
     ],
     "usageNote": "Tatpar conveys readiness with an energetic and willing tone.",
-    "englishMeaning": "ready and willing",
     "challengePrompt": "Tatpar shabd ka prayog karke apni taiyaari dikhaiye.",
     "tags": [
       "readiness",
       "action",
       "positive"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "prathamikta",
-    "common": "priority",
-    "elevated": "prathamikta",
-    "simpleExample": "Abhi meri priority yeh report khatam karna hai.",
-    "elevatedExample": "Abhi meri prathamikta yeh report poori karna hai.",
-    "scholarExample": "Vartamaan mein is report ko samay par poora karna meri sarvochch prathamikta hai.",
-    "difficulty": "medium",
+    "id": 69,
+    "common": {
+      "dev": "प्रायोरिटी",
+      "roman": "priority"
+    },
+    "elevated": {
+      "dev": "प्राथमिकता",
+      "roman": "prathamikta"
+    },
+    "englishMeaning": "priority or precedence",
+    "simpleExample": {
+      "dev": "अभी मेरी priority यह report ख़त्म करना है।",
+      "roman": "Abhi meri priority yeh report khatam karna hai."
+    },
+    "elevatedExample": {
+      "dev": "अभी मेरी प्राथमिकता यह report पूरी करना है।",
+      "roman": "Abhi meri prathamikta yeh report poori karna hai."
+    },
+    "scholarExample": {
+      "dev": "वर्तमान में इस report को समय पर पूरा करना मेरी सर्वोच्च प्राथमिकता है।",
+      "roman": "Vartamaan mein is report ko samay par poora karna meri sarvochch prathamikta hai."
+    },
     "synonyms": [
-      "variyata",
-      "pramukhta",
-      "tarjeeh"
+      {
+        "dev": "वरीयता",
+        "roman": "variyata"
+      },
+      {
+        "dev": "प्रमुखता",
+        "roman": "pramukhta"
+      },
+      {
+        "dev": "तरजीह",
+        "roman": "tarjeeh"
+      }
     ],
     "usageNote": "Prathamikta clearly identifies what must receive attention first.",
-    "englishMeaning": "priority or precedence",
     "challengePrompt": "Apni aaj ki prathamikta ek vaakya mein batayiye.",
     "tags": [
       "planning",
       "focus",
       "work"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "sahyog",
-    "common": "support",
-    "elevated": "sahyog",
-    "simpleExample": "Is project mein tumhara support chahiye.",
-    "elevatedExample": "Is project mein aapka sahyog chahiye.",
-    "scholarExample": "Is mahatvapurn pariyojana ko safal banane ke liye aapka sakriya sahyog avashyak hai.",
-    "difficulty": "easy",
+    "id": 70,
+    "common": {
+      "dev": "सपोर्ट",
+      "roman": "support"
+    },
+    "elevated": {
+      "dev": "सहयोग",
+      "roman": "sahyog"
+    },
+    "englishMeaning": "cooperation or support",
+    "simpleExample": {
+      "dev": "इस project में तुम्हारा support चाहिए।",
+      "roman": "Is project mein tumhara support chahiye."
+    },
+    "elevatedExample": {
+      "dev": "इस project में आपका सहयोग चाहिए।",
+      "roman": "Is project mein aapka sahyog chahiye."
+    },
+    "scholarExample": {
+      "dev": "इस महत्वपूर्ण परियोजना को सफल बनाने के लिए आपका सक्रिय सहयोग आवश्यक है।",
+      "roman": "Is mahatvapurn pariyojana ko safal banane ke liye aapka sakriya sahyog avashyak hai."
+    },
     "synonyms": [
-      "samarthan",
-      "sahayata",
-      "saath"
+      {
+        "dev": "समर्थन",
+        "roman": "samarthan"
+      },
+      {
+        "dev": "सहायता",
+        "roman": "sahayata"
+      },
+      {
+        "dev": "साथ",
+        "roman": "saath"
+      }
     ],
     "usageNote": "Sahyog emphasizes working together rather than one-sided help.",
-    "englishMeaning": "cooperation or support",
     "challengePrompt": "Sahyog maangte hue team ke liye ek vaakya kahiye.",
     "tags": [
       "collaboration",
       "teamwork",
       "requests"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "upalabdhi",
-    "common": "achievement",
-    "elevated": "upalabdhi",
-    "simpleExample": "Yeh achievement chhoti nahi hai, celebrate karte hain.",
-    "elevatedExample": "Yeh upalabdhi chhoti nahi hai, iska utsav manate hain.",
-    "scholarExample": "Yeh upalabdhi hamare saajha parishram ka mahatvapurn parinaam hai; iska utsav avashya hona chahiye.",
-    "difficulty": "medium",
+    "id": 71,
+    "common": {
+      "dev": "अचीवमेंट",
+      "roman": "achievement"
+    },
+    "elevated": {
+      "dev": "उपलब्धि",
+      "roman": "upalabdhi"
+    },
+    "englishMeaning": "achievement or accomplishment",
+    "simpleExample": {
+      "dev": "यह achievement छोटी नहीं है, celebrate करते हैं।",
+      "roman": "Yeh achievement chhoti nahi hai, celebrate karte hain."
+    },
+    "elevatedExample": {
+      "dev": "यह उपलब्धि छोटी नहीं है, इसका उत्सव मनाते हैं।",
+      "roman": "Yeh upalabdhi chhoti nahi hai, iska utsav manate hain."
+    },
+    "scholarExample": {
+      "dev": "यह उपलब्धि हमारे साझा परिश्रम का महत्वपूर्ण परिणाम है; इसका उत्सव अवश्य होना चाहिए।",
+      "roman": "Yeh upalabdhi hamare saajha parishram ka mahatvapurn parinaam hai; iska utsav avashya hona chahiye."
+    },
     "synonyms": [
-      "safalta",
-      "praapti",
-      "siddhi"
+      {
+        "dev": "सफलता",
+        "roman": "safalta"
+      },
+      {
+        "dev": "प्राप्ति",
+        "roman": "praapti"
+      },
+      {
+        "dev": "सिद्धि",
+        "roman": "siddhi"
+      }
     ],
     "usageNote": "Upalabdhi gives an achievement a proud yet grounded tone.",
-    "englishMeaning": "achievement or accomplishment",
     "challengePrompt": "Apni kisi upalabdhi par ek vinamra vaakya kahiye.",
     "tags": [
       "achievement",
       "motivation",
       "celebration"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "kshamata",
-    "common": "capability",
-    "elevated": "kshamata",
-    "simpleExample": "Usmein team lead karne ki capability hai.",
-    "elevatedExample": "Usmein team ka netritva karne ki kshamata hai.",
-    "scholarExample": "Usmein team ko prerit karke kushalta se netritva dene ki poori kshamata hai.",
-    "difficulty": "medium",
+    "id": 72,
+    "common": {
+      "dev": "केपेबिलिटी",
+      "roman": "capability"
+    },
+    "elevated": {
+      "dev": "क्षमता",
+      "roman": "kshamata"
+    },
+    "englishMeaning": "ability or capacity",
+    "simpleExample": {
+      "dev": "उसमें team lead करने की capability है।",
+      "roman": "Usmein team lead karne ki capability hai."
+    },
+    "elevatedExample": {
+      "dev": "उसमें team का नेतृत्व करने की क्षमता है।",
+      "roman": "Usmein team ka netritva karne ki kshamata hai."
+    },
+    "scholarExample": {
+      "dev": "उसमें team को प्रेरित करके कुशलता से नेतृत्व देने की पूरी क्षमता है।",
+      "roman": "Usmein team ko prerit karke kushalta se netritva dene ki poori kshamata hai."
+    },
     "synonyms": [
-      "yogyata",
-      "samarthya",
-      "kabiliyat"
+      {
+        "dev": "योग्यता",
+        "roman": "yogyata"
+      },
+      {
+        "dev": "सामर्थ्य",
+        "roman": "samarthya"
+      },
+      {
+        "dev": "क़ाबिलियत",
+        "roman": "kabiliyat"
+      }
     ],
     "usageNote": "Kshamata is precise when speaking about ability or potential.",
-    "englishMeaning": "ability or capacity",
     "challengePrompt": "Kisi vyakti ki kshamata ka sakaratmak varnan kijiye.",
     "tags": [
       "ability",
       "leadership",
       "professional"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "gunvatta",
-    "common": "quality",
-    "elevated": "gunvatta",
-    "simpleExample": "Product ki quality achchhi hai, bas packing weak hai.",
-    "elevatedExample": "Utpaad ki gunvatta achchhi hai, bas packing kamzor hai.",
-    "scholarExample": "Utpaad ki gunvatta santoshjanak hai; keval aavaran ko aur majboot banane ki avashyakta hai.",
-    "difficulty": "medium",
+    "id": 73,
+    "common": {
+      "dev": "क्वालिटी",
+      "roman": "quality"
+    },
+    "elevated": {
+      "dev": "गुणवत्ता",
+      "roman": "gunvatta"
+    },
+    "englishMeaning": "quality or standard",
+    "simpleExample": {
+      "dev": "Product की quality अच्छी है, बस packing weak है।",
+      "roman": "Product ki quality achchhi hai, bas packing weak hai."
+    },
+    "elevatedExample": {
+      "dev": "उत्पाद की गुणवत्ता अच्छी है, बस packing कमज़ोर है।",
+      "roman": "Utpaad ki gunvatta achchhi hai, bas packing kamzor hai."
+    },
+    "scholarExample": {
+      "dev": "उत्पाद की गुणवत्ता संतोषजनक है; केवल आवरण को और मज़बूत बनाने की आवश्यकता है।",
+      "roman": "Utpaad ki gunvatta santoshjanak hai; keval aavaran ko aur majboot banane ki avashyakta hai."
+    },
     "synonyms": [
-      "star",
-      "utkarshta",
-      "visheshta"
+      {
+        "dev": "स्तर",
+        "roman": "star"
+      },
+      {
+        "dev": "उत्कृष्टता",
+        "roman": "utkarshta"
+      },
+      {
+        "dev": "विशेषता",
+        "roman": "visheshta"
+      }
     ],
     "usageNote": "Gunvatta is widely useful for discussing standards in work and products.",
-    "englishMeaning": "quality or standard",
     "challengePrompt": "Gunvatta par rachanatmak pratikriya dete hue ek vaakya kahiye.",
     "tags": [
       "quality",
       "feedback",
       "work"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "vikalp",
-    "common": "option",
-    "elevated": "vikalp",
-    "simpleExample": "Agar yeh option mehnga hai toh doosra dekhte hain.",
-    "elevatedExample": "Yadi yeh vikalp mehnga hai toh doosra dekhte hain.",
-    "scholarExample": "Yadi yeh vikalp budget se adhik hai, toh hum kisi vyavaharik aur kifayati vikalp par vichaar kar sakte hain.",
-    "difficulty": "easy",
+    "id": 74,
+    "common": {
+      "dev": "ऑप्शन",
+      "roman": "option"
+    },
+    "elevated": {
+      "dev": "विकल्प",
+      "roman": "vikalp"
+    },
+    "englishMeaning": "option or alternative",
+    "simpleExample": {
+      "dev": "अगर यह option महँगा है तो दूसरा देखते हैं।",
+      "roman": "Agar yeh option mehnga hai toh doosra dekhte hain."
+    },
+    "elevatedExample": {
+      "dev": "यदि यह विकल्प महँगा है तो दूसरा देखते हैं।",
+      "roman": "Yadi yeh vikalp mehnga hai toh doosra dekhte hain."
+    },
+    "scholarExample": {
+      "dev": "यदि यह विकल्प budget से अधिक है, तो हम किसी व्यावहारिक और किफ़ायती विकल्प पर विचार कर सकते हैं।",
+      "roman": "Yadi yeh vikalp budget se adhik hai, toh hum kisi vyavaharik aur kifayati vikalp par vichaar kar sakte hain."
+    },
     "synonyms": [
-      "chunaav",
-      "upay",
-      "maarg"
+      {
+        "dev": "चुनाव",
+        "roman": "chunaav"
+      },
+      {
+        "dev": "उपाय",
+        "roman": "upay"
+      },
+      {
+        "dev": "मार्ग",
+        "roman": "maarg"
+      }
     ],
     "usageNote": "Vikalp is a natural, versatile replacement for option.",
-    "englishMeaning": "option or alternative",
     "challengePrompt": "Do vikalpon ke beech chunaav ka vaakya banaiye.",
     "tags": [
       "choice",
       "planning",
       "daily speech"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "kaaran",
-    "common": "reason",
-    "elevated": "kaaran",
-    "simpleExample": "Tum late kyun ho, koi reason tha kya?",
-    "elevatedExample": "Aapke vilamb ka koi kaaran tha kya?",
-    "scholarExample": "Aapke vilamb ka kya kaaran tha? Aasha hai sab theek hai.",
-    "difficulty": "easy",
+    "id": 75,
+    "common": {
+      "dev": "रीज़न",
+      "roman": "reason"
+    },
+    "elevated": {
+      "dev": "कारण",
+      "roman": "kaaran"
+    },
+    "englishMeaning": "reason or cause",
+    "simpleExample": {
+      "dev": "तुम late क्यों हो, कोई reason था क्या?",
+      "roman": "Tum late kyun ho, koi reason tha kya?"
+    },
+    "elevatedExample": {
+      "dev": "आपके विलंब का कोई कारण था क्या?",
+      "roman": "Aapke vilamb ka koi kaaran tha kya?"
+    },
+    "scholarExample": {
+      "dev": "आपके विलंब का क्या कारण था? आशा है सब ठीक है।",
+      "roman": "Aapke vilamb ka kya kaaran tha? Aasha hai sab theek hai."
+    },
     "synonyms": [
-      "wajah",
-      "hetu",
-      "aadhaar"
+      {
+        "dev": "वजह",
+        "roman": "wajah"
+      },
+      {
+        "dev": "हेतु",
+        "roman": "hetu"
+      },
+      {
+        "dev": "आधार",
+        "roman": "aadhaar"
+      }
     ],
     "usageNote": "Kaaran asks for a reason directly while allowing the tone to stay considerate.",
-    "englishMeaning": "reason or cause",
     "challengePrompt": "Kaaran poochhte hue ek samvedansheel prashn banaiye.",
     "tags": [
       "reason",
       "clarity",
       "conversation"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "sandarbh",
-    "common": "context",
-    "elevated": "sandarbh",
-    "simpleExample": "Thoda context do, tab baat samajh aayegi.",
-    "elevatedExample": "Thoda sandarbh dijiye, tab baat samajh aayegi.",
-    "scholarExample": "Kripya poora sandarbh spasht karein, taaki hum baat ko sahi pariprekshya mein samajh saken.",
-    "difficulty": "medium",
+    "id": 76,
+    "common": {
+      "dev": "कॉन्टेक्स्ट",
+      "roman": "context"
+    },
+    "elevated": {
+      "dev": "संदर्भ",
+      "roman": "sandarbh"
+    },
+    "englishMeaning": "context or reference",
+    "simpleExample": {
+      "dev": "थोड़ा context दो, तब बात समझ आएगी।",
+      "roman": "Thoda context do, tab baat samajh aayegi."
+    },
+    "elevatedExample": {
+      "dev": "थोड़ा संदर्भ दीजिए, तब बात समझ आएगी।",
+      "roman": "Thoda sandarbh dijiye, tab baat samajh aayegi."
+    },
+    "scholarExample": {
+      "dev": "कृपया पूरा संदर्भ स्पष्ट करें, ताकि हम बात को सही परिप्रेक्ष्य में समझ सकें।",
+      "roman": "Kripya poora sandarbh spasht karein, taaki hum baat ko sahi pariprekshya mein samajh saken."
+    },
     "synonyms": [
-      "pariprekshya",
-      "prasang",
-      "prishthabhoomi"
+      {
+        "dev": "परिप्रेक्ष्य",
+        "roman": "pariprekshya"
+      },
+      {
+        "dev": "प्रसंग",
+        "roman": "prasang"
+      },
+      {
+        "dev": "पृष्ठभूमि",
+        "roman": "prishthabhoomi"
+      }
     ],
     "usageNote": "Sandarbh helps connect a statement to its surrounding situation.",
-    "englishMeaning": "context or reference",
     "challengePrompt": "Sangati samjhane ke liye sandarbh wala vaakya banaiye.",
     "tags": [
       "context",
       "clarity",
       "communication"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "udaharan",
-    "common": "example",
-    "elevated": "udaharan",
-    "simpleExample": "Ek example doge toh jaldi samajh aa jayega.",
-    "elevatedExample": "Ek udaharan dijiye toh jaldi samajh aa jayega.",
-    "scholarExample": "Kripya ek saral udaharan dijiye, jisse yeh avadhaarana turant spasht ho sake.",
-    "difficulty": "easy",
+    "id": 77,
+    "common": {
+      "dev": "एग्ज़ाम्पल",
+      "roman": "example"
+    },
+    "elevated": {
+      "dev": "उदाहरण",
+      "roman": "udaharan"
+    },
+    "englishMeaning": "example or illustration",
+    "simpleExample": {
+      "dev": "एक example दोगे तो जल्दी समझ आ जाएगा।",
+      "roman": "Ek example doge toh jaldi samajh aa jayega."
+    },
+    "elevatedExample": {
+      "dev": "एक उदाहरण दीजिए तो जल्दी समझ आ जाएगा।",
+      "roman": "Ek udaharan dijiye toh jaldi samajh aa jayega."
+    },
+    "scholarExample": {
+      "dev": "कृपया एक सरल उदाहरण दीजिए, जिससे यह अवधारणा तुरंत स्पष्ट हो सके।",
+      "roman": "Kripya ek saral udaharan dijiye, jisse yeh avadhaarana turant spasht ho sake."
+    },
     "synonyms": [
-      "misaal",
-      "drishtant",
-      "namoona"
+      {
+        "dev": "मिसाल",
+        "roman": "misaal"
+      },
+      {
+        "dev": "दृष्टांत",
+        "roman": "drishtant"
+      },
+      {
+        "dev": "नमूना",
+        "roman": "namoona"
+      }
     ],
     "usageNote": "Udaharan makes explanations concrete and easier to follow.",
-    "englishMeaning": "example or illustration",
     "challengePrompt": "Udaharan maangte hue ek vinamra vaakya kahiye.",
     "tags": [
       "learning",
       "explanation",
       "clarity"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "prakriya",
-    "common": "process",
-    "elevated": "prakriya",
-    "simpleExample": "Is process mein kitna time lagega?",
-    "elevatedExample": "Is prakriya mein kitna samay lagega?",
-    "scholarExample": "Kripya bataiye ki is sampoorna prakriya ko poora hone mein anumaanatah kitna samay lagega.",
-    "difficulty": "easy",
+    "id": 78,
+    "common": {
+      "dev": "प्रोसेस",
+      "roman": "process"
+    },
+    "elevated": {
+      "dev": "प्रक्रिया",
+      "roman": "prakriya"
+    },
+    "englishMeaning": "process or procedure",
+    "simpleExample": {
+      "dev": "इस process में कितना time लगेगा?",
+      "roman": "Is process mein kitna time lagega?"
+    },
+    "elevatedExample": {
+      "dev": "इस प्रक्रिया में कितना समय लगेगा?",
+      "roman": "Is prakriya mein kitna samay lagega?"
+    },
+    "scholarExample": {
+      "dev": "कृपया बताइए कि इस संपूर्ण प्रक्रिया को पूरा होने में अनुमानतः कितना समय लगेगा।",
+      "roman": "Kripya bataiye ki is sampoorna prakriya ko poora hone mein anumaanatah kitna samay lagega."
+    },
     "synonyms": [
-      "vidhi",
-      "kram",
-      "karyavidhi"
+      {
+        "dev": "विधि",
+        "roman": "vidhi"
+      },
+      {
+        "dev": "क्रम",
+        "roman": "kram"
+      },
+      {
+        "dev": "कार्यविधि",
+        "roman": "karyavidhi"
+      }
     ],
     "usageNote": "Prakriya is useful for describing how work moves from one step to another.",
-    "englishMeaning": "process or procedure",
     "challengePrompt": "Kisi prakriya ke samay par ek prashn banaiye.",
     "tags": [
       "process",
       "planning",
       "work"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "jaankari",
-    "common": "information",
-    "elevated": "jaankari",
-    "simpleExample": "Mujhe event ki poori information bhej dena.",
-    "elevatedExample": "Mujhe karyakram ki poori jaankari bhej dijiye.",
-    "scholarExample": "Kripya karyakram se sambandhit samay, sthaan aur panjikaran ki sampoorna jaankari bhej dein.",
-    "difficulty": "easy",
+    "id": 79,
+    "common": {
+      "dev": "इन्फ़ॉर्मेशन",
+      "roman": "information"
+    },
+    "elevated": {
+      "dev": "जानकारी",
+      "roman": "jaankari"
+    },
+    "englishMeaning": "information or knowledge",
+    "simpleExample": {
+      "dev": "मुझे event की पूरी information भेज देना।",
+      "roman": "Mujhe event ki poori information bhej dena."
+    },
+    "elevatedExample": {
+      "dev": "मुझे कार्यक्रम की पूरी जानकारी भेज दीजिए।",
+      "roman": "Mujhe karyakram ki poori jaankari bhej dijiye."
+    },
+    "scholarExample": {
+      "dev": "कृपया कार्यक्रम से संबंधित समय, स्थान और पंजीकरण की संपूर्ण जानकारी भेज दें।",
+      "roman": "Kripya karyakram se sambandhit samay, sthaan aur panjikaran ki sampoorna jaankari bhej dein."
+    },
     "synonyms": [
-      "vivaran",
-      "gyaan",
-      "soochna"
+      {
+        "dev": "विवरण",
+        "roman": "vivaran"
+      },
+      {
+        "dev": "ज्ञान",
+        "roman": "gyaan"
+      },
+      {
+        "dev": "सूचना",
+        "roman": "soochna"
+      }
     ],
     "usageNote": "Jaankari is one of the most natural Hindi replacements for information.",
-    "englishMeaning": "information or knowledge",
     "challengePrompt": "Jaankari maangte hue ek spasht vaakya kahiye.",
     "tags": [
       "information",
       "requests",
       "daily speech"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "soochna",
-    "common": "update",
-    "elevated": "soochna",
-    "simpleExample": "Koi update mile toh mujhe message kar dena.",
-    "elevatedExample": "Koi nayi soochna mile toh mujhe sandesh bhej dijiye.",
-    "scholarExample": "Jaise hi koi nayi soochna praapt ho, kripya mujhe tatkaal avagat kara dein.",
-    "difficulty": "easy",
+    "id": 80,
+    "common": {
+      "dev": "अपडेट",
+      "roman": "update"
+    },
+    "elevated": {
+      "dev": "सूचना",
+      "roman": "soochna"
+    },
+    "englishMeaning": "information or notice",
+    "simpleExample": {
+      "dev": "कोई update मिले तो मुझे message कर देना।",
+      "roman": "Koi update mile toh mujhe message kar dena."
+    },
+    "elevatedExample": {
+      "dev": "कोई नई सूचना मिले तो मुझे संदेश भेज दीजिए।",
+      "roman": "Koi nayi soochna mile toh mujhe sandesh bhej dijiye."
+    },
+    "scholarExample": {
+      "dev": "जैसे ही कोई नई सूचना प्राप्त हो, कृपया मुझे तत्काल अवगत करा दें।",
+      "roman": "Jaise hi koi nayi soochna praapt ho, kripya mujhe tatkaal avagat kara dein."
+    },
     "synonyms": [
-      "jaankari",
-      "samaachaar",
-      "sandesh"
+      {
+        "dev": "जानकारी",
+        "roman": "jaankari"
+      },
+      {
+        "dev": "समाचार",
+        "roman": "samaachaar"
+      },
+      {
+        "dev": "संदेश",
+        "roman": "sandesh"
+      }
     ],
     "usageNote": "Soochna works well for notices, updates, and factual information.",
-    "englishMeaning": "information or notice",
     "challengePrompt": "Nayi soochna dene ke liye ek vaakya banaiye.",
     "tags": [
       "updates",
       "information",
       "professional"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "suraksha",
-    "common": "safety",
-    "elevated": "suraksha",
-    "simpleExample": "Safety ke liye helmet zaroor pehenna.",
-    "elevatedExample": "Suraksha ke liye helmet avashya pehniye.",
-    "scholarExample": "Apni suraksha sunishchit karne ke liye vaahan chalaate samay helmet avashya dhaaran karein.",
-    "difficulty": "easy",
+    "id": 81,
+    "common": {
+      "dev": "सेफ़्टी",
+      "roman": "safety"
+    },
+    "elevated": {
+      "dev": "सुरक्षा",
+      "roman": "suraksha"
+    },
+    "englishMeaning": "safety or protection",
+    "simpleExample": {
+      "dev": "Safety के लिए helmet ज़रूर पहनना।",
+      "roman": "Safety ke liye helmet zaroor pehenna."
+    },
+    "elevatedExample": {
+      "dev": "सुरक्षा के लिए helmet अवश्य पहनिए।",
+      "roman": "Suraksha ke liye helmet avashya pehniye."
+    },
+    "scholarExample": {
+      "dev": "अपनी सुरक्षा सुनिश्चित करने के लिए वाहन चलाते समय helmet अवश्य धारण करें।",
+      "roman": "Apni suraksha sunishchit karne ke liye vaahan chalaate samay helmet avashya dhaaran karein."
+    },
     "synonyms": [
-      "raksha",
-      "sanrakshan",
-      "hifaazat"
+      {
+        "dev": "रक्षा",
+        "roman": "raksha"
+      },
+      {
+        "dev": "संरक्षण",
+        "roman": "sanrakshan"
+      },
+      {
+        "dev": "हिफ़ाज़त",
+        "roman": "hifaazat"
+      }
     ],
     "usageNote": "Suraksha is direct and familiar in practical everyday advice.",
-    "englishMeaning": "safety or protection",
     "challengePrompt": "Suraksha se judi ek upyogi salah dijiye.",
     "tags": [
       "safety",
       "advice",
       "daily speech"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "suvidha",
-    "common": "convenience",
-    "elevated": "suvidha",
-    "simpleExample": "Tumhari convenience ke liye main time badal deta hoon.",
-    "elevatedExample": "Aapki suvidha ke liye main samay badal deta hoon.",
-    "scholarExample": "Aapki suvidha ko dhyaan mein rakhte hue main baithak ka samay parivartit kar deta hoon.",
-    "difficulty": "easy",
+    "id": 82,
+    "common": {
+      "dev": "कन्वीनियंस",
+      "roman": "convenience"
+    },
+    "elevated": {
+      "dev": "सुविधा",
+      "roman": "suvidha"
+    },
+    "englishMeaning": "convenience or facility",
+    "simpleExample": {
+      "dev": "तुम्हारी convenience के लिए मैं time बदल देता हूँ।",
+      "roman": "Tumhari convenience ke liye main time badal deta hoon."
+    },
+    "elevatedExample": {
+      "dev": "आपकी सुविधा के लिए मैं समय बदल देता हूँ।",
+      "roman": "Aapki suvidha ke liye main samay badal deta hoon."
+    },
+    "scholarExample": {
+      "dev": "आपकी सुविधा को ध्यान में रखते हुए मैं बैठक का समय परिवर्तित कर देता हूँ।",
+      "roman": "Aapki suvidha ko dhyaan mein rakhte hue main baithak ka samay parivartit kar deta hoon."
+    },
     "synonyms": [
-      "aasaani",
-      "sahooliyat",
-      "vyavastha"
+      {
+        "dev": "आसानी",
+        "roman": "aasaani"
+      },
+      {
+        "dev": "सहूलियत",
+        "roman": "sahooliyat"
+      },
+      {
+        "dev": "व्यवस्था",
+        "roman": "vyavastha"
+      }
     ],
     "usageNote": "Suvidha politely centers another person's convenience.",
-    "englishMeaning": "convenience or facility",
     "challengePrompt": "Kisi ki suvidha ka dhyaan rakhte hue ek vaakya kahiye.",
     "tags": [
       "courtesy",
       "planning",
       "conversation"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "savdhaani",
-    "common": "careful",
-    "elevated": "savdhaani",
-    "simpleExample": "Road geeli hai, zara careful rehna.",
-    "elevatedExample": "Sadak geeli hai, zara savdhaani rakhiye.",
-    "scholarExample": "Varsha ke kaaran sadak phislan bhari hai; kripya vaahan chalaate samay vishesh savdhaani bartein.",
-    "difficulty": "easy",
+    "id": 83,
+    "common": {
+      "dev": "केयरफुल",
+      "roman": "careful"
+    },
+    "elevated": {
+      "dev": "सावधानी",
+      "roman": "savdhaani"
+    },
+    "englishMeaning": "caution or carefulness",
+    "simpleExample": {
+      "dev": "Road गीली है, ज़रा careful रहना।",
+      "roman": "Road geeli hai, zara careful rehna."
+    },
+    "elevatedExample": {
+      "dev": "सड़क गीली है, ज़रा सावधानी रखिए।",
+      "roman": "Sadak geeli hai, zara savdhaani rakhiye."
+    },
+    "scholarExample": {
+      "dev": "वर्षा के कारण सड़क फिसलन भरी है; कृपया वाहन चलाते समय विशेष सावधानी बरतें।",
+      "roman": "Varsha ke kaaran sadak phislan bhari hai; kripya vaahan chalaate samay vishesh savdhaani bartein."
+    },
     "synonyms": [
-      "satarkata",
-      "sajagta",
-      "ehtiyaat"
+      {
+        "dev": "सतर्कता",
+        "roman": "satarkata"
+      },
+      {
+        "dev": "सजगता",
+        "roman": "sajagta"
+      },
+      {
+        "dev": "एहतियात",
+        "roman": "ehtiyaat"
+      }
     ],
     "usageNote": "Savdhaani turns a casual warning into clear, caring advice.",
-    "englishMeaning": "caution or carefulness",
     "challengePrompt": "Savdhaani ki salah dete hue ek vaakya banaiye.",
     "tags": [
       "safety",
       "warning",
       "care"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "samvedansheel",
-    "common": "sensitive",
-    "elevated": "samvedansheel",
-    "simpleExample": "Yeh topic sensitive hai, aaraam se baat karna.",
-    "elevatedExample": "Yeh vishay samvedansheel hai, shaanti se baat kijiye.",
-    "scholarExample": "Yeh atyant samvedansheel vishay hai; kripya shabdon ka chayan soch-samajhkar karein.",
-    "difficulty": "medium",
+    "id": 84,
+    "common": {
+      "dev": "सेंसिटिव",
+      "roman": "sensitive"
+    },
+    "elevated": {
+      "dev": "संवेदनशील",
+      "roman": "samvedansheel"
+    },
+    "englishMeaning": "sensitive or delicate",
+    "simpleExample": {
+      "dev": "यह topic sensitive है, आराम से बात करना।",
+      "roman": "Yeh topic sensitive hai, aaraam se baat karna."
+    },
+    "elevatedExample": {
+      "dev": "यह विषय संवेदनशील है, शांति से बात कीजिए।",
+      "roman": "Yeh vishay samvedansheel hai, shaanti se baat kijiye."
+    },
+    "scholarExample": {
+      "dev": "यह अत्यंत संवेदनशील विषय है; कृपया शब्दों का चयन सोच-समझकर करें।",
+      "roman": "Yeh atyant samvedansheel vishay hai; kripya shabdon ka chayan soch-samajhkar karein."
+    },
     "synonyms": [
-      "bhaavuk",
-      "naazuk",
-      "komal"
+      {
+        "dev": "भावुक",
+        "roman": "bhaavuk"
+      },
+      {
+        "dev": "नाज़ुक",
+        "roman": "naazuk"
+      },
+      {
+        "dev": "कोमल",
+        "roman": "komal"
+      }
     ],
     "usageNote": "Samvedansheel signals that a subject needs care and empathy.",
-    "englishMeaning": "sensitive or delicate",
     "challengePrompt": "Samvedansheel vishay par sambhal kar bolne ka vaakya banaiye.",
     "tags": [
       "empathy",
       "tone",
       "communication"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "imaandari",
-    "common": "honesty",
-    "elevated": "imaandari",
-    "simpleExample": "Sach bolun toh tumhari honesty mujhe pasand hai.",
-    "elevatedExample": "Sach kahoon toh aapki imaandari mujhe pasand hai.",
-    "scholarExample": "Main aapki imaandari aur spashtavaadita ka hriday se samman karta hoon.",
-    "difficulty": "easy",
+    "id": 85,
+    "common": {
+      "dev": "ऑनेस्टी",
+      "roman": "honesty"
+    },
+    "elevated": {
+      "dev": "ईमानदारी",
+      "roman": "imaandari"
+    },
+    "englishMeaning": "honesty or integrity",
+    "simpleExample": {
+      "dev": "सच बोलूँ तो तुम्हारी honesty मुझे पसंद है।",
+      "roman": "Sach bolun toh tumhari honesty mujhe pasand hai."
+    },
+    "elevatedExample": {
+      "dev": "सच कहूँ तो आपकी ईमानदारी मुझे पसंद है।",
+      "roman": "Sach kahoon toh aapki imaandari mujhe pasand hai."
+    },
+    "scholarExample": {
+      "dev": "मैं आपकी ईमानदारी और स्पष्टवादिता का हृदय से सम्मान करता हूँ।",
+      "roman": "Main aapki imaandari aur spashtavaadita ka hriday se samman karta hoon."
+    },
     "synonyms": [
-      "sachchai",
-      "nishtha",
-      "satyanishtha"
+      {
+        "dev": "सच्चाई",
+        "roman": "sachchai"
+      },
+      {
+        "dev": "निष्ठा",
+        "roman": "nishtha"
+      },
+      {
+        "dev": "सत्यनिष्ठा",
+        "roman": "satyanishtha"
+      }
     ],
     "usageNote": "Imaandari is warm, direct, and natural when appreciating integrity.",
-    "englishMeaning": "honesty or integrity",
     "challengePrompt": "Imaandari ki prashansa karte hue ek vaakya kahiye.",
     "tags": [
       "values",
       "appreciation",
       "relationships"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "sweekar",
-    "common": "accept",
-    "elevated": "sweekar",
-    "simpleExample": "Theek hai, main apni galti accept karta hoon.",
-    "elevatedExample": "Theek hai, main apni galti sweekar karta hoon.",
-    "scholarExample": "Main bina kisi sankoch ke apni truti sweekar karta hoon aur use sudhaarne ka prayas karunga.",
-    "difficulty": "easy",
+    "id": 86,
+    "common": {
+      "dev": "एक्सेप्ट",
+      "roman": "accept"
+    },
+    "elevated": {
+      "dev": "स्वीकार",
+      "roman": "sweekar"
+    },
+    "englishMeaning": "to accept or acknowledge",
+    "simpleExample": {
+      "dev": "ठीक है, मैं अपनी ग़लती accept करता हूँ।",
+      "roman": "Theek hai, main apni galti accept karta hoon."
+    },
+    "elevatedExample": {
+      "dev": "ठीक है, मैं अपनी ग़लती स्वीकार करता हूँ।",
+      "roman": "Theek hai, main apni galti sweekar karta hoon."
+    },
+    "scholarExample": {
+      "dev": "मैं बिना किसी संकोच के अपनी त्रुटि स्वीकार करता हूँ और उसे सुधारने का प्रयास करूँगा।",
+      "roman": "Main bina kisi sankoch ke apni truti sweekar karta hoon aur use sudhaarne ka prayas karunga."
+    },
     "synonyms": [
-      "maan lena",
-      "angeekar",
-      "sweekriti"
+      {
+        "dev": "मान लेना",
+        "roman": "maan lena"
+      },
+      {
+        "dev": "अंगीकार",
+        "roman": "angeekar"
+      },
+      {
+        "dev": "स्वीकृति",
+        "roman": "sweekriti"
+      }
     ],
     "usageNote": "Sweekar expresses acceptance or accountability with composure.",
-    "englishMeaning": "to accept or acknowledge",
     "challengePrompt": "Apni galti sweekar karte hue ek vaakya banaiye.",
     "tags": [
       "accountability",
       "values",
       "conversation"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "asweekar",
-    "common": "reject",
-    "elevated": "asweekar",
-    "simpleExample": "Sorry, mujhe yeh offer reject karna padega.",
-    "elevatedExample": "Kshama kijiye, mujhe yeh prastaav asweekar karna padega.",
-    "scholarExample": "Aapke prastaav ke liye aabhar, kintu vartamaan paristhitiyon mein mujhe ise vinamrata se asweekar karna padega.",
-    "difficulty": "medium",
+    "id": 87,
+    "common": {
+      "dev": "रिजेक्ट",
+      "roman": "reject"
+    },
+    "elevated": {
+      "dev": "अस्वीकार",
+      "roman": "asweekar"
+    },
+    "englishMeaning": "to reject or decline",
+    "simpleExample": {
+      "dev": "Sorry, मुझे यह offer reject करना पड़ेगा।",
+      "roman": "Sorry, mujhe yeh offer reject karna padega."
+    },
+    "elevatedExample": {
+      "dev": "क्षमा कीजिए, मुझे यह प्रस्ताव अस्वीकार करना पड़ेगा।",
+      "roman": "Kshama kijiye, mujhe yeh prastaav asweekar karna padega."
+    },
+    "scholarExample": {
+      "dev": "आपके प्रस्ताव के लिए आभार, किंतु वर्तमान परिस्थितियों में मुझे इसे विनम्रता से अस्वीकार करना पड़ेगा।",
+      "roman": "Aapke prastaav ke liye aabhar, kintu vartamaan paristhitiyon mein mujhe ise vinamrata se asweekar karna padega."
+    },
     "synonyms": [
-      "mana karna",
-      "thukrana",
-      "naamanzur"
+      {
+        "dev": "मना करना",
+        "roman": "mana karna"
+      },
+      {
+        "dev": "ठुकराना",
+        "roman": "thukrana"
+      },
+      {
+        "dev": "नामंज़ूर",
+        "roman": "naamanzur"
+      }
     ],
     "usageNote": "Asweekar helps decline something firmly while remaining courteous.",
-    "englishMeaning": "to reject or decline",
     "challengePrompt": "Kisi prastaav ko vinamrata se asweekar karne ka vaakya banaiye.",
     "tags": [
       "declining",
       "tact",
       "professional"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "prashansa",
-    "common": "praise",
-    "elevated": "prashansa",
-    "simpleExample": "Boss ne aaj meri kaafi praise ki.",
-    "elevatedExample": "Varishth ne aaj meri kaafi prashansa ki.",
-    "scholarExample": "Varishth adhikari ne aaj mere karya ki khulkar prashansa ki, jisse mera utsaah badha.",
-    "difficulty": "easy",
+    "id": 88,
+    "common": {
+      "dev": "प्रेज़",
+      "roman": "praise"
+    },
+    "elevated": {
+      "dev": "प्रशंसा",
+      "roman": "prashansa"
+    },
+    "englishMeaning": "praise or appreciation",
+    "simpleExample": {
+      "dev": "Boss ने आज मेरी काफ़ी praise की।",
+      "roman": "Boss ne aaj meri kaafi praise ki."
+    },
+    "elevatedExample": {
+      "dev": "वरिष्ठ ने आज मेरी काफ़ी प्रशंसा की।",
+      "roman": "Varishth ne aaj meri kaafi prashansa ki."
+    },
+    "scholarExample": {
+      "dev": "वरिष्ठ अधिकारी ने आज मेरे कार्य की खुलकर प्रशंसा की, जिससे मेरा उत्साह बढ़ा।",
+      "roman": "Varishth adhikari ne aaj mere karya ki khulkar prashansa ki, jisse mera utsaah badha."
+    },
     "synonyms": [
-      "sarahana",
-      "tareef",
-      "abhinandan"
+      {
+        "dev": "सराहना",
+        "roman": "sarahana"
+      },
+      {
+        "dev": "तारीफ़",
+        "roman": "tareef"
+      },
+      {
+        "dev": "अभिनंदन",
+        "roman": "abhinandan"
+      }
     ],
     "usageNote": "Prashansa is a polished but familiar way to speak about praise.",
-    "englishMeaning": "praise or appreciation",
     "challengePrompt": "Kisi ke karya ki prashansa karte hue ek vaakya kahiye.",
     "tags": [
       "praise",
       "work",
       "positive"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "aabhar",
-    "common": "thanks",
-    "elevated": "aabhar",
-    "simpleExample": "Itni help ke liye thanks, sach mein.",
-    "elevatedExample": "Itni sahayata ke liye aabhar, sach mein.",
-    "scholarExample": "Kathin samay mein diye gaye aapke sahyog ke liye main hriday se aabhar vyakt karta hoon.",
-    "difficulty": "easy",
+    "id": 89,
+    "common": {
+      "dev": "थैंक्स",
+      "roman": "thanks"
+    },
+    "elevated": {
+      "dev": "आभार",
+      "roman": "aabhar"
+    },
+    "englishMeaning": "gratitude or thanks",
+    "simpleExample": {
+      "dev": "इतनी help के लिए thanks, सच में।",
+      "roman": "Itni help ke liye thanks, sach mein."
+    },
+    "elevatedExample": {
+      "dev": "इतनी सहायता के लिए आभार, सच में।",
+      "roman": "Itni sahayata ke liye aabhar, sach mein."
+    },
+    "scholarExample": {
+      "dev": "कठिन समय में दिए गए आपके सहयोग के लिए मैं हृदय से आभार व्यक्त करता हूँ।",
+      "roman": "Kathin samay mein diye gaye aapke sahyog ke liye main hriday se aabhar vyakt karta hoon."
+    },
     "synonyms": [
-      "dhanyavaad",
-      "kritagyata",
-      "shukriya"
+      {
+        "dev": "धन्यवाद",
+        "roman": "dhanyavaad"
+      },
+      {
+        "dev": "कृतज्ञता",
+        "roman": "kritagyata"
+      },
+      {
+        "dev": "शुक्रिया",
+        "roman": "shukriya"
+      }
     ],
     "usageNote": "Aabhar expresses thanks with warmth and a little more depth.",
-    "englishMeaning": "gratitude or thanks",
     "challengePrompt": "Aabhar vyakt karte hue ek sachcha vaakya kahiye.",
     "tags": [
       "gratitude",
       "appreciation",
       "relationships"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "kshama",
-    "common": "sorry",
-    "elevated": "kshama",
-    "simpleExample": "Sorry, main tumhara call nahi utha paaya.",
-    "elevatedExample": "Kshama kijiye, main aapka phone nahi utha paaya.",
-    "scholarExample": "Aapka phone na utha paane ke liye kshama chahta hoon; us samay main baithak mein tha.",
-    "difficulty": "easy",
+    "id": 90,
+    "common": {
+      "dev": "सॉरी",
+      "roman": "sorry"
+    },
+    "elevated": {
+      "dev": "क्षमा",
+      "roman": "kshama"
+    },
+    "englishMeaning": "forgiveness or apology",
+    "simpleExample": {
+      "dev": "Sorry, मैं तुम्हारा call नहीं उठा पाया।",
+      "roman": "Sorry, main tumhara call nahi utha paaya."
+    },
+    "elevatedExample": {
+      "dev": "क्षमा कीजिए, मैं आपका phone नहीं उठा पाया।",
+      "roman": "Kshama kijiye, main aapka phone nahi utha paaya."
+    },
+    "scholarExample": {
+      "dev": "आपका phone न उठा पाने के लिए क्षमा चाहता हूँ; उस समय मैं बैठक में था।",
+      "roman": "Aapka phone na utha paane ke liye kshama chahta hoon; us samay main baithak mein tha."
+    },
     "synonyms": [
-      "maafi",
-      "kshamayaachana",
-      "khed"
+      {
+        "dev": "माफ़ी",
+        "roman": "maafi"
+      },
+      {
+        "dev": "क्षमायाचना",
+        "roman": "kshamayaachana"
+      },
+      {
+        "dev": "खेद",
+        "roman": "khed"
+      }
     ],
     "usageNote": "Kshama keeps an apology respectful and sincere.",
-    "englishMeaning": "forgiveness or apology",
     "challengePrompt": "Kshama maangte hue galti ka kaaran bhi batayiye.",
     "tags": [
       "apology",
       "courtesy",
       "conversation"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "jigyasa",
-    "common": "curiosity",
-    "elevated": "jigyasa",
-    "simpleExample": "Bas curiosity hai, yeh machine kaam kaise karti hai?",
-    "elevatedExample": "Bas jigyasa hai, yeh yantra kaam kaise karta hai?",
-    "scholarExample": "Meri jigyasa hai ki yeh yantra kis siddhaant par karya karta hai; kya aap samjha sakte hain?",
-    "difficulty": "medium",
+    "id": 91,
+    "common": {
+      "dev": "क्यूरियोसिटी",
+      "roman": "curiosity"
+    },
+    "elevated": {
+      "dev": "जिज्ञासा",
+      "roman": "jigyasa"
+    },
+    "englishMeaning": "curiosity or desire to know",
+    "simpleExample": {
+      "dev": "बस curiosity है, यह machine काम कैसे करती है?",
+      "roman": "Bas curiosity hai, yeh machine kaam kaise karti hai?"
+    },
+    "elevatedExample": {
+      "dev": "बस जिज्ञासा है, यह यंत्र काम कैसे करता है?",
+      "roman": "Bas jigyasa hai, yeh yantra kaam kaise karta hai?"
+    },
+    "scholarExample": {
+      "dev": "मेरी जिज्ञासा है कि यह यंत्र किस सिद्धांत पर कार्य करता है; क्या आप समझा सकते हैं?",
+      "roman": "Meri jigyasa hai ki yeh yantra kis siddhaant par karya karta hai; kya aap samjha sakte hain?"
+    },
     "synonyms": [
-      "utsukta",
-      "kautuhal",
-      "jaanne ki ichchha"
+      {
+        "dev": "उत्सुकता",
+        "roman": "utsukta"
+      },
+      {
+        "dev": "कौतूहल",
+        "roman": "kautuhal"
+      },
+      {
+        "dev": "जानने की इच्छा",
+        "roman": "jaanne ki ichchha"
+      }
     ],
     "usageNote": "Jigyasa gives curiosity a thoughtful, learning-oriented tone.",
-    "englishMeaning": "curiosity or desire to know",
     "challengePrompt": "Jigyasa vyakt karte hue ek prashn poochhiye.",
     "tags": [
       "curiosity",
       "learning",
       "questions"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "ekagrata",
-    "common": "focus",
-    "elevated": "ekagrata",
-    "simpleExample": "Phone side mein rakho, thoda focus karo.",
-    "elevatedExample": "Phone ek taraf rakhiye, thodi ekagrata banaiye.",
-    "scholarExample": "Karya ko samay par poora karne ke liye kuch der phone alag rakhkar poori ekagrata se kaam kijiye.",
-    "difficulty": "medium",
+    "id": 92,
+    "common": {
+      "dev": "फ़ोकस",
+      "roman": "focus"
+    },
+    "elevated": {
+      "dev": "एकाग्रता",
+      "roman": "ekagrata"
+    },
+    "englishMeaning": "concentration or focus",
+    "simpleExample": {
+      "dev": "Phone side में रखो, थोड़ा focus करो।",
+      "roman": "Phone side mein rakho, thoda focus karo."
+    },
+    "elevatedExample": {
+      "dev": "Phone एक तरफ़ रखिए, थोड़ी एकाग्रता बनाइए।",
+      "roman": "Phone ek taraf rakhiye, thodi ekagrata banaiye."
+    },
+    "scholarExample": {
+      "dev": "कार्य को समय पर पूरा करने के लिए कुछ देर phone अलग रखकर पूरी एकाग्रता से काम कीजिए।",
+      "roman": "Karya ko samay par poora karne ke liye kuch der phone alag rakhkar poori ekagrata se kaam kijiye."
+    },
     "synonyms": [
-      "dhyaan",
-      "tallinata",
-      "kendran"
+      {
+        "dev": "ध्यान",
+        "roman": "dhyaan"
+      },
+      {
+        "dev": "तल्लीनता",
+        "roman": "tallinata"
+      },
+      {
+        "dev": "केंद्रण",
+        "roman": "kendran"
+      }
     ],
     "usageNote": "Ekagrata emphasizes sustained attention rather than momentary focus.",
-    "englishMeaning": "concentration or focus",
     "challengePrompt": "Ekagrata badhaane ki ek salah dijiye.",
     "tags": [
       "focus",
       "productivity",
       "advice"
-    ]
+    ],
+    "difficulty": "medium"
   },
   {
-    "id": "prerna",
-    "common": "motivation",
-    "elevated": "prerna",
-    "simpleExample": "Tumhari story se mujhe kaafi motivation mila.",
-    "elevatedExample": "Aapki kahani se mujhe kaafi prerna mili.",
-    "scholarExample": "Aapki sangharsh aur safalta ki kahani se mujhe apne lakshya ke prati nayi prerna mili.",
-    "difficulty": "easy",
+    "id": 93,
+    "common": {
+      "dev": "मोटिवेशन",
+      "roman": "motivation"
+    },
+    "elevated": {
+      "dev": "प्रेरणा",
+      "roman": "prerna"
+    },
+    "englishMeaning": "inspiration or motivation",
+    "simpleExample": {
+      "dev": "तुम्हारी story से मुझे काफ़ी motivation मिला।",
+      "roman": "Tumhari story se mujhe kaafi motivation mila."
+    },
+    "elevatedExample": {
+      "dev": "आपकी कहानी से मुझे काफ़ी प्रेरणा मिली।",
+      "roman": "Aapki kahani se mujhe kaafi prerna mili."
+    },
+    "scholarExample": {
+      "dev": "आपकी संघर्ष और सफलता की कहानी से मुझे अपने लक्ष्य के प्रति नई प्रेरणा मिली।",
+      "roman": "Aapki sangharsh aur safalta ki kahani se mujhe apne lakshya ke prati nayi prerna mili."
+    },
     "synonyms": [
-      "prerak bal",
-      "protsaahan",
-      "utsaah"
+      {
+        "dev": "प्रेरक बल",
+        "roman": "prerak bal"
+      },
+      {
+        "dev": "प्रोत्साहन",
+        "roman": "protsaahan"
+      },
+      {
+        "dev": "उत्साह",
+        "roman": "utsaah"
+      }
     ],
     "usageNote": "Prerna is natural for describing a meaningful source of motivation.",
-    "englishMeaning": "inspiration or motivation",
     "challengePrompt": "Apni kisi prerna ke baare mein ek vaakya kahiye.",
     "tags": [
       "motivation",
       "stories",
       "positive"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "utsah",
-    "common": "excitement",
-    "elevated": "utsah",
-    "simpleExample": "Nayi job ko lekar bahut excitement hai.",
-    "elevatedExample": "Nayi naukri ko lekar bahut utsah hai.",
-    "scholarExample": "Nayi zimmedari aur seekhne ke avasaron ko lekar mere man mein bahut utsah hai.",
-    "difficulty": "easy",
+    "id": 94,
+    "common": {
+      "dev": "एक्साइटमेंट",
+      "roman": "excitement"
+    },
+    "elevated": {
+      "dev": "उत्साह",
+      "roman": "utsah"
+    },
+    "englishMeaning": "enthusiasm or excitement",
+    "simpleExample": {
+      "dev": "नई job को लेकर बहुत excitement है।",
+      "roman": "Nayi job ko lekar bahut excitement hai."
+    },
+    "elevatedExample": {
+      "dev": "नई नौकरी को लेकर बहुत उत्साह है।",
+      "roman": "Nayi naukri ko lekar bahut utsah hai."
+    },
+    "scholarExample": {
+      "dev": "नई ज़िम्मेदारी और सीखने के अवसरों को लेकर मेरे मन में बहुत उत्साह है।",
+      "roman": "Nayi zimmedari aur seekhne ke avasaron ko lekar mere man mein bahut utsah hai."
+    },
     "synonyms": [
-      "josh",
-      "umang",
-      "ullas"
+      {
+        "dev": "जोश",
+        "roman": "josh"
+      },
+      {
+        "dev": "उमंग",
+        "roman": "umang"
+      },
+      {
+        "dev": "उल्लास",
+        "roman": "ullas"
+      }
     ],
     "usageNote": "Utsah expresses positive energy without sounding overly casual.",
-    "englishMeaning": "enthusiasm or excitement",
     "challengePrompt": "Kisi naye avasar ke liye apna utsah dikhaiye.",
     "tags": [
       "enthusiasm",
       "opportunity",
       "positive"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "chinta",
-    "common": "worry",
-    "elevated": "chinta",
-    "simpleExample": "Result ko lekar thodi worry ho rahi hai.",
-    "elevatedExample": "Parinaam ko lekar thodi chinta ho rahi hai.",
-    "scholarExample": "Parinaam ko lekar kuch chinta avashya hai, phir bhi mujhe apne prayas par vishwas hai.",
-    "difficulty": "easy",
+    "id": 95,
+    "common": {
+      "dev": "वरी",
+      "roman": "worry"
+    },
+    "elevated": {
+      "dev": "चिंता",
+      "roman": "chinta"
+    },
+    "englishMeaning": "worry or concern",
+    "simpleExample": {
+      "dev": "Result को लेकर थोड़ी worry हो रही है।",
+      "roman": "Result ko lekar thodi worry ho rahi hai."
+    },
+    "elevatedExample": {
+      "dev": "परिणाम को लेकर थोड़ी चिंता हो रही है।",
+      "roman": "Parinaam ko lekar thodi chinta ho rahi hai."
+    },
+    "scholarExample": {
+      "dev": "परिणाम को लेकर कुछ चिंता अवश्य है, फिर भी मुझे अपने प्रयास पर विश्वास है।",
+      "roman": "Parinaam ko lekar kuch chinta avashya hai, phir bhi mujhe apne prayas par vishwas hai."
+    },
     "synonyms": [
-      "fikr",
-      "vyakulata",
-      "aashanka"
+      {
+        "dev": "फ़िक्र",
+        "roman": "fikr"
+      },
+      {
+        "dev": "व्याकुलता",
+        "roman": "vyakulata"
+      },
+      {
+        "dev": "आशंका",
+        "roman": "aashanka"
+      }
     ],
     "usageNote": "Chinta is a natural Hindi word for expressing concern calmly.",
-    "englishMeaning": "worry or concern",
     "challengePrompt": "Chinta ke saath aasha bhi vyakt karte hue vaakya banaiye.",
     "tags": [
       "emotion",
       "uncertainty",
       "reflection"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "raahat",
-    "common": "relief",
-    "elevated": "raahat",
-    "simpleExample": "Report normal aayi, badi relief mili.",
-    "elevatedExample": "Report saamanya aayi, badi raahat mili.",
-    "scholarExample": "Jaanch ke parinaam saamanya aane se sabhi ko gehri raahat mili.",
-    "difficulty": "easy",
+    "id": 96,
+    "common": {
+      "dev": "रिलीफ़",
+      "roman": "relief"
+    },
+    "elevated": {
+      "dev": "राहत",
+      "roman": "raahat"
+    },
+    "englishMeaning": "relief or respite",
+    "simpleExample": {
+      "dev": "Report normal आई, बड़ी relief मिली।",
+      "roman": "Report normal aayi, badi relief mili."
+    },
+    "elevatedExample": {
+      "dev": "Report सामान्य आई, बड़ी राहत मिली।",
+      "roman": "Report saamanya aayi, badi raahat mili."
+    },
+    "scholarExample": {
+      "dev": "जाँच के परिणाम सामान्य आने से सभी को गहरी राहत मिली।",
+      "roman": "Jaanch ke parinaam saamanya aane se sabhi ko gehri raahat mili."
+    },
     "synonyms": [
-      "chain",
-      "tasalli",
-      "sukoon"
+      {
+        "dev": "चैन",
+        "roman": "chain"
+      },
+      {
+        "dev": "तसल्ली",
+        "roman": "tasalli"
+      },
+      {
+        "dev": "सुकून",
+        "roman": "sukoon"
+      }
     ],
     "usageNote": "Raahat describes the easing of worry in a warm, everyday way.",
-    "englishMeaning": "relief or respite",
     "challengePrompt": "Raahat milne ki kisi sthiti ka varnan kijiye.",
     "tags": [
       "emotion",
       "health",
       "positive"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "niyamit",
-    "common": "regular",
-    "elevated": "niyamit",
-    "simpleExample": "Main ab gym regular jaane ki koshish kar raha hoon.",
-    "elevatedExample": "Main ab gym niyamit jaane ka prayas kar raha hoon.",
-    "scholarExample": "Main swasthya sudhaar ke liye ab niyamit roop se vyaayaam karne ka sankalp le raha hoon.",
-    "difficulty": "easy",
+    "id": 97,
+    "common": {
+      "dev": "रेगुलर",
+      "roman": "regular"
+    },
+    "elevated": {
+      "dev": "नियमित",
+      "roman": "niyamit"
+    },
+    "englishMeaning": "regular or consistent",
+    "simpleExample": {
+      "dev": "मैं अब gym regular जाने की कोशिश कर रहा हूँ।",
+      "roman": "Main ab gym regular jaane ki koshish kar raha hoon."
+    },
+    "elevatedExample": {
+      "dev": "मैं अब gym नियमित जाने का प्रयास कर रहा हूँ।",
+      "roman": "Main ab gym niyamit jaane ka prayas kar raha hoon."
+    },
+    "scholarExample": {
+      "dev": "मैं स्वास्थ्य सुधार के लिए अब नियमित रूप से व्यायाम करने का संकल्प ले रहा हूँ।",
+      "roman": "Main swasthya sudhaar ke liye ab niyamit roop se vyaayaam karne ka sankalp le raha hoon."
+    },
     "synonyms": [
-      "nirantar",
-      "nitya",
-      "lagataar"
+      {
+        "dev": "निरंतर",
+        "roman": "nirantar"
+      },
+      {
+        "dev": "नित्य",
+        "roman": "nitya"
+      },
+      {
+        "dev": "लगातार",
+        "roman": "lagataar"
+      }
     ],
     "usageNote": "Niyamit is useful for habits, routines, and dependable frequency.",
-    "englishMeaning": "regular or consistent",
     "challengePrompt": "Apni kisi niyamit aadat par ek vaakya kahiye.",
     "tags": [
       "habits",
       "health",
       "self improvement"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "tatkaal",
-    "common": "urgent",
-    "elevated": "tatkaal",
-    "simpleExample": "Yeh kaam urgent hai, pehle isi ko dekh lo.",
-    "elevatedExample": "Yeh karya tatkaal hai, pehle isi ko dekh lijiye.",
-    "scholarExample": "Yeh karya tatkaal dhyaan maangta hai; kripya anya kaaryon se pehle ise poora karein.",
-    "difficulty": "easy",
+    "id": 98,
+    "common": {
+      "dev": "अर्जेंट",
+      "roman": "urgent"
+    },
+    "elevated": {
+      "dev": "तत्काल",
+      "roman": "tatkaal"
+    },
+    "englishMeaning": "immediate or urgent",
+    "simpleExample": {
+      "dev": "यह काम urgent है, पहले इसी को देख लो।",
+      "roman": "Yeh kaam urgent hai, pehle isi ko dekh lo."
+    },
+    "elevatedExample": {
+      "dev": "यह कार्य तत्काल है, पहले इसी को देख लीजिए।",
+      "roman": "Yeh karya tatkaal hai, pehle isi ko dekh lijiye."
+    },
+    "scholarExample": {
+      "dev": "यह कार्य तत्काल ध्यान माँगता है; कृपया अन्य कार्यों से पहले इसे पूरा करें।",
+      "roman": "Yeh karya tatkaal dhyaan maangta hai; kripya anya kaaryon se pehle ise poora karein."
+    },
     "synonyms": [
-      "turant",
-      "avilamb",
-      "sheeghra"
+      {
+        "dev": "तुरंत",
+        "roman": "turant"
+      },
+      {
+        "dev": "अविलंब",
+        "roman": "avilamb"
+      },
+      {
+        "dev": "शीघ्र",
+        "roman": "sheeghra"
+      }
     ],
     "usageNote": "Tatkaal clearly signals urgency and immediate priority.",
-    "englishMeaning": "immediate or urgent",
     "challengePrompt": "Tatkaal karya ki prathamikta batate hue ek vaakya kahiye.",
     "tags": [
       "urgency",
       "priority",
       "work"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "upasthit",
-    "common": "present",
-    "elevated": "upasthit",
-    "simpleExample": "Kal meeting mein sab present rehna.",
-    "elevatedExample": "Kal baithak mein sab upasthit rahiyega.",
-    "scholarExample": "Kal ki mahatvapurn baithak mein sabhi sadasyon ka samay par upasthit rehna avashyak hai.",
-    "difficulty": "easy",
+    "id": 99,
+    "common": {
+      "dev": "प्रेज़ेंट",
+      "roman": "present"
+    },
+    "elevated": {
+      "dev": "उपस्थित",
+      "roman": "upasthit"
+    },
+    "englishMeaning": "present or in attendance",
+    "simpleExample": {
+      "dev": "कल meeting में सब present रहना।",
+      "roman": "Kal meeting mein sab present rehna."
+    },
+    "elevatedExample": {
+      "dev": "कल बैठक में सब उपस्थित रहिएगा।",
+      "roman": "Kal baithak mein sab upasthit rahiyega."
+    },
+    "scholarExample": {
+      "dev": "कल की महत्वपूर्ण बैठक में सभी सदस्यों का समय पर उपस्थित रहना आवश्यक है।",
+      "roman": "Kal ki mahatvapurn baithak mein sabhi sadasyon ka samay par upasthit rehna avashyak hai."
+    },
     "synonyms": [
-      "haazir",
-      "vidyamaan",
-      "maujood"
+      {
+        "dev": "हाज़िर",
+        "roman": "haazir"
+      },
+      {
+        "dev": "विद्यमान",
+        "roman": "vidyamaan"
+      },
+      {
+        "dev": "मौजूद",
+        "roman": "maujood"
+      }
     ],
     "usageNote": "Upasthit is a familiar, polished word for being present.",
-    "englishMeaning": "present or in attendance",
     "challengePrompt": "Upasthit rehne ka vinamra nirdesh dijiye.",
     "tags": [
       "attendance",
       "meetings",
       "professional"
-    ]
+    ],
+    "difficulty": "easy"
   },
   {
-    "id": "anupasthit",
-    "common": "absent",
-    "elevated": "anupasthit",
-    "simpleExample": "Main kal office mein absent rahunga.",
-    "elevatedExample": "Main kal karyalaya mein anupasthit rahunga.",
-    "scholarExample": "Vyaktigat kaaranon se main kal karyalaya mein anupasthit rahunga; avashyak kaam aaj poora kar doonga.",
-    "difficulty": "easy",
+    "id": 100,
+    "common": {
+      "dev": "एब्सेंट",
+      "roman": "absent"
+    },
+    "elevated": {
+      "dev": "अनुपस्थित",
+      "roman": "anupasthit"
+    },
+    "englishMeaning": "absent or not present",
+    "simpleExample": {
+      "dev": "मैं कल office में absent रहूँगा।",
+      "roman": "Main kal office mein absent rahunga."
+    },
+    "elevatedExample": {
+      "dev": "मैं कल कार्यालय में अनुपस्थित रहूँगा।",
+      "roman": "Main kal karyalaya mein anupasthit rahunga."
+    },
+    "scholarExample": {
+      "dev": "व्यक्तिगत कारणों से मैं कल कार्यालय में अनुपस्थित रहूँगा; आवश्यक काम आज पूरा कर दूँगा।",
+      "roman": "Vyaktigat kaaranon se main kal karyalaya mein anupasthit rahunga; avashyak kaam aaj poora kar doonga."
+    },
     "synonyms": [
-      "gairhaazir",
-      "door",
-      "upasthitiheen"
+      {
+        "dev": "ग़ैरहाज़िर",
+        "roman": "gairhaazir"
+      },
+      {
+        "dev": "अनुपलब्ध",
+        "roman": "anupalabdh"
+      },
+      {
+        "dev": "दूर",
+        "roman": "door"
+      }
     ],
     "usageNote": "Anupasthit is a clear, professional way to communicate absence.",
-    "englishMeaning": "absent or not present",
     "challengePrompt": "Anupasthit rehne ki soochna dete hue ek vaakya banaiye.",
     "tags": [
       "attendance",
       "updates",
       "workplace"
-    ]
+    ],
+    "difficulty": "easy"
   }
 ]

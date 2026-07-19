@@ -93,8 +93,8 @@ describe("storage", () => {
     expect(canUseLocalStorage()).toBe(false);
   });
 
-  it("defaults to both scripts", () => {
-    expect(loadPreferences()).toEqual({ script: "both" });
+  it("defaults to the Devanagari script", () => {
+    expect(loadPreferences()).toEqual({ script: "dev" });
   });
 
   it("initializes learned words from the seed data when the key is missing", () => {

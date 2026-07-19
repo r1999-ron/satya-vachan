@@ -1,49 +1,63 @@
 "use client";
 
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useMemo, useState } from "react";
+import { ArrowLeft, ArrowRight, Lightbulb } from "lucide-react";
+import { useState } from "react";
 import { SaveDailyWordButton } from "@/components/challenge/SaveDailyWordButton";
 import { HindiText } from "@/components/hindi/HindiText";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { getWordOfTheDay } from "@/data/words";
+import { APP_TIME_ZONE, dateFromKey } from "@/lib/dates";
+import { useScriptPreference } from "@/lib/storage";
 import { cn } from "@/lib/utils";
-import type { HindiText as HindiTextValue, WordEntry } from "@/types";
+import type { HindiText as HindiTextValue, ScriptPreference, WordEntry } from "@/types";
 
-const MONTHS = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+type ExampleTab = "everyday" | "improved" | "scholarly";
+
+const EXAMPLE_TABS: { key: ExampleTab; label: string }[] = [
+  { key: "everyday", label: "Everyday" },
+  { key: "improved", label: "Enhanced" },
+  { key: "scholarly", label: "Advanced" },
 ];
 
 export function DailyWordCard({
-  initialDateKey,
-  initialWord,
+  isToday,
+  onNextDay,
+  onPreviousDay,
+  selectedDateKey,
+  word,
 }: {
-  initialDateKey: string;
-  initialWord: WordEntry;
+  isToday: boolean;
+  onNextDay: () => void;
+  onPreviousDay: () => void;
+  selectedDateKey: string;
+  word: WordEntry;
 }) {
-  const [selectedDateKey, setSelectedDateKey] = useState(initialDateKey);
-  const isToday = selectedDateKey === initialDateKey;
-  const word = useMemo(
-    () => (isToday ? initialWord : getWordOfTheDay(dateFromKey(selectedDateKey))),
-    [initialWord, isToday, selectedDateKey],
-  );
+  const [activeTab, setActiveTab] = useState<ExampleTab>("improved");
+  const { preference } = useScriptPreference();
 
   const goToPreviousDay = () => {
-    setSelectedDateKey((current) => shiftDateKey(current, -1));
+    onPreviousDay();
+    setActiveTab("improved");
   };
 
   const goToNextDay = () => {
-    setSelectedDateKey((current) =>
-      current < initialDateKey ? shiftDateKey(current, 1) : current,
-    );
+    onNextDay();
+    setActiveTab("improved");
   };
+
+  const example =
+    activeTab === "everyday"
+      ? word.simpleExample
+      : activeTab === "improved"
+        ? word.elevatedExample
+        : word.scholarExample;
+  const highlightTarget = activeTab === "everyday" ? word.common : word.elevated;
 
   return (
     <GlassCard className="overflow-hidden p-5 sm:p-7 lg:p-8">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="text-xs font-bold uppercase tracking-[0.14em] text-amber-800 dark:text-amber-200">
-            Today&apos;s word
+            {isToday ? "Today's word" : "Word of the day"}
           </p>
           {!isToday ? (
             <p className="mt-1 text-xs font-medium text-zinc-500 dark:text-zinc-400">
@@ -78,22 +92,98 @@ export function DailyWordCard({
         </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-stretch gap-2 sm:mt-6 sm:gap-4">
-        <Word value={word.common} />
-        <div className="flex items-center justify-center">
-          <ArrowRight className="text-amber-600" size={20} aria-hidden="true" />
+      <div className="mt-5 sm:mt-6">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+          <p className="text-wrap-anywhere font-hindi text-5xl font-bold leading-[1.4] tracking-[-0.02em] text-ink sm:text-6xl dark:text-white">
+            <span lang={preference === "roman" ? "hi-Latn" : "hi"}>
+              {preference === "roman" ? word.elevated.roman : word.elevated.dev}
+            </span>
+          </p>
+
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-400">
+              instead of
+            </p>
+            <HindiText
+              text={word.common}
+              kind="inline"
+              className="mt-1 block text-wrap-anywhere text-2xl font-bold text-zinc-700 sm:text-3xl dark:text-zinc-200"
+            />
+          </div>
         </div>
-        <Word value={word.elevated} featured />
+
+        <p className="mt-2 text-sm font-normal leading-6 text-zinc-600 sm:text-base dark:text-zinc-300">
+          {preference !== "roman" ? (
+            <span lang="hi-Latn" className="font-semibold text-amber-800 dark:text-amber-200">
+              {word.elevated.roman}
+              <span aria-hidden="true" className="mx-2 text-zinc-400">·</span>
+            </span>
+          ) : null}
+          {word.englishMeaning}
+        </p>
       </div>
 
-      <p className="mt-4 text-sm font-normal leading-6 text-zinc-600 sm:mt-5 sm:text-base dark:text-zinc-300">
-        {word.englishMeaning}
-      </p>
+      <div className="mt-5 sm:mt-6">
+        <div
+          role="tablist"
+          aria-label="Example sentences"
+          className="inline-flex max-w-full gap-1 overflow-x-auto rounded-xl bg-zinc-900/[0.045] p-1 dark:bg-white/8"
+        >
+          {EXAMPLE_TABS.map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              role="tab"
+              aria-selected={activeTab === tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={cn(
+                "shrink-0 rounded-lg px-3 py-1.5 text-xs font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60",
+                activeTab === tab.key
+                  ? "bg-white text-zinc-950 shadow-sm dark:bg-zinc-800 dark:text-white"
+                  : "text-zinc-500 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white",
+              )}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-      <div className="mt-5 grid gap-3 md:grid-cols-3 sm:mt-6 sm:gap-4">
-        <Example label="Everyday usage" text={word.simpleExample} />
-        <Example label="Improved version" text={word.elevatedExample} featured />
-        <Example label="Scholar version" text={word.scholarExample} />
+        <div
+          key={`${word.id}-${activeTab}`}
+          className={cn(
+            "mt-2 animate-floatIn rounded-xl border p-4 sm:p-5",
+            activeTab === "everyday"
+              ? "border-zinc-200/80 bg-white/50 dark:border-white/10 dark:bg-white/[0.03]"
+              : "border-amber-200 bg-amber-50/80 dark:border-amber-300/20 dark:bg-amber-300/10",
+          )}
+        >
+          <HighlightedSentence
+            text={example}
+            target={highlightTarget}
+            highlight={activeTab !== "everyday"}
+            preference={preference}
+          />
+        </div>
+      </div>
+
+      <div className="mt-5 border-t border-zinc-900/8 pt-4 dark:border-white/10">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs font-bold uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-400">
+            Synonyms
+          </span>
+          {word.synonyms.map((synonym) => (
+            <span
+              key={synonym.roman}
+              className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-950 dark:bg-amber-300/10 dark:text-amber-100"
+            >
+              <HindiText text={synonym} kind="inline" />
+            </span>
+          ))}
+        </div>
+        <p className="mt-3 flex items-start gap-2 text-xs font-normal leading-5 text-zinc-500 dark:text-zinc-400">
+          <Lightbulb className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-300" size={14} aria-hidden="true" />
+          {word.usageNote}
+        </p>
       </div>
 
       <a
@@ -106,72 +196,77 @@ export function DailyWordCard({
   );
 }
 
-function dateFromKey(dateKey: string) {
-  const [year, month, day] = dateKey.split("-").map(Number);
-  return new Date(year, month - 1, day, 12);
+function HighlightedSentence({
+  highlight,
+  preference,
+  target,
+  text,
+}: {
+  highlight: boolean;
+  preference: ScriptPreference;
+  target: HindiTextValue;
+  text: HindiTextValue;
+}) {
+  const showDev = preference !== "roman";
+  const showRoman = preference !== "dev";
+
+  return (
+    <span className="block">
+      {showDev ? (
+        <span
+          lang="hi"
+          className="block text-wrap-anywhere font-hindi text-base font-medium leading-8 text-ink sm:text-lg dark:text-white"
+        >
+          {highlight ? highlightWord(text.dev, target.dev) : text.dev}
+        </span>
+      ) : null}
+      {showRoman ? (
+        <span
+          lang="hi-Latn"
+          className={cn(
+            "block text-wrap-anywhere",
+            showDev
+              ? "mt-1 text-xs leading-5 text-zinc-500 dark:text-zinc-400"
+              : "text-base font-medium leading-8 text-ink sm:text-lg dark:text-white",
+          )}
+        >
+          {highlight ? highlightWord(text.roman, target.roman, true) : text.roman}
+        </span>
+      ) : null}
+    </span>
+  );
 }
 
-function shiftDateKey(dateKey: string, amount: number) {
-  const date = dateFromKey(dateKey);
-  date.setDate(date.getDate() + amount);
-  return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
+function highlightWord(sentence: string, word: string, caseInsensitive = false) {
+  const trimmedWord = word.trim();
+
+  if (!trimmedWord) {
+    return sentence;
+  }
+
+  const escapedWord = trimmedWord.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const matcher = new RegExp(`(${escapedWord})`, caseInsensitive ? "gi" : "g");
+
+  // Splitting on a single capturing group puts every match at an odd index.
+  return sentence.split(matcher).map((part, index) =>
+    index % 2 === 1 ? (
+      <mark
+        key={index}
+        className="rounded bg-amber-200/80 px-0.5 font-bold text-inherit dark:bg-amber-300/30"
+      >
+        {part}
+      </mark>
+    ) : (
+      <span key={index}>{part}</span>
+    ),
+  );
 }
 
 function formatWordDate(dateKey: string) {
-  const date = dateFromKey(dateKey);
-  return `${String(date.getDate()).padStart(2, "0")}-${MONTHS[date.getMonth()]}-${date.getFullYear()}`;
-}
-
-function Example({
-  featured = false,
-  label,
-  text,
-}: {
-  featured?: boolean;
-  label: string;
-  text: HindiTextValue;
-}) {
-  return (
-    <div
-      className={cn(
-        "rounded-xl border p-3 sm:p-4",
-        featured
-          ? "border-amber-200 bg-amber-50/80 dark:border-amber-300/20 dark:bg-amber-300/10"
-          : "border-zinc-200/80 bg-white/50 dark:border-white/10 dark:bg-white/[0.03]",
-      )}
-    >
-      <p className={cn(
-        "text-xs font-bold uppercase tracking-[0.12em]",
-        featured ? "text-amber-800 dark:text-amber-200" : "text-zinc-600 dark:text-zinc-300",
-      )}>
-        {label}
-      </p>
-      <HindiText text={text} className="mt-3" />
-    </div>
-  );
-}
-
-function Word({
-  featured = false,
-  value,
-}: {
-  featured?: boolean;
-  value: HindiTextValue;
-}) {
-  return (
-    <div
-      className={cn(
-        "min-w-0 rounded-2xl px-3 py-4 sm:px-5 sm:py-5",
-        featured
-          ? "bg-amber-100 ring-1 ring-amber-200 dark:bg-amber-300/10 dark:ring-amber-300/20"
-          : "bg-zinc-900/[0.035] ring-1 ring-zinc-900/[0.06] dark:bg-white/5 dark:ring-white/10",
-      )}
-    >
-      <HindiText
-        text={value}
-        kind="word"
-        devClassName="text-wrap-anywhere text-lg leading-relaxed text-ink sm:text-3xl dark:text-white"
-      />
-    </div>
-  );
+  return new Intl.DateTimeFormat("en-IN", {
+    timeZone: APP_TIME_ZONE,
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(dateFromKey(dateKey));
 }

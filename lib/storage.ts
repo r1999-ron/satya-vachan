@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { getSeedLearnedWords } from "@/data/demo";
-import { getTodayKey } from "@/lib/dates";
+import { getTodayKey, shiftDateKey } from "@/lib/dates";
 import { DEFAULT_SCRIPT_PREFERENCE, isHindiText, makeHindiText } from "@/lib/hindi";
 import type {
   LearnedWord,
@@ -331,13 +331,6 @@ export function loadStreakState(): StreakState {
   return normalized;
 }
 
-function getPreviousDateKey(dateKey: string) {
-  const [year, month, day] = dateKey.split("-").map(Number);
-  const date = new Date(year, month - 1, day);
-  date.setDate(date.getDate() - 1);
-  return getTodayKey(date);
-}
-
 export function completeTodaysChallenge(date: Date = new Date()): StreakState {
   const todayKey = getTodayKey(date);
   const previousState = loadStreakState();
@@ -355,7 +348,7 @@ export function completeTodaysChallenge(date: Date = new Date()): StreakState {
     return nextState;
   }
 
-  const yesterdayKey = getPreviousDateKey(todayKey);
+  const yesterdayKey = shiftDateKey(todayKey, -1);
   const currentStreak =
     previousState.lastCompletedDate === yesterdayKey ? previousState.currentStreak + 1 : 1;
   const nextState: StreakState = {

@@ -6,6 +6,7 @@ import type { WordEntry } from "@/types";
 type ChallengeBannerProps = {
   completedToday: boolean;
   disabled?: boolean;
+  isToday?: boolean;
   onStarterSelect: (starter: string) => void;
   selectedStarter: string;
   starters: string[];
@@ -15,6 +16,7 @@ type ChallengeBannerProps = {
 export function ChallengeBanner({
   completedToday,
   disabled = false,
+  isToday = true,
   onStarterSelect,
   selectedStarter,
   starters,
@@ -26,7 +28,7 @@ export function ChallengeBanner({
         <div className="min-w-0">
           <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-amber-800 dark:text-amber-200">
             <Sparkles size={14} aria-hidden="true" />
-            Today&apos;s challenge
+            {isToday ? "Today's challenge" : "Challenge"}
           </p>
           <div className="mt-3 flex min-w-0 flex-wrap items-center gap-2 sm:gap-3">
             <HindiText
@@ -58,6 +60,7 @@ export function ChallengeBanner({
         </span>
       </div>
 
+      {starters.length > 0 ? (
       <div className="mt-4 border-t border-amber-900/10 pt-4 dark:border-amber-100/10">
         <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
           Start your sentence
@@ -82,6 +85,7 @@ export function ChallengeBanner({
           ))}
         </div>
       </div>
+      ) : null}
     </section>
   );
 }

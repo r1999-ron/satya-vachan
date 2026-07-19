@@ -1,32 +1,55 @@
-import { toDevanagari } from "@/data/bilingual-corpus";
 import { wordCorpus } from "@/data/words";
 import { makeHindiText } from "@/lib/hindi";
 import type { LearnedWord, PracticeResponse, WordReplacement } from "@/types";
 
 export const hintPracticeSentences = [
-  "Humne is kaam ko jaldi khatam karne ki koshish ki.",
-  "Mujhe aapki madad se problem ka solution mil gaya.",
-  "Mera nazariya hai ki yeh decision important hai.",
-  "Is topic par thodi confusion hai, kripya clear kar dijiye.",
-  "Mera goal Hindi expression mein progress karna hai.",
-  "Team ko ek better plan aur clear direction chahiye.",
-].map((roman) => makeHindiText(toDevanagari(roman), roman));
+  makeHindiText(
+    "हमने इस काम को जल्दी ख़त्म करने की कोशिश की।",
+    "Humne is kaam ko jaldi khatam karne ki koshish ki.",
+  ),
+  makeHindiText(
+    "मुझे आपकी मदद से problem का solution मिल गया।",
+    "Mujhe aapki madad se problem ka solution mil gaya.",
+  ),
+  makeHindiText(
+    "मेरा नज़रिया है कि यह decision important है।",
+    "Mera nazariya hai ki yeh decision important hai.",
+  ),
+  makeHindiText(
+    "इस topic पर थोड़ी confusion है, कृपया clear कर दीजिए।",
+    "Is topic par thodi confusion hai, kripya clear kar dijiye.",
+  ),
+  makeHindiText(
+    "मेरा goal Hindi expression में progress करना है।",
+    "Mera goal Hindi expression mein progress karna hai.",
+  ),
+  makeHindiText(
+    "Team को एक better plan और clear direction चाहिए।",
+    "Team ko ek better plan aur clear direction chahiye.",
+  ),
+];
 
 const replacementLibrary = [
-  ["kaam", "karya", "work or purposeful task"],
-  ["jaldi", "sheeghra", "soon or without delay"],
-  ["koshish", "prayas", "effort or attempt"],
-  ["madad", "sahayata", "help or assistance"],
-  ["problem", "samasya", "problem or issue"],
-  ["solution", "samadhan", "solution or resolution"],
-  ["clear", "spasht", "clear"],
-  ["confusion", "aspashtata", "lack of clarity"],
+  ["kaam", "काम", "karya", "कार्य", "work or purposeful task"],
+  ["jaldi", "जल्दी", "sheeghra", "शीघ्र", "soon or without delay"],
+  ["koshish", "कोशिश", "prayas", "प्रयास", "effort or attempt"],
+  ["madad", "मदद", "sahayata", "सहायता", "help or assistance"],
+  ["problem", "प्रॉब्लम", "samasya", "समस्या", "problem or issue"],
+  ["solution", "सॉल्यूशन", "samadhan", "समाधान", "solution or resolution"],
+  ["clear", "क्लियर", "spasht", "स्पष्ट", "clear"],
+  ["confusion", "कन्फ़्यूज़न", "aspashtata", "अस्पष्टता", "lack of clarity"],
 ] as const;
 
-function replacement(original: string, upgraded: string, meaning: string): WordReplacement {
+function replacement(
+  original: string,
+  originalDev: string,
+  upgraded: string,
+  upgradedDev: string,
+  meaning: string,
+): WordReplacement {
   return {
-    original: makeHindiText(toDevanagari(original), original, meaning),
-    replacement: makeHindiText(toDevanagari(upgraded), upgraded, meaning),
+    original: makeHindiText(originalDev, original, meaning),
+    replacement: makeHindiText(upgradedDev, upgraded, meaning),
     meaning,
     whyBetter: `${upgraded} sentence ko zyada sundar aur spasht banata hai.`,
     naturalness: "formal",
@@ -35,7 +58,9 @@ function replacement(original: string, upgraded: string, meaning: string): WordR
 
 const defaultReplacements = replacementLibrary
   .slice(0, 3)
-  .map(([original, upgraded, meaning]) => replacement(original, upgraded, meaning));
+  .map(([original, originalDev, upgraded, upgradedDev, meaning]) =>
+    replacement(original, originalDev, upgraded, upgradedDev, meaning),
+  );
 
 export const defaultTransformationExample: PracticeResponse = {
   transcript: hintPracticeSentences[0].roman,
@@ -68,7 +93,9 @@ export function getMockPracticeResponse(transcript: string): PracticeResponse {
   const found = replacementLibrary
     .filter(([original]) => new RegExp(`\\b${escapeRegex(original)}\\b`, "i").test(cleanedTranscript))
     .slice(0, 3)
-    .map(([original, upgraded, meaning]) => replacement(original, upgraded, meaning));
+    .map(([original, originalDev, upgraded, upgradedDev, meaning]) =>
+      replacement(original, originalDev, upgraded, upgradedDev, meaning),
+    );
   const replacements = found.length ? found : defaultReplacements.slice(0, 2);
   const roman = replacements.reduce(
     (sentence, item) => sentence.replace(
@@ -85,15 +112,17 @@ export function getMockPracticeResponse(transcript: string): PracticeResponse {
     .replace(/\bprayas\b/gi, "gambhir prayatna")
     .replace(/\bsamadhan\b/gi, "uchit samadhan");
 
+  // Demo mode has no transliteration engine, so the romanized sentence stands in
+  // for both scripts. Real AI responses always carry proper Devanagari.
   return {
     transcript: cleanedTranscript,
     naturalElegantVersion: makeHindiText(
-      toDevanagari(elegantRoman),
+      elegantRoman,
       elegantRoman,
       "A more elegant version of the original sentence.",
     ),
     elevatedVersion: makeHindiText(
-      toDevanagari(elevatedRoman),
+      elevatedRoman,
       elevatedRoman,
       "A more elevated version of the original sentence.",
     ),
@@ -103,7 +132,7 @@ export function getMockPracticeResponse(transcript: string): PracticeResponse {
       wordDev: item.replacement.dev,
       meaning: item.meaning,
       simpleAlternative: item.original.roman,
-      exampleSentence: toDevanagari(elegantRoman),
+      exampleSentence: elegantRoman,
     })),
   };
 }

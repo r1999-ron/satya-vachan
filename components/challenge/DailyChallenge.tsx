@@ -71,7 +71,13 @@ const initialChallengeState: ChallengeState = {
   lastFailedStep: null,
 };
 
-export function DailyChallenge({ word }: { word: WordEntry }) {
+export function DailyChallenge({
+  isToday = true,
+  word,
+}: {
+  isToday?: boolean;
+  word: WordEntry;
+}) {
   const starters = useMemo(() => getSentenceStarters(word), [word]);
   const resultRef = useRef<HTMLDivElement | null>(null);
   const { completedToday, completeToday } = useStreak();
@@ -202,14 +208,11 @@ export function DailyChallenge({ word }: { word: WordEntry }) {
       <GlassCard className="animate-floatIn p-5 sm:p-7">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-sm font-bold text-amber-800 dark:text-amber-200">
-              Daily challenge
-            </p>
             <h2
               id="daily-challenge-title"
-              className="mt-1 text-2xl font-bold tracking-[-0.025em] text-ink sm:text-3xl dark:text-white"
+              className="text-2xl font-bold tracking-[-0.025em] text-ink sm:text-3xl dark:text-white"
             >
-              Try today&apos;s word
+              {isToday ? "Try today's word" : "Try this word"}
             </h2>
             <p className="mt-2 text-sm font-normal leading-6 text-zinc-600 dark:text-zinc-300">
               Say or type a sentence and check how effectively you have used it.
@@ -221,6 +224,7 @@ export function DailyChallenge({ word }: { word: WordEntry }) {
           <ChallengeBanner
             completedToday={completedToday}
             disabled={isBusy}
+            isToday={isToday}
             onStarterSelect={handleStarterSelect}
             selectedStarter={state.selectedStarter}
             starters={starters}

@@ -46,7 +46,7 @@ export function SpeakBetterHindiTagline() {
       <h1
         lang="hi"
         aria-label={currentTagline}
-        className="rounded-2xl border border-amber-200/55 bg-gradient-to-r from-amber-100/70 via-orange-50/70 to-rose-100/60 px-4 py-3 text-balance font-hindi text-3xl font-bold leading-[1.35] tracking-[-0.035em] text-ink shadow-sm shadow-amber-900/5 sm:px-5 sm:text-5xl dark:border-amber-200/10 dark:from-amber-300/10 dark:via-orange-300/8 dark:to-rose-300/10 dark:text-white"
+        className="rounded-2xl border border-amber-200/55 bg-gradient-to-r from-amber-100/70 via-orange-50/70 to-rose-100/60 px-4 py-3 text-balance font-hindi text-base font-semibold leading-[1.6] text-ink shadow-sm shadow-amber-900/5 sm:px-5 sm:text-lg dark:border-amber-200/10 dark:from-amber-300/10 dark:via-orange-300/8 dark:to-rose-300/10 dark:text-white"
       >
         {typedTagline.tagline === currentTagline ? typedTagline.text : ""}
         <span aria-hidden="true" className="ml-0.5 inline-block h-[0.95em] w-0.5 animate-pulse bg-amber-700 align-[-0.08em] dark:bg-amber-200" />
