@@ -13,7 +13,7 @@ type AiGuardGlobal = typeof globalThis & {
   __satyaVachanAiTokenBuckets?: Map<string, TokenBucket>;
 };
 
-const BUCKET_CAPACITY = 20;
+const BUCKET_CAPACITY = 40;
 const REFILL_PER_MINUTE = 10;
 const MAX_BUCKETS = 5_000;
 const STALE_BUCKET_MS = 30 * 60 * 1_000;
@@ -21,7 +21,7 @@ const ROUTE_COST: Record<AiRoute, number> = {
   challenge: 1,
   transform: 2,
   transcribe: 3,
-  tts: 4,
+  tts: 2,
 };
 
 const guardGlobal = globalThis as AiGuardGlobal;

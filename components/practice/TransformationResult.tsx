@@ -37,7 +37,6 @@ export function TransformationResult({
         />
         <VersionPanel
           label="Scholarly"
-          preload
           text={result.elevatedVersion}
           variant="elevated"
           onAudioStatusChange={onAudioStatusChange}

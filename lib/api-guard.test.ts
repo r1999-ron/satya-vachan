@@ -33,8 +33,25 @@ describe("AI API guard", () => {
     });
   });
 
+  it("allows two complete practice demos from the same IP", () => {
+    for (let run = 0; run < 2; run += 1) {
+      expect(
+        guardAiRequest(makeRequest({ ip: "test-demo-burst" }), "transcribe"),
+      ).toBeNull();
+      expect(
+        guardAiRequest(makeRequest({ ip: "test-demo-burst" }), "transform"),
+      ).toBeNull();
+      expect(
+        guardAiRequest(makeRequest({ ip: "test-demo-burst" }), "tts"),
+      ).toBeNull();
+      expect(
+        guardAiRequest(makeRequest({ ip: "test-demo-burst" }), "tts"),
+      ).toBeNull();
+    }
+  });
+
   it("rate-limits costly requests with a shared per-IP token bucket", async () => {
-    for (let index = 0; index < 5; index += 1) {
+    for (let index = 0; index < 20; index += 1) {
       expect(guardAiRequest(makeRequest({ ip: "test-rate-limit" }), "tts")).toBeNull();
     }
 

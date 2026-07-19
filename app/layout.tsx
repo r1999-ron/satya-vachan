@@ -43,7 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
     // Retain the stable public fallback for malformed proxy headers.
   }
 
-  const socialImage = new URL("/application-banner.png", metadataBase).toString();
+  const socialImage = new URL("/application-banner.jpg", metadataBase).toString();
 
   return {
     title: { default: brandName, template: `%s | ${brandName}` },

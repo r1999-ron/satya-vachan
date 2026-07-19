@@ -71,3 +71,8 @@ TypeScript or application changes, run `pnpm lint`, `pnpm typecheck`, and
   dirty working tree.
 - Do not introduce dependencies or perform deployment, external API mutations,
   or repository history rewrites unless explicitly requested.
+
+## Important
+If you are making changes to the UI, then amke sure that you test the application using the Playwright MCP server and the Chrome Dev Tools MCP server to make sure that it looks good. Take screenshots and verify the affected pages.
+
+The Details about the product is present in the file docs/PRODUCT_IDEA.md. Refer to it to make sure that the changes that you are doing is in line with that vision.
