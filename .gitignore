@@ -9,3 +9,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# Generated from data/word-corpus.bilingual.csv by scripts/generate-word-corpus.mjs
+data/word-corpus.generated.json

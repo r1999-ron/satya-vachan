@@ -1,13 +1,15 @@
 # Satya-Vachan
 
-Satya-Vachan is an AI-powered Hindi expression coach for fluent Hindi speakers who want to make everyday Hindi sound more polished, articulate, and graceful.
+![Satya-Vachan application banner](public/application-banner.jpg)
+
+Satya-Vachan is an AI-powered Hindi expression coach for fluent Hindi speakers who want to make everyday Hindi sound more elegant, articulate, and graceful.
 
 ## Local Development
 
 1. Install dependencies:
 
    ```bash
-   npm install
+   pnpm install
    ```
 
 2. Create a local environment file:
@@ -20,6 +22,16 @@ Satya-Vachan is an AI-powered Hindi expression coach for fluent Hindi speakers w
 
    ```text
    OPENAI_API_KEY=sk-...
+   ```
+
+   Every OpenAI model can be configured independently. The defaults are:
+
+   ```text
+   OPENAI_TRANSCRIBE_MODEL=gpt-4o-mini-transcribe
+   OPENAI_TRANSCRIPT_FORMAT_MODEL=gpt-5.4-nano-2026-03-17
+   OPENAI_TRANSFORM_MODEL=gpt-4o-mini
+   OPENAI_CHALLENGE_MODEL=gpt-4o-mini
+   OPENAI_TTS_MODEL=gpt-4o-mini-tts
    ```
 
    To enable Langfuse tracing, also add the API keys from your Langfuse project:
@@ -38,7 +50,7 @@ Satya-Vachan is an AI-powered Hindi expression coach for fluent Hindi speakers w
 4. Start the app:
 
    ```bash
-   npm run dev
+   pnpm dev
    ```
 
 The app's static screens, localStorage progress, learned words, and typed fallback flows still render without `OPENAI_API_KEY`. AI transcription, transformation, challenge validation, and text-to-speech return a graceful unavailable state until the key is configured.
@@ -50,6 +62,11 @@ The app's static screens, localStorage progress, learned words, and typed fallba
 
    ```text
    OPENAI_API_KEY
+   OPENAI_TRANSCRIBE_MODEL
+   OPENAI_TRANSCRIPT_FORMAT_MODEL
+   OPENAI_TRANSFORM_MODEL
+   OPENAI_CHALLENGE_MODEL
+   OPENAI_TTS_MODEL
    LANGFUSE_PUBLIC_KEY
    LANGFUSE_SECRET_KEY
    LANGFUSE_BASE_URL
@@ -75,11 +92,11 @@ tracing if users may submit other sensitive material in their Hindi practice.
 ## Scripts
 
 ```bash
-npm run dev
-npm run lint
-npm run typecheck
-npm run build
-npm run start
+pnpm dev
+pnpm lint
+pnpm typecheck
+pnpm build
+pnpm start
 ```
 
 ## Deployment Readiness Checklist

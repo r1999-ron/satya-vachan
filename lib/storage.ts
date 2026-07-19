@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { getSeedLearnedWords } from "@/data/demo";
-import { getTodayKey } from "@/lib/dates";
+import { getTodayKey, shiftDateKey } from "@/lib/dates";
 import { DEFAULT_SCRIPT_PREFERENCE, isHindiText, makeHindiText } from "@/lib/hindi";
 import type {
   LearnedWord,
@@ -8,7 +8,6 @@ import type {
   PracticeResponse,
   ScriptPreference,
   StreakState,
-  VoicePreference,
 } from "@/types";
 
 export const STORAGE_KEYS = {
@@ -20,7 +19,7 @@ export const STORAGE_KEYS = {
 
 export type PracticeHistoryItem = Pick<
   PracticeResponse,
-  "transcript" | "naturalPolishedVersion" | "elevatedVersion" | "improvedEleganceScore"
+  "transcript" | "naturalElegantVersion" | "elevatedVersion"
 > & {
   id: string;
   savedAt: string;
@@ -36,13 +35,11 @@ const EMPTY_STREAK: StreakState = {
 const PRACTICE_HISTORY_LIMIT = 10;
 const COMPLETED_CHALLENGES_LIMIT = 60;
 const PREFERENCES_EVENT = "satya-vachan:preferences";
+const STREAK_EVENT = "satya-vachan:streak";
 
 type Preferences = {
   script: ScriptPreference;
-  voice: VoicePreference;
 };
-
-const DEFAULT_VOICE_PREFERENCE: VoicePreference = "female";
 
 export function canUseLocalStorage() {
   if (typeof window === "undefined") {
@@ -202,9 +199,8 @@ function isPracticeHistoryItem(value: unknown): value is PracticeHistoryItem {
     typeof value.id === "string" &&
     typeof value.savedAt === "string" &&
     typeof value.transcript === "string" &&
-    (typeof value.naturalPolishedVersion === "string" || isHindiText(value.naturalPolishedVersion)) &&
-    (typeof value.elevatedVersion === "string" || isHindiText(value.elevatedVersion)) &&
-    typeof value.improvedEleganceScore === "number"
+    (typeof value.naturalElegantVersion === "string" || isHindiText(value.naturalElegantVersion)) &&
+    (typeof value.elevatedVersion === "string" || isHindiText(value.elevatedVersion))
   );
 }
 
@@ -335,13 +331,6 @@ export function loadStreakState(): StreakState {
   return normalized;
 }
 
-function getPreviousDateKey(dateKey: string) {
-  const [year, month, day] = dateKey.split("-").map(Number);
-  const date = new Date(year, month - 1, day);
-  date.setDate(date.getDate() - 1);
-  return getTodayKey(date);
-}
-
 export function completeTodaysChallenge(date: Date = new Date()): StreakState {
   const todayKey = getTodayKey(date);
   const previousState = loadStreakState();
@@ -355,10 +344,11 @@ export function completeTodaysChallenge(date: Date = new Date()): StreakState {
       ]),
     };
     writeJson(STORAGE_KEYS.streak, nextState);
+    dispatchStreakEvent(nextState);
     return nextState;
   }
 
-  const yesterdayKey = getPreviousDateKey(todayKey);
+  const yesterdayKey = shiftDateKey(todayKey, -1);
   const currentStreak =
     previousState.lastCompletedDate === yesterdayKey ? previousState.currentStreak + 1 : 1;
   const nextState: StreakState = {
@@ -372,7 +362,14 @@ export function completeTodaysChallenge(date: Date = new Date()): StreakState {
   };
 
   writeJson(STORAGE_KEYS.streak, nextState);
+  dispatchStreakEvent(nextState);
   return nextState;
+}
+
+function dispatchStreakEvent(streak: StreakState) {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent(STREAK_EVENT, { detail: streak }));
+  }
 }
 
 export function isChallengeComplete(date: Date = new Date()) {
@@ -393,10 +390,10 @@ export function loadPracticeHistory(): PracticeHistoryItem[] {
     .filter(isPracticeHistoryItem)
     .map((item) => ({
       ...item,
-      naturalPolishedVersion:
-        typeof item.naturalPolishedVersion === "string"
-          ? makeHindiText(item.naturalPolishedVersion, item.naturalPolishedVersion)
-          : item.naturalPolishedVersion,
+      naturalElegantVersion:
+        typeof item.naturalElegantVersion === "string"
+          ? makeHindiText(item.naturalElegantVersion, item.naturalElegantVersion)
+          : item.naturalElegantVersion,
       elevatedVersion:
         typeof item.elevatedVersion === "string"
           ? makeHindiText(item.elevatedVersion, item.elevatedVersion)
@@ -420,9 +417,8 @@ export function savePracticeHistory(response: PracticeResponse): PracticeHistory
     id: createId("practice"),
     savedAt: getTodayKey(),
     transcript: response.transcript.trim(),
-    naturalPolishedVersion: response.naturalPolishedVersion,
+    naturalElegantVersion: response.naturalElegantVersion,
     elevatedVersion: response.elevatedVersion,
-    improvedEleganceScore: response.improvedEleganceScore,
   };
   const nextHistory = [item, ...loadPracticeHistory()].slice(0, PRACTICE_HISTORY_LIMIT);
 
@@ -479,17 +475,17 @@ export function useStreak() {
   const [completedToday, setCompletedToday] = useState(false);
 
   useEffect(() => {
-    let isActive = true;
+    const syncStreak = () => {
+      setStreak(loadStreakState());
+      setCompletedToday(isChallengeComplete());
+    };
 
-    queueMicrotask(() => {
-      if (isActive) {
-        setStreak(loadStreakState());
-        setCompletedToday(isChallengeComplete());
-      }
-    });
-
+    syncStreak();
+    window.addEventListener("storage", syncStreak);
+    window.addEventListener(STREAK_EVENT, syncStreak);
     return () => {
-      isActive = false;
+      window.removeEventListener("storage", syncStreak);
+      window.removeEventListener(STREAK_EVENT, syncStreak);
     };
   }, []);
 
@@ -533,35 +529,18 @@ function isScriptPreference(value: unknown): value is ScriptPreference {
   return value === "dev" || value === "roman" || value === "both";
 }
 
-function isVoicePreference(value: unknown): value is VoicePreference {
-  return value === "female" || value === "male";
-}
-
 export function loadPreferences(): Preferences {
   const stored = readJson<unknown>(STORAGE_KEYS.preferences, {});
   const script =
     isRecord(stored) && isScriptPreference(stored.script)
       ? stored.script
       : DEFAULT_SCRIPT_PREFERENCE;
-  const voice =
-    isRecord(stored) && isVoicePreference(stored.voice)
-      ? stored.voice
-      : DEFAULT_VOICE_PREFERENCE;
 
-  return { script, voice };
+  return { script };
 }
 
 export function saveScriptPreference(script: ScriptPreference) {
   const preferences = { ...loadPreferences(), script };
-  writeJson(STORAGE_KEYS.preferences, preferences);
-  if (typeof window !== "undefined") {
-    window.dispatchEvent(new CustomEvent(PREFERENCES_EVENT, { detail: preferences }));
-  }
-  return preferences;
-}
-
-export function saveVoicePreference(voice: VoicePreference) {
-  const preferences = { ...loadPreferences(), voice };
   writeJson(STORAGE_KEYS.preferences, preferences);
   if (typeof window !== "undefined") {
     window.dispatchEvent(new CustomEvent(PREFERENCES_EVENT, { detail: preferences }));
@@ -589,28 +568,4 @@ export function useScriptPreference() {
   }, []);
 
   return { preference, setScriptPreference };
-}
-
-export function useVoicePreference() {
-  const [preference, setPreference] = useState<VoicePreference>(
-    DEFAULT_VOICE_PREFERENCE,
-  );
-
-  useEffect(() => {
-    const syncPreference = () => setPreference(loadPreferences().voice);
-    syncPreference();
-    window.addEventListener("storage", syncPreference);
-    window.addEventListener(PREFERENCES_EVENT, syncPreference);
-    return () => {
-      window.removeEventListener("storage", syncPreference);
-      window.removeEventListener(PREFERENCES_EVENT, syncPreference);
-    };
-  }, []);
-
-  const setVoicePreference = useCallback((voice: VoicePreference) => {
-    saveVoicePreference(voice);
-    setPreference(voice);
-  }, []);
-
-  return { preference, setVoicePreference };
 }

@@ -7,6 +7,7 @@ import {
   isLocalDemoMockModeEnabled,
   isOpenAIConfigured,
 } from "@/lib/openai";
+import { OPENAI_MODELS } from "@/lib/openai-models";
 import {
   TRANSFORMATION_SYSTEM_PROMPT,
   buildTransformationUserPrompt,
@@ -20,7 +21,6 @@ import {
 
 export const runtime = "nodejs";
 
-const TRANSFORM_MODEL = process.env.OPENAI_TRANSFORM_MODEL ?? "gpt-4o-mini";
 const TRANSFORM_MAX_TOKENS = 1_400;
 
 type TransformRequestBody = {
@@ -64,12 +64,7 @@ export async function POST(request: Request) {
   if (!isOpenAIConfigured()) {
     if (isLocalDemoMockModeEnabled()) {
       const mockResponse = normalizePracticeResponse(
-        {
-          ...getMockPracticeResponse(transcript),
-          feedback:
-            "Demo mode: OpenAI is not configured, so this uses deterministic sample coaching. " +
-            getMockPracticeResponse(transcript).feedback,
-        },
+        getMockPracticeResponse(transcript),
         transcript,
       );
 
@@ -98,7 +93,7 @@ export async function POST(request: Request) {
         language: "hi",
       },
     }).chat.completions.create({
-      model: TRANSFORM_MODEL,
+      model: OPENAI_MODELS.transformation,
       messages: [
         { role: "system", content: TRANSFORMATION_SYSTEM_PROMPT },
         { role: "user", content: buildTransformationUserPrompt(transcript) },

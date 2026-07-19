@@ -1,33 +1,59 @@
-import { bilingualWordEntry, type LegacyWordEntry } from "@/data/bilingual-corpus";
-import { generatedWordCorpus } from "@/data/word-corpus.generated";
-import type { WordEntry } from "@/types";
+import generatedWordCorpus from "@/data/word-corpus.generated.json";
+import type { HindiText, WordEntry } from "@/types";
 import { getTodayKey } from "@/lib/dates";
 
 const WORD_OF_DAY_EPOCH = "2026-01-01";
 
-const legacyFallbackWordEntry: LegacyWordEntry = {
-  id: "fallback-karya",
-  common: "kaam",
-  elevated: "karya",
+type GeneratedWordEntry = {
+  id: number;
+  common: HindiText;
+  elevated: HindiText;
+  englishMeaning: string;
+  simpleExample: HindiText;
+  elevatedExample: HindiText;
+  scholarExample: HindiText;
+  synonyms: HindiText[];
+  usageNote: string;
+  challengePrompt: string;
+  tags: string[];
+  difficulty: WordEntry["difficulty"];
+};
+
+export const fallbackWordEntry: WordEntry = {
+  id: "0",
+  common: { dev: "काम", roman: "kaam" },
+  elevated: { dev: "कार्य", roman: "karya" },
   englishMeaning: "work, task, or purposeful action",
-  simpleExample: "Humne yeh kaam samay par poora kiya.",
-  elevatedExample: "Humne yeh karya samay par poora kiya.",
-  scholarExample:
-    "Nirdharit avadhi mein is karya ka sampadan safalatapurvak sampann hua.",
-  synonyms: ["kaarya", "kartavya", "prayojan"],
-  usageNote:
-    "Karya sounds polished but remains natural for everyday professional speech.",
-  challengePrompt:
-    "Apne din ke kisi mahatvapurn karya ke baare mein ek vaakya kahiye.",
+  simpleExample: {
+    dev: "हमने यह काम समय पर पूरा किया।",
+    roman: "Humne yeh kaam samay par poora kiya.",
+  },
+  elevatedExample: {
+    dev: "हमने यह कार्य समय पर पूरा किया।",
+    roman: "Humne yeh karya samay par poora kiya.",
+  },
+  scholarExample: {
+    dev: "निर्धारित अवधि में इस कार्य का संपादन सफलतापूर्वक संपन्न हुआ।",
+    roman: "Nirdharit avadhi mein is karya ka sampadan safalatapurvak sampann hua.",
+  },
+  synonyms: [
+    { dev: "कर्तव्य", roman: "kartavya" },
+    { dev: "प्रयोजन", roman: "prayojan" },
+  ],
+  usageNote: "Karya sounds elegant but remains natural for everyday professional speech.",
+  challengePrompt: "Apne din ke kisi mahatvapurn karya ke baare mein ek vaakya kahiye.",
+  starters: [],
   tags: ["work", "daily speech", "professional"],
   difficulty: "easy",
 };
 
-export const fallbackWordEntry: WordEntry = bilingualWordEntry(legacyFallbackWordEntry);
-
-const legacyWordCorpus = generatedWordCorpus;
-
-export const wordCorpus: WordEntry[] = legacyWordCorpus.map(bilingualWordEntry);
+export const wordCorpus: WordEntry[] = (generatedWordCorpus as GeneratedWordEntry[]).map(
+  (entry) => ({
+    ...entry,
+    id: String(entry.id),
+    starters: [],
+  }),
+);
 
 function getDaysSinceEpoch(dateKey: string) {
   const [year, month, day] = dateKey.split("-").map(Number);
@@ -51,18 +77,15 @@ function validateWordCorpus(words: WordEntry[]) {
       word.englishMeaning,
       word.simpleExample.dev,
       word.simpleExample.roman,
-      word.simpleExample.en,
       word.elevatedExample.dev,
       word.elevatedExample.roman,
-      word.elevatedExample.en,
       word.scholarExample.dev,
       word.scholarExample.roman,
-      word.scholarExample.en,
       word.usageNote,
       word.challengePrompt,
-    ].filter((field): field is string => typeof field === "string");
+    ];
 
-    if (requiredFields.some((field) => field.trim().length === 0)) {
+    if (requiredFields.some((field) => typeof field !== "string" || field.trim().length === 0)) {
       throw new Error(`Word corpus entry "${word.id || "unknown"}" is missing a required field.`);
     }
 

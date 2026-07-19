@@ -10,18 +10,18 @@ import type { ChallengeResponse } from "@/types";
 
 type ChallengeFeedbackProps = {
   fallbackNotice: string;
-  onPolish?: () => void;
-  polishDisabled?: boolean;
-  polishInProgress?: boolean;
+  onElevate?: () => void;
+  elevateDisabled?: boolean;
+  elevateInProgress?: boolean;
   result: ChallengeResponse;
   targetWord: string;
 };
 
 export function ChallengeFeedback({
   fallbackNotice,
-  onPolish,
-  polishDisabled = false,
-  polishInProgress = false,
+  onElevate,
+  elevateDisabled = false,
+  elevateInProgress = false,
   result,
   targetWord,
 }: ChallengeFeedbackProps) {
@@ -95,15 +95,15 @@ export function ChallengeFeedback({
         </div>
       ) : null}
 
-      {successful && onPolish ? (
+      {successful && onElevate ? (
         <button
           type="button"
-          onClick={onPolish}
-          disabled={polishDisabled}
+          onClick={onElevate}
+          disabled={elevateDisabled}
           className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-emerald-300/70 bg-white/70 px-4 py-2.5 text-sm font-bold text-emerald-950 transition hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/45 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto dark:border-emerald-300/25 dark:bg-white/8 dark:text-emerald-100 dark:hover:bg-white/12"
         >
           <WandSparkles size={16} aria-hidden="true" />
-          {polishInProgress ? "Polishing…" : "Polish this sentence too →"}
+          {elevateInProgress ? "Elevating…" : "Elevate this sentence too →"}
         </button>
       ) : null}
     </GlassCard>

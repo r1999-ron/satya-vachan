@@ -6,6 +6,7 @@ import {
   isLocalDemoMockModeEnabled,
   isOpenAIConfigured,
 } from "@/lib/openai";
+import { OPENAI_MODELS } from "@/lib/openai-models";
 import {
   CHALLENGE_SYSTEM_PROMPT,
   buildChallengeUserPrompt,
@@ -21,7 +22,6 @@ import { containsTargetWord } from "@/lib/word-match";
 
 export const runtime = "nodejs";
 
-const CHALLENGE_MODEL = process.env.OPENAI_CHALLENGE_MODEL ?? "gpt-4o-mini";
 const CHALLENGE_MAX_TOKENS = 500;
 
 type ChallengeRequestBody = {
@@ -100,7 +100,7 @@ export async function POST(request: Request) {
         language: "hi",
       },
     }).chat.completions.create({
-      model: CHALLENGE_MODEL,
+      model: OPENAI_MODELS.challenge,
       messages: [
         { role: "system", content: CHALLENGE_SYSTEM_PROMPT },
         {

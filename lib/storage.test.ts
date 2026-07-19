@@ -12,7 +12,6 @@ import {
   restoreLearnedWord,
   saveLearnedWord,
   savePracticeHistory,
-  saveVoicePreference,
 } from "@/lib/storage";
 import { seedLearnedWords } from "@/data/demo";
 import type { PracticeResponse } from "@/types";
@@ -94,12 +93,8 @@ describe("storage", () => {
     expect(canUseLocalStorage()).toBe(false);
   });
 
-  it("defaults to a female voice and persists a selected voice", () => {
-    expect(loadPreferences()).toEqual({ script: "both", voice: "female" });
-
-    saveVoicePreference("male");
-
-    expect(loadPreferences()).toEqual({ script: "both", voice: "male" });
+  it("defaults to the Devanagari script", () => {
+    expect(loadPreferences()).toEqual({ script: "dev" });
   });
 
   it("initializes learned words from the seed data when the key is missing", () => {
@@ -268,6 +263,27 @@ describe("storage", () => {
     });
   });
 
+  it("notifies other streak consumers when a challenge is completed", () => {
+    const dispatchEvent = vi.fn<(event: Event) => boolean>(() => true);
+    Object.defineProperty(globalThis, "window", {
+      configurable: true,
+      value: {
+        localStorage: storage,
+        addEventListener: () => undefined,
+        removeEventListener: () => undefined,
+        dispatchEvent,
+      },
+    });
+
+    const streak = completeTodaysChallenge(new Date("2026-07-18T12:00:00.000Z"));
+
+    expect(dispatchEvent).toHaveBeenCalledOnce();
+    expect(dispatchEvent.mock.calls[0]?.[0]).toMatchObject({
+      type: "satya-vachan:streak",
+      detail: streak,
+    });
+  });
+
   it("keeps only the 60 most recent challenge completion keys", () => {
     const completedChallenges = Array.from(
       { length: 70 },
@@ -300,11 +316,8 @@ describe("storage", () => {
   it("saves bounded practice history and removes corrupt entries", () => {
     const response: PracticeResponse = {
       transcript: "  original  ",
-      naturalPolishedVersion: { dev: "परिष्कृत", roman: "polished", en: "polished" },
+      naturalElegantVersion: { dev: "परिष्कृत", roman: "elegant", en: "elegant" },
       elevatedVersion: { dev: "उन्नत", roman: "elevated", en: "elevated" },
-      originalEleganceScore: 40,
-      improvedEleganceScore: 65,
-      feedback: "nice",
       replacements: [],
       saveableWords: [],
     };
@@ -321,9 +334,8 @@ describe("storage", () => {
     expect(history[0]).toMatchObject({
       savedAt: "2026-07-18",
       transcript: "sentence 11",
-      naturalPolishedVersion: { dev: "परिष्कृत", roman: "polished", en: "polished" },
+      naturalElegantVersion: { dev: "परिष्कृत", roman: "elegant", en: "elegant" },
       elevatedVersion: { dev: "उन्नत", roman: "elevated", en: "elevated" },
-      improvedEleganceScore: 65,
     });
 
     storage.setItem(STORAGE_KEYS.practiceHistory, JSON.stringify([...history, { id: "bad" }]));

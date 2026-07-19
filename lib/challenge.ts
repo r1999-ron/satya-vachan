@@ -6,7 +6,29 @@ export function getSentenceStarters(wordEntry: WordEntry) {
     .map((starter) => starter.dev.trim())
     .filter(Boolean);
 
-  return starters.length > 0 ? starters : [wordEntry.elevatedExample.dev];
+  if (starters.length > 0) {
+    return starters;
+  }
+
+  const derived = deriveStarter(wordEntry.elevatedExample.dev, wordEntry.elevated.dev);
+  return derived ? [derived] : [];
+}
+
+// A starter must invite the user to finish the sentence themselves, so it stops
+// before the target word ever appears. Sentences that open with the target word
+// produce no starter at all rather than giving the answer away.
+function deriveStarter(sentence: string, targetWord: string) {
+  const tokens = sentence.replace(/[।.!?…]+\s*$/u, "").split(/\s+/).filter(Boolean);
+  const targetIndex = targetWord
+    ? tokens.findIndex((token) => token.includes(targetWord))
+    : -1;
+  const cutoff = targetIndex === -1 ? Math.min(4, tokens.length - 2) : targetIndex;
+
+  if (cutoff < 2) {
+    return null;
+  }
+
+  return `${tokens.slice(0, cutoff).join(" ")} …`;
 }
 
 export function evaluateChallengeLocally(

@@ -13,30 +13,30 @@ import { isApiRequestErrorCode, requestJson } from "@/lib/api-client";
 import { cacheTtsAudio, getCachedTtsAudio } from "@/lib/tts-cache";
 import { cn } from "@/lib/utils";
 import { normalizeTtsResponse } from "@/lib/validators";
-import type { TtsResponse, VoicePreference } from "@/types";
+import type { TtsResponse } from "@/types";
 
 type AudioVariant = "natural" | "elevated";
 
 type AudioPlayerProps = {
-  autoPlay?: boolean;
   className?: string;
   label?: string;
   onStatusChange?: (status: PlayerStatus) => void;
+  preload?: boolean;
   text: string;
+  tone?: "primary" | "neutral";
   variant?: AudioVariant;
-  voice?: VoicePreference;
 };
 
 type PlayerStatus = "idle" | "loading" | "ready" | "playing" | "error";
 
 export function AudioPlayer({
-  autoPlay = false,
   className,
   label = "Listen",
   onStatusChange,
+  preload = false,
   text,
+  tone = "neutral",
   variant = "natural",
-  voice = "female",
 }: AudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -74,7 +74,7 @@ export function AudioPlayer({
 
     const cachedAudio = force
       ? undefined
-      : getCachedTtsAudio(trimmedText, variant, voice);
+      : getCachedTtsAudio(trimmedText, variant);
 
     if (cachedAudio) {
       const cachedUrl = URL.createObjectURL(cachedAudio);
@@ -95,7 +95,7 @@ export function AudioPlayer({
     try {
       const payload = await requestJson<TtsResponse>("/api/tts", {
         method: "POST",
-        body: { text: trimmedText, variant, voice },
+        body: { text: trimmedText, variant },
         signal: controller.signal,
         fallbackMessage: "Audio generation failed. Please try again.",
         timeoutMs: 20_000,
@@ -104,7 +104,7 @@ export function AudioPlayer({
 
       const blob = base64ToAudioBlob(payload.audioBase64, payload.mimeType);
       const nextUrl = URL.createObjectURL(blob);
-      cacheTtsAudio(trimmedText, variant, voice, blob);
+      cacheTtsAudio(trimmedText, variant, blob);
 
       clearGeneratedUrl();
       generatedUrlRef.current = nextUrl;
@@ -129,7 +129,7 @@ export function AudioPlayer({
         abortRef.current = null;
       }
     }
-  }, [audioUrl, clearGeneratedUrl, isLoading, trimmedText, variant, voice]);
+  }, [audioUrl, clearGeneratedUrl, isLoading, trimmedText, variant]);
 
   useEffect(() => {
     return () => {
@@ -153,23 +153,19 @@ export function AudioPlayer({
       setStatus("playing");
     } catch {
       setStatus("ready");
-      setError("Playback could not start. Try Listen again.");
+      setError("Playback could not start. Please try Listen again.");
     }
   }, []);
 
   useEffect(() => {
-    if (autoPlay && trimmedText && status === "idle" && !audioUrl) {
+    if (preload && trimmedText && status === "idle" && !audioUrl) {
       const playTimer = window.setTimeout(() => {
-        void loadAudio().then((nextUrl) => {
-          if (nextUrl) {
-            void playAudio(nextUrl);
-          }
-        });
+        void loadAudio();
       }, 0);
 
       return () => window.clearTimeout(playTimer);
     }
-  }, [audioUrl, autoPlay, loadAudio, playAudio, status, trimmedText]);
+  }, [audioUrl, loadAudio, preload, status, trimmedText]);
 
   const handleTogglePlayback = async () => {
     if (!trimmedText || isLoading) {
@@ -181,6 +177,11 @@ export function AudioPlayer({
     if (isPlaying && audioElement) {
       audioElement.pause();
       setStatus("ready");
+      return;
+    }
+
+    if (audioUrl) {
+      await playAudio(audioUrl);
       return;
     }
 
@@ -198,11 +199,8 @@ export function AudioPlayer({
     setError("");
     setStatus("idle");
     clearGeneratedUrl();
-    const nextUrl = await loadAudio(true);
+    await loadAudio(true);
 
-    if (nextUrl && autoPlay) {
-      await playAudio(nextUrl);
-    }
   };
 
   return (
@@ -213,23 +211,28 @@ export function AudioPlayer({
           disabled={!trimmedText || isLoading}
           onClick={handleTogglePlayback}
           className={cn(
-            "inline-flex min-h-10 items-center justify-center gap-2 rounded-2xl px-3 py-2 text-xs font-bold transition focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:ring-offset-2 focus:ring-offset-paper active:scale-95 disabled:cursor-not-allowed disabled:opacity-70 dark:focus:ring-offset-zinc-950",
-            hasAudio
-              ? "border border-emerald-200/70 bg-emerald-100/70 text-emerald-950 dark:border-emerald-300/25 dark:bg-emerald-300/12 dark:text-emerald-100"
-              : "border border-white/60 bg-white/50 text-ink shadow-sm hover:-translate-y-0.5 dark:border-white/12 dark:bg-white/8 dark:text-white",
+            "inline-flex h-10 items-center justify-center gap-2.5 rounded-xl border px-3 text-xs font-bold shadow-sm transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:ring-offset-2 focus:ring-offset-paper active:scale-95 disabled:cursor-not-allowed disabled:opacity-70 dark:focus:ring-offset-zinc-950",
+            tone === "primary"
+              ? "border-emerald-700/15 bg-emerald-950 text-white hover:bg-emerald-900 dark:border-emerald-200/20 dark:bg-emerald-200 dark:text-emerald-950 dark:hover:bg-emerald-100"
+              : "border-zinc-900/10 bg-white/75 text-zinc-800 hover:bg-white dark:border-white/12 dark:bg-white/10 dark:text-white dark:hover:bg-white/15",
           )}
           aria-label={`${label} ${variant} audio`}
           aria-pressed={isPlaying}
         >
-          {isLoading ? (
-            <LoaderCircle className="motion-safe:animate-spin" size={16} aria-hidden="true" />
-          ) : isPlaying ? (
-            <Pause size={16} aria-hidden="true" />
-          ) : hasAudio ? (
-            <Play size={16} aria-hidden="true" />
-          ) : (
-            <Volume2 size={16} aria-hidden="true" />
-          )}
+          <span className={cn(
+            "grid size-6 place-items-center rounded-lg",
+            tone === "primary" ? "bg-white/15 dark:bg-emerald-950/10" : "bg-zinc-900/[0.06] dark:bg-white/12",
+          )}>
+            {isLoading ? (
+              <LoaderCircle className="motion-safe:animate-spin" size={15} aria-hidden="true" />
+            ) : isPlaying ? (
+              <Pause size={15} aria-hidden="true" />
+            ) : hasAudio ? (
+              <Play size={15} aria-hidden="true" />
+            ) : (
+              <Volume2 size={15} aria-hidden="true" />
+            )}
+          </span>
           {buttonLabel(status, label)}
         </button>
 

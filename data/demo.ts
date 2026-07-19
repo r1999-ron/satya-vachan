@@ -1,45 +1,70 @@
-import { toDevanagari } from "@/data/bilingual-corpus";
 import { wordCorpus } from "@/data/words";
 import { makeHindiText } from "@/lib/hindi";
 import type { LearnedWord, PracticeResponse, WordReplacement } from "@/types";
 
 export const hintPracticeSentences = [
-  "Humne is kaam ko jaldi khatam karne ki koshish ki.",
-  "Mujhe aapki madad se problem ka solution mil gaya.",
-  "Mera nazariya hai ki yeh decision important hai.",
-  "Is topic par thodi confusion hai, kripya clear kar dijiye.",
-  "Mera goal Hindi expression mein progress karna hai.",
-  "Team ko ek better plan aur clear direction chahiye.",
-].map((roman) => makeHindiText(toDevanagari(roman), roman));
+  makeHindiText(
+    "हमने इस काम को जल्दी ख़त्म करने की कोशिश की।",
+    "Humne is kaam ko jaldi khatam karne ki koshish ki.",
+  ),
+  makeHindiText(
+    "मुझे आपकी मदद से problem का solution मिल गया।",
+    "Mujhe aapki madad se problem ka solution mil gaya.",
+  ),
+  makeHindiText(
+    "मेरा नज़रिया है कि यह decision important है।",
+    "Mera nazariya hai ki yeh decision important hai.",
+  ),
+  makeHindiText(
+    "इस topic पर थोड़ी confusion है, कृपया clear कर दीजिए।",
+    "Is topic par thodi confusion hai, kripya clear kar dijiye.",
+  ),
+  makeHindiText(
+    "मेरा goal Hindi expression में progress करना है।",
+    "Mera goal Hindi expression mein progress karna hai.",
+  ),
+  makeHindiText(
+    "Team को एक better plan और clear direction चाहिए।",
+    "Team ko ek better plan aur clear direction chahiye.",
+  ),
+];
 
 const replacementLibrary = [
-  ["kaam", "karya", "work or purposeful task"],
-  ["jaldi", "sheeghra", "soon or without delay"],
-  ["koshish", "prayas", "effort or attempt"],
-  ["madad", "sahayata", "help or assistance"],
-  ["problem", "samasya", "problem or issue"],
-  ["solution", "samadhan", "solution or resolution"],
-  ["clear", "spasht", "clear"],
-  ["confusion", "aspashtata", "lack of clarity"],
+  ["kaam", "काम", "karya", "कार्य", "work or purposeful task"],
+  ["jaldi", "जल्दी", "sheeghra", "शीघ्र", "soon or without delay"],
+  ["koshish", "कोशिश", "prayas", "प्रयास", "effort or attempt"],
+  ["madad", "मदद", "sahayata", "सहायता", "help or assistance"],
+  ["problem", "प्रॉब्लम", "samasya", "समस्या", "problem or issue"],
+  ["solution", "सॉल्यूशन", "samadhan", "समाधान", "solution or resolution"],
+  ["clear", "क्लियर", "spasht", "स्पष्ट", "clear"],
+  ["confusion", "कन्फ़्यूज़न", "aspashtata", "अस्पष्टता", "lack of clarity"],
 ] as const;
 
-function replacement(original: string, polished: string, meaning: string): WordReplacement {
+function replacement(
+  original: string,
+  originalDev: string,
+  upgraded: string,
+  upgradedDev: string,
+  meaning: string,
+): WordReplacement {
   return {
-    original: makeHindiText(toDevanagari(original), original, meaning),
-    replacement: makeHindiText(toDevanagari(polished), polished, meaning),
+    original: makeHindiText(originalDev, original, meaning),
+    replacement: makeHindiText(upgradedDev, upgraded, meaning),
     meaning,
-    whyBetter: `${polished} sentence ko zyada polished aur spasht banata hai.`,
+    whyBetter: `${upgraded} sentence ko zyada sundar aur spasht banata hai.`,
     naturalness: "formal",
   };
 }
 
 const defaultReplacements = replacementLibrary
   .slice(0, 3)
-  .map(([original, polished, meaning]) => replacement(original, polished, meaning));
+  .map(([original, originalDev, upgraded, upgradedDev, meaning]) =>
+    replacement(original, originalDev, upgraded, upgradedDev, meaning),
+  );
 
 export const defaultTransformationExample: PracticeResponse = {
   transcript: hintPracticeSentences[0].roman,
-  naturalPolishedVersion: makeHindiText(
+  naturalElegantVersion: makeHindiText(
     "हमने इस कार्य को शीघ्र समाप्त करने का प्रयास किया।",
     "Humne is karya ko sheeghra samaapt karne ka prayas kiya.",
     "We tried to finish this work quickly.",
@@ -49,9 +74,6 @@ export const defaultTransformationExample: PracticeResponse = {
     "Humne is karya ko atishighra sampann karne ka gambhir prayatna kiya.",
     "We made a serious effort to complete this work very quickly.",
   ),
-  originalEleganceScore: 52,
-  improvedEleganceScore: 84,
-  feedback: "Baat wahi rahi, lekin shabd-chayan zyada spasht, vinamra, aur sajeev ho gaya.",
   replacements: defaultReplacements,
   saveableWords: defaultReplacements.map((item) => ({
     word: item.replacement.roman,
@@ -71,7 +93,9 @@ export function getMockPracticeResponse(transcript: string): PracticeResponse {
   const found = replacementLibrary
     .filter(([original]) => new RegExp(`\\b${escapeRegex(original)}\\b`, "i").test(cleanedTranscript))
     .slice(0, 3)
-    .map(([original, polished, meaning]) => replacement(original, polished, meaning));
+    .map(([original, originalDev, upgraded, upgradedDev, meaning]) =>
+      replacement(original, originalDev, upgraded, upgradedDev, meaning),
+    );
   const replacements = found.length ? found : defaultReplacements.slice(0, 2);
   const roman = replacements.reduce(
     (sentence, item) => sentence.replace(
@@ -80,36 +104,35 @@ export function getMockPracticeResponse(transcript: string): PracticeResponse {
     ),
     cleanedTranscript,
   );
-  const polishedRoman = roman === cleanedTranscript
+  const elegantRoman = roman === cleanedTranscript
     ? `${cleanedTranscript} Is baat ko aur spasht roop se kaha ja sakta hai.`
     : roman;
-  const elevatedRoman = polishedRoman
+  const elevatedRoman = elegantRoman
     .replace(/\bsheeghra\b/gi, "atishighra")
     .replace(/\bprayas\b/gi, "gambhir prayatna")
     .replace(/\bsamadhan\b/gi, "uchit samadhan");
 
+  // Demo mode has no transliteration engine, so the romanized sentence stands in
+  // for both scripts. Real AI responses always carry proper Devanagari.
   return {
     transcript: cleanedTranscript,
-    naturalPolishedVersion: makeHindiText(
-      toDevanagari(polishedRoman),
-      polishedRoman,
-      "A more polished version of the original sentence.",
+    naturalElegantVersion: makeHindiText(
+      elegantRoman,
+      elegantRoman,
+      "A more elegant version of the original sentence.",
     ),
     elevatedVersion: makeHindiText(
-      toDevanagari(elevatedRoman),
+      elevatedRoman,
       elevatedRoman,
       "A more elevated version of the original sentence.",
     ),
-    originalEleganceScore: cleanedTranscript.length < 28 ? 42 : 50,
-    improvedEleganceScore: cleanedTranscript.length < 28 ? 68 : 78,
-    feedback: "Mock practice ne aapke sentence mein polish ke liye upyogi shabd-chayan dikhaya hai.",
     replacements,
     saveableWords: replacements.map((item) => ({
       word: item.replacement.roman,
       wordDev: item.replacement.dev,
       meaning: item.meaning,
       simpleAlternative: item.original.roman,
-      exampleSentence: toDevanagari(polishedRoman),
+      exampleSentence: elegantRoman,
     })),
   };
 }
@@ -131,7 +154,7 @@ export const seedLearnedWords: LearnedWord[] = [
 }));
 
 export const emptyStateExamples = [
-  { title: "Start with a polished everyday word", body: "Save words like कार्य, प्रयास, and स्पष्ट as you practice." },
+  { title: "Start with an elegant everyday word", body: "Save words like कार्य, प्रयास, and स्पष्ट as you practice." },
   { title: "Build by use, not memorization", body: "Each saved word should carry a sentence you would actually say." },
 ];
 

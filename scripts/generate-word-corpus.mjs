@@ -3,56 +3,86 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const csvPath = path.join(projectRoot, "data", "word-corpus.csv");
-const outputPath = path.join(projectRoot, "data", "word-corpus.generated.ts");
+const csvPath = path.join(projectRoot, "data", "word-corpus.bilingual.csv");
+const jsonOutputPath = path.join(projectRoot, "data", "word-corpus.generated.json");
 const csv = await fs.readFile(csvPath, "utf8");
 const rows = parseCsv(csv);
 const [headerRow, ...dataRows] = rows;
 
 if (!headerRow) throw new Error("Word corpus CSV is empty.");
 
-const headers = headerRow.map((header) => header.replace(/^\uFEFF/, "").trim());
+const headers = headerRow.map((header) => header.replace(/^﻿/, "").trim());
 const entries = dataRows
   .filter((row) => row.some((value) => value.trim()))
   .map((row, index) => toEntry(headers, row, index + 2));
 
-await fs.writeFile(
-  outputPath,
-  `// This file is generated from data/word-corpus.csv. Do not edit it directly.\n` +
-    `import type { LegacyWordEntry } from "@/data/bilingual-corpus";\n\n` +
-    `export const generatedWordCorpus = ${JSON.stringify(entries, null, 2)} satisfies LegacyWordEntry[];\n`,
-  "utf8",
-);
+const duplicateIds = entries
+  .map((entry) => entry.id)
+  .filter((id, index, ids) => ids.indexOf(id) !== index);
+if (duplicateIds.length > 0) {
+  throw new Error(`Word corpus contains duplicate ids: ${[...new Set(duplicateIds)].join(", ")}.`);
+}
 
-console.log(`Generated ${entries.length} entries from data/word-corpus.csv`);
+await fs.writeFile(jsonOutputPath, `${JSON.stringify(entries, null, 2)}\n`, "utf8");
+
+console.log(`Generated ${entries.length} word corpus entries from data/word-corpus.bilingual.csv`);
 
 function toEntry(headers, row, rowNumber) {
   const values = Object.fromEntries(headers.map((header, index) => [header, row[index]?.trim() ?? ""]));
   const required = [
-    "id", "everyday_word", "transformed_word", "everyday_sentence", "improved_sentence_1",
-    "improved_sentence_2", "difficulty_level", "synonyms", "usage_note", "english_meaning",
-    "challenge_prompt", "tags",
+    "id",
+    "usual_word_dev", "usual_word_roman",
+    "transformed_word_dev", "transformed_word_roman",
+    "english_meaning",
+    "everyday_sentence_dev", "everyday_sentence_roman",
+    "improved_sentence_1_dev", "improved_sentence_1_roman",
+    "improved_sentence_2_dev", "improved_sentence_2_roman",
+    "synonyms_dev", "synonyms_roman",
+    "usage_note", "challenge_prompt", "tags", "difficulty",
   ];
   const missing = required.filter((header) => !values[header]);
 
   if (missing.length > 0) throw new Error(`CSV row ${rowNumber} is missing: ${missing.join(", ")}.`);
-  if (!["easy", "medium", "advanced"].includes(values.difficulty_level)) {
-    throw new Error(`CSV row ${rowNumber} has an invalid difficulty_level.`);
+  if (!/^[1-9]\d*$/.test(values.id)) {
+    throw new Error(`CSV row ${rowNumber} must have a positive integer id.`);
+  }
+  if (!["easy", "medium", "advanced"].includes(values.difficulty)) {
+    throw new Error(`CSV row ${rowNumber} has an invalid difficulty.`);
+  }
+
+  for (const header of ["usual_word_dev", "transformed_word_dev", "everyday_sentence_dev", "improved_sentence_1_dev", "improved_sentence_2_dev", "synonyms_dev"]) {
+    if (!/[ऀ-ॿ]/u.test(values[header])) {
+      throw new Error(`CSV row ${rowNumber} column ${header} must contain Devanagari text.`);
+    }
+  }
+  for (const header of ["usual_word_roman", "transformed_word_roman", "everyday_sentence_roman", "improved_sentence_1_roman", "improved_sentence_2_roman", "synonyms_roman"]) {
+    if (/[ऀ-ॿ]/u.test(values[header])) {
+      throw new Error(`CSV row ${rowNumber} column ${header} must not contain Devanagari text.`);
+    }
+  }
+
+  const synonymsDev = splitList(values.synonyms_dev);
+  const synonymsRoman = splitList(values.synonyms_roman);
+
+  if (synonymsDev.length === 0 || synonymsDev.length !== synonymsRoman.length) {
+    throw new Error(
+      `CSV row ${rowNumber} must have matching synonyms_dev and synonyms_roman lists.`,
+    );
   }
 
   return {
-    id: values.id,
-    common: values.everyday_word,
-    elevated: values.transformed_word,
-    simpleExample: values.everyday_sentence,
-    elevatedExample: values.improved_sentence_1,
-    scholarExample: values.improved_sentence_2,
-    difficulty: values.difficulty_level,
-    synonyms: splitList(values.synonyms),
-    usageNote: values.usage_note,
+    id: Number(values.id),
+    common: { dev: values.usual_word_dev, roman: values.usual_word_roman },
+    elevated: { dev: values.transformed_word_dev, roman: values.transformed_word_roman },
     englishMeaning: values.english_meaning,
+    simpleExample: { dev: values.everyday_sentence_dev, roman: values.everyday_sentence_roman },
+    elevatedExample: { dev: values.improved_sentence_1_dev, roman: values.improved_sentence_1_roman },
+    scholarExample: { dev: values.improved_sentence_2_dev, roman: values.improved_sentence_2_roman },
+    synonyms: synonymsDev.map((dev, index) => ({ dev, roman: synonymsRoman[index] })),
+    usageNote: values.usage_note,
     challengePrompt: values.challenge_prompt,
     tags: splitList(values.tags),
+    difficulty: values.difficulty,
   };
 }
 

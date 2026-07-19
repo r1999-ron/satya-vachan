@@ -1,6 +1,6 @@
 import type { HindiText, ScriptPreference } from "@/types";
 
-export const DEFAULT_SCRIPT_PREFERENCE: ScriptPreference = "both";
+export const DEFAULT_SCRIPT_PREFERENCE: ScriptPreference = "dev";
 
 export function isHindiText(value: unknown): value is HindiText {
   if (typeof value !== "object" || value === null) return false;

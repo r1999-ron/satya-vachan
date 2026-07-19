@@ -43,7 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
     // Retain the stable public fallback for malformed proxy headers.
   }
 
-  const socialImage = new URL("/og.png", metadataBase).toString();
+  const socialImage = new URL("/application-banner.jpg", metadataBase).toString();
 
   return {
     title: { default: brandName, template: `%s | ${brandName}` },
@@ -83,7 +83,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var theme=localStorage.getItem('satya-vachan-theme');var isDark=theme?theme==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.classList.toggle('dark',isDark);document.documentElement.style.colorScheme=isDark?'dark':'light'}catch(e){}})()`,
+          }}
+        />
+      </head>
       <body className={`${notoSans.variable} ${notoSansMono.variable} ${martel.variable}`}>
         <AppShell>{children}</AppShell>
       </body>

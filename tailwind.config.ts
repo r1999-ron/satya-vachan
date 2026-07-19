@@ -72,6 +72,10 @@ const config: Config = {
           "0%, 100%": { transform: "scaleY(0.45)", opacity: "0.55" },
           "50%": { transform: "scaleY(1)", opacity: "1" },
         },
+        pipelineDot: {
+          "0%, 80%, 100%": { transform: "translateY(0)", opacity: "0.32" },
+          "40%": { transform: "translateY(-3px)", opacity: "1" },
+        },
       },
       animation: {
         aurora: "aurora 16s ease-in-out infinite",
@@ -82,6 +86,7 @@ const config: Config = {
         savePop: "savePop 420ms ease-out both",
         shimmer: "shimmer 1.35s ease-in-out infinite",
         wave: "wave 900ms ease-in-out infinite",
+        pipelineDot: "pipelineDot 900ms ease-in-out infinite",
       },
     },
   },

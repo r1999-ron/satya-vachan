@@ -6,7 +6,6 @@ import {
   ArrowRight,
   BookOpen,
   Filter,
-  Mic2,
   RotateCcw,
   Search,
   Trash2,
@@ -156,21 +155,7 @@ export default function LearnedPage() {
 
   return (
     <div className="space-y-4 sm:space-y-5">
-      <section className="flex items-end justify-between gap-4 px-1 py-1">
-        <div>
-          <p className="text-sm font-bold text-amber-800 dark:text-amber-200">
-            Vocabulary
-          </p>
-          <h1 className="mt-1 text-balance text-4xl font-bold tracking-[-0.035em] text-ink sm:text-5xl dark:text-white">
-            Saved Words
-          </h1>
-        </div>
-        <p className="pb-1 text-sm font-medium text-zinc-500 dark:text-zinc-400">
-          {sortedWords.length} saved
-        </p>
-      </section>
-
-      <GlassCard className="p-4 sm:p-5">
+      <div>
         <div className="flex items-center gap-2">
           <label className="flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-xl border border-zinc-900/10 bg-white/58 px-3 dark:border-white/12 dark:bg-white/8">
             <span className="sr-only">Search your words</span>
@@ -251,7 +236,7 @@ export default function LearnedPage() {
             {filteredWords.length} {filteredWords.length === 1 ? "match" : "matches"}
           </p>
         ) : null}
-      </GlassCard>
+      </div>
 
       {filteredWords.length > 0 ? (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -341,14 +326,6 @@ function LearnedWordCard({
           {word.source === "seed" ? "" : `Saved ${formatSavedDate(word.savedAt)}`}
         </p>
         <div className="flex shrink-0 items-center gap-1.5">
-          <Link
-            href={`/practice?word=${encodeURIComponent(word.word)}`}
-            prefetch={false}
-            className="grid size-9 place-items-center rounded-xl text-amber-800 transition hover:bg-amber-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/55 dark:text-amber-200 dark:hover:bg-amber-300/10"
-            aria-label={`Practice ${word.word}`}
-          >
-            <Mic2 size={16} aria-hidden="true" />
-          </Link>
           <button
             type="button"
             onClick={onRemove}

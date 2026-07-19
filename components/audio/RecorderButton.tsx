@@ -1,12 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  AlertCircle,
-  CheckCircle2,
-  Mic,
-  Square,
-} from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AlertCircle, Mic, Square } from "lucide-react";
 import {
   DEFAULT_MAX_RECORDING_MS,
   RECORDING_WAVEFORM_BAR_COUNT,
@@ -47,6 +43,7 @@ export type RecorderState =
 type RecorderButtonProps = {
   className?: string;
   disabled?: boolean;
+  hideDuration?: boolean;
   maxDurationMs?: number;
   variant?: "default" | "continuation";
   onRecordingComplete?: (recording: RecordingResult) => void;
@@ -56,6 +53,7 @@ type RecorderButtonProps = {
 export function RecorderButton({
   className,
   disabled = false,
+  hideDuration = false,
   maxDurationMs = DEFAULT_MAX_RECORDING_MS,
   variant = "default",
   onRecordingComplete,
@@ -67,6 +65,7 @@ export function RecorderButton({
   const [waveformLevels, setWaveformLevels] = useState(
     INACTIVE_WAVEFORM_LEVELS,
   );
+  const [audioLevel, setAudioLevel] = useState(0);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -134,6 +133,7 @@ export function RecorderButton({
 
     if (isMountedRef.current) {
       setWaveformLevels(INACTIVE_WAVEFORM_LEVELS);
+      setAudioLevel(0);
     }
     silenceStartedAtRef.current = null;
   }, []);
@@ -190,6 +190,7 @@ export function RecorderButton({
                 return total + amplitude * amplitude;
               }, 0) / timeDomainData.length,
             );
+            setAudioLevel(Math.min(1, Math.max(0, (rms - 0.008) * 8.5)));
 
             if (rms < SILENCE_RMS_THRESHOLD) {
               const now = performance.now();
@@ -406,52 +407,22 @@ export function RecorderButton({
       )}
     >
       <div className="flex flex-col items-center">
-        <button
-          type="button"
+        <RecorderHero
+          audioLevel={audioLevel}
+          disabled={disabled || state === "stopping"}
+          isContinuationVariant={isContinuationVariant}
           onClick={
             state === "recording" || state === "stopping"
               ? stopRecording
               : startRecording
           }
-          disabled={disabled || state === "stopping"}
-          aria-label={
-            state === "recording"
-              ? "Stop recording"
-              : state === "recorded"
-                ? isContinuationVariant
-                  ? "Continue recording"
-                  : "Record again"
-                : "Start recording"
-          }
-          className={cn(
-            "relative grid size-20 shrink-0 place-items-center rounded-full bg-zinc-950 text-white shadow-[0_14px_34px_rgba(24,20,16,0.22)] transition hover:-translate-y-0.5 hover:bg-zinc-800 focus:outline-none focus-visible:ring-4 focus-visible:ring-amber-400/40 focus-visible:ring-offset-4 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 sm:size-24 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-100 dark:focus-visible:ring-offset-zinc-950",
-            state === "recording" &&
-              "bg-rose-600 text-white before:absolute before:inset-0 before:rounded-full before:bg-rose-400/35 before:motion-safe:animate-ping hover:bg-rose-600 dark:bg-rose-500 dark:text-white",
-            state === "recorded" && !isContinuationVariant &&
-              "bg-emerald-600 text-white hover:bg-emerald-600 dark:bg-emerald-300 dark:text-emerald-950",
-          )}
-        >
-          {state === "recording" || state === "stopping" ? (
-            <Square size={28} aria-hidden="true" />
-          ) : state === "recorded" ? (
-            isContinuationVariant ? (
-              <span className="flex flex-col items-center gap-0.5 leading-none">
-                <Mic size={27} aria-hidden="true" />
-                <span className="text-[0.65rem] font-bold">Continue</span>
-              </span>
-            ) : (
-              <CheckCircle2 size={32} aria-hidden="true" />
-            )
-          ) : (
-            <Mic size={32} aria-hidden="true" />
-          )}
-        </button>
+          state={state}
+          waveformLevels={waveformLevels}
+        />
 
         <div className="mt-3 w-full min-w-0 text-center">
           <div>
-            {state !== "idle" &&
-            state !== "permission-needed" &&
-            !(isContinuationVariant && state === "recorded") ? (
+            {!(isContinuationVariant && state === "recorded") ? (
               <div className="mx-auto">
                 <p className="text-sm font-bold text-ink dark:text-white">
                   {getTitle(state)}
@@ -463,51 +434,12 @@ export function RecorderButton({
                 ) : null}
               </div>
             ) : null}
-            {!isContinuationVariant ? (
+            {!hideDuration && !isContinuationVariant ? (
               <span className="mt-2 inline-flex rounded-full bg-zinc-900/[0.045] px-3 py-1 text-xs font-bold text-zinc-700 dark:bg-white/8 dark:text-zinc-200">
                 {formatRecordingDuration(durationMs)}
               </span>
             ) : null}
           </div>
-
-          {state === "recording" ? (
-            <div
-              className="mx-auto mt-4 max-w-xl overflow-hidden rounded-xl border border-rose-200/70 bg-gradient-to-r from-rose-50/90 via-amber-50/90 to-rose-50/90 px-3 py-2.5 shadow-inner dark:border-rose-300/20 dark:from-rose-950/35 dark:via-amber-950/25 dark:to-rose-950/35"
-              data-recording-visualizer="active"
-            >
-              {!isContinuationVariant ? (
-                <div className="flex items-center justify-between gap-3 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-rose-700 dark:text-rose-200">
-                  <span className="inline-flex items-center gap-2">
-                    <span className="relative flex size-2" aria-hidden="true">
-                      <span className="absolute inline-flex size-full rounded-full bg-rose-500 opacity-70 motion-safe:animate-ping" />
-                      <span className="relative inline-flex size-2 rounded-full bg-rose-600" />
-                    </span>
-                    Live voice
-                  </span>
-                  <span className="text-zinc-500 dark:text-zinc-400">Listening</span>
-                </div>
-              ) : null}
-              <div
-                className={cn(
-                  "flex h-12 items-center gap-1",
-                  !isContinuationVariant && "mt-2.5",
-                )}
-                aria-label="Live microphone level"
-                role="img"
-              >
-                {waveformLevels.map((level, index) => (
-                  <span
-                    key={index}
-                    className="w-full rounded-full bg-gradient-to-t from-rose-600 via-rose-400 to-amber-300 opacity-90 transition-[height,opacity] duration-75 ease-out dark:from-rose-400 dark:via-rose-300 dark:to-amber-200"
-                    style={{
-                      height: `${Math.round(level * 100)}%`,
-                      opacity: 0.55 + level * 0.45,
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-          ) : null}
 
           {error ? (
             <p className="mx-auto mt-3 max-w-md text-sm font-normal leading-6 text-rose-800 dark:text-rose-100">
@@ -517,6 +449,210 @@ export function RecorderButton({
 
         </div>
       </div>
+    </div>
+  );
+}
+
+type RecorderHeroProps = {
+  audioLevel: number;
+  disabled: boolean;
+  isContinuationVariant: boolean;
+  onClick: () => void;
+  state: RecorderState;
+  waveformLevels: number[];
+};
+
+function RecorderHero({
+  audioLevel,
+  disabled,
+  isContinuationVariant,
+  onClick,
+  state,
+  waveformLevels,
+}: RecorderHeroProps) {
+  const reduceMotion = useReducedMotion();
+  const isIdle = state === "idle" || state === "permission-needed" || state === "error";
+  const isRecording = state === "recording";
+  const isStopping = state === "stopping";
+  const isRecorded = state === "recorded";
+  const buttonLabel = isRecording
+    ? "Stop recording"
+    : isRecorded
+      ? isContinuationVariant
+        ? "Continue recording"
+        : "Record again"
+      : "Start recording";
+  const buttonColor = isRecording || isStopping
+    ? "#e11d48"
+    : isRecorded && !isContinuationVariant
+      ? "#059669"
+      : "#18181b";
+  const reactiveScale = 1 + audioLevel * 0.12;
+  const reactiveBlur = 24 + Math.round(audioLevel * 38);
+  const reactiveSpread = 3 + Math.round(audioLevel * 13);
+
+  return (
+    <div
+      className="relative grid size-40 shrink-0 place-items-center sm:size-44"
+      data-recorder-state={state}
+    >
+      <AnimatePresence initial={false}>
+        {!isRecorded ? (
+          <motion.svg
+            key="radial-waveform"
+            viewBox="0 0 200 200"
+            className="pointer-events-none absolute inset-0 size-full overflow-visible"
+            aria-label={isRecording ? "Live microphone level" : undefined}
+            aria-hidden={!isRecording}
+            role={isRecording ? "img" : undefined}
+            data-recording-visualizer={isRecording ? "active" : undefined}
+            initial={{ opacity: 0, scale: 0.82 }}
+            animate={{
+              opacity: isStopping ? 0.22 : isRecording ? 1 : 0.48,
+              scale: isStopping ? 0.68 : 1,
+            }}
+            exit={{ opacity: 0, scale: 0.68 }}
+            transition={{ type: "spring", stiffness: 240, damping: 24 }}
+          >
+            {waveformLevels.map((level, index) => {
+              const barLength = isRecording ? 7 + level * 21 : 5;
+              const angle = (360 / waveformLevels.length) * index;
+
+              return (
+                <motion.line
+                  key={index}
+                  x1="100"
+                  y1="29"
+                  x2="100"
+                  animate={{ y2: 29 - barLength }}
+                  transform={`rotate(${angle} 100 100)`}
+                  stroke={isRecording ? "#fb7185" : "#f59e0b"}
+                  strokeWidth={isRecording ? 3.2 : 2.4}
+                  strokeLinecap="round"
+                  transition={{ duration: reduceMotion ? 0 : 0.08, ease: "easeOut" }}
+                />
+              );
+            })}
+          </motion.svg>
+        ) : null}
+      </AnimatePresence>
+
+      {isIdle ? (
+        <motion.span
+          className="pointer-events-none absolute size-28 rounded-full bg-amber-400/22 blur-md sm:size-32 dark:bg-amber-300/18"
+          animate={reduceMotion ? { opacity: 0.35 } : {
+            opacity: [0.25, 0.5, 0.25],
+            scale: [0.92, 1.12, 0.92],
+          }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        />
+      ) : null}
+
+      {isRecording ? (
+        <motion.span
+          className="pointer-events-none absolute size-24 rounded-full border border-rose-300/80 sm:size-28 dark:border-rose-300/60"
+          animate={{ opacity: 0.35 + audioLevel * 0.45, scale: reactiveScale }}
+          transition={{ type: "spring", stiffness: 420, damping: 28, mass: 0.35 }}
+          style={{
+            boxShadow: `0 0 ${reactiveBlur}px ${reactiveSpread}px rgba(244, 63, 94, ${0.18 + audioLevel * 0.24})`,
+          }}
+        />
+      ) : null}
+
+      <motion.button
+        type="button"
+        onClick={onClick}
+        disabled={disabled}
+        aria-label={buttonLabel}
+        className={cn(
+          "relative z-10 grid size-24 shrink-0 place-items-center rounded-full p-1 text-white focus:outline-none focus-visible:ring-4 focus-visible:ring-amber-400/45 focus-visible:ring-offset-4 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:opacity-60 sm:size-28 dark:focus-visible:ring-offset-zinc-950",
+          isRecording || isStopping
+            ? "bg-gradient-to-br from-rose-300 via-rose-500 to-red-700"
+            : isRecorded && !isContinuationVariant
+              ? "bg-gradient-to-br from-emerald-200 via-emerald-500 to-emerald-700"
+              : "bg-gradient-to-br from-amber-200 via-amber-500 to-orange-600",
+        )}
+        animate={{
+          scale: isStopping ? 0.9 : isRecorded ? 1.03 : 1,
+          boxShadow: isRecording
+            ? `0 18px ${reactiveBlur}px rgba(190, 18, 60, ${0.26 + audioLevel * 0.22})`
+            : isRecorded
+              ? "0 18px 42px rgba(5, 150, 105, 0.26)"
+              : "0 18px 42px rgba(180, 83, 9, 0.24)",
+        }}
+        whileHover={disabled || reduceMotion ? undefined : { scale: 1.045, y: -2 }}
+        whileTap={disabled || reduceMotion ? undefined : { scale: 0.96 }}
+        transition={{ type: "spring", stiffness: 360, damping: 24 }}
+      >
+        <motion.span
+          className="grid size-full place-items-center rounded-full border border-white/18"
+          animate={{ backgroundColor: buttonColor }}
+          transition={{ type: "spring", stiffness: 220, damping: 26 }}
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            {isRecording || isStopping ? (
+              <motion.span
+                key="stop"
+                initial={{ opacity: 0, rotate: -20, scale: 0.45 }}
+                animate={{ opacity: 1, rotate: 0, scale: isStopping ? 0.72 : 1 }}
+                exit={{ opacity: 0, rotate: 20, scale: 0.45 }}
+                transition={{ type: "spring", stiffness: 420, damping: 25 }}
+              >
+                <Square size={30} fill="currentColor" strokeWidth={1.6} aria-hidden="true" />
+              </motion.span>
+            ) : isRecorded && !isContinuationVariant ? (
+              <motion.svg
+                key="check"
+                viewBox="0 0 48 48"
+                className="size-12"
+                aria-hidden="true"
+                initial={{ opacity: 0, scale: 0.72 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ type: "spring", stiffness: 360, damping: 22 }}
+              >
+                <motion.circle
+                  cx="24"
+                  cy="24"
+                  r="18"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 1 }}
+                  transition={{ duration: reduceMotion ? 0 : 0.45, ease: "easeOut" }}
+                />
+                <motion.path
+                  d="m15.5 24.5 5.5 5.5 12-13"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: reduceMotion ? 0 : 0.32, delay: reduceMotion ? 0 : 0.3 }}
+                />
+              </motion.svg>
+            ) : (
+              <motion.span
+                key="mic"
+                className="flex flex-col items-center gap-0.5 leading-none"
+                initial={{ opacity: 0, scale: 0.65 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.65 }}
+                transition={{ type: "spring", stiffness: 380, damping: 22 }}
+              >
+                <Mic size={isContinuationVariant && isRecorded ? 29 : 38} strokeWidth={2.1} aria-hidden="true" />
+                {isContinuationVariant && isRecorded ? (
+                  <span className="text-[0.62rem] font-extrabold uppercase tracking-[0.12em]">
+                    Continue
+                  </span>
+                ) : null}
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </motion.span>
+      </motion.button>
     </div>
   );
 }

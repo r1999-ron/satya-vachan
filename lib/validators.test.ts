@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
   VALIDATION_LIMITS,
-  clampScore,
   getTrimmedString,
   normalizeChallengeResponse,
   normalizePracticeResponse,
@@ -88,11 +87,8 @@ describe("validators", () => {
     const normalized = normalizePracticeResponse(
       {
         transcript: "  original transcript  ",
-        naturalPolishedVersion: "polished transcript",
+        naturalElegantVersion: "elegant transcript",
         elevatedVersion: "elevated transcript",
-        feedback: "  useful feedback  ",
-        originalEleganceScore: 92.2,
-        improvedEleganceScore: 80,
         replacements: [
           {
             original: "good",
@@ -117,18 +113,15 @@ describe("validators", () => {
 
     expect(normalized).toMatchObject({
       transcript: "original transcript",
-      naturalPolishedVersion: { dev: "polished transcript", roman: "polished transcript" },
+      naturalElegantVersion: { dev: "elegant transcript", roman: "elegant transcript" },
       elevatedVersion: { dev: "elevated transcript", roman: "elevated transcript" },
-      feedback: "useful feedback",
-      originalEleganceScore: 92,
-      improvedEleganceScore: 97,
     });
     expect(normalized?.replacements).toEqual([
       {
         original: { dev: "good", roman: "good" },
         replacement: { dev: "excellent", roman: "excellent" },
         meaning: "very good",
-        whyBetter: "excellent is a more polished option in this sentence.",
+        whyBetter: "excellent is a more elegant option in this sentence.",
         naturalness: "literary",
       },
     ]);
@@ -143,17 +136,19 @@ describe("validators", () => {
     ]);
   });
 
-  it("boosts an unchanged score when the polished text differs from the transcript", () => {
+  it("does not include removed scoring and feedback metadata", () => {
     const normalized = normalizePracticeResponse({
       transcript: "rough words",
-      naturalPolishedVersion: "polished words",
+      naturalElegantVersion: "elegant words",
       elevatedVersion: "elevated words",
       feedback: "better",
       originalEleganceScore: 98,
       improvedEleganceScore: 98,
     });
 
-    expect(normalized?.improvedEleganceScore).toBe(100);
+    expect(normalized).not.toHaveProperty("feedback");
+    expect(normalized).not.toHaveProperty("originalEleganceScore");
+    expect(normalized).not.toHaveProperty("improvedEleganceScore");
   });
 
   it("returns null for unsafe practice responses", () => {
@@ -161,8 +156,8 @@ describe("validators", () => {
     expect(
       normalizePracticeResponse({
         transcript: "hello",
-        naturalPolishedVersion: "hello",
-        elevatedVersion: "hello",
+        naturalElegantVersion: "hello",
+        elevatedVersion: "",
       }),
     ).toBeNull();
   });
@@ -225,15 +220,11 @@ describe("validators", () => {
     });
   });
 
-  it("normalizes TTS responses and clamps numeric scores", () => {
+  it("normalizes TTS responses", () => {
     expect(normalizeTtsResponse({ audioBase64: "  abc  ", mimeType: "audio/mpeg" })).toEqual({
       audioBase64: "abc",
       mimeType: "audio/mpeg",
     });
     expect(normalizeTtsResponse({ audioBase64: "abc", mimeType: "audio/wav" })).toBeNull();
-    expect(clampScore(-4)).toBe(0);
-    expect(clampScore(101)).toBe(100);
-    expect(clampScore("72.6")).toBe(73);
-    expect(clampScore("nope")).toBe(50);
   });
 });

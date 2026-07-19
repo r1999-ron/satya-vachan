@@ -8,9 +8,6 @@ export type HindiText = {
 
 export type ScriptPreference = "dev" | "roman" | "both";
 
-// This is a playback preference, not an inference about the recorded speaker.
-export type VoicePreference = "female" | "male";
-
 export type WordEntry = {
   id: string;
   common: HindiText;
@@ -37,11 +34,8 @@ export type WordReplacement = {
 
 export type PracticeResponse = {
   transcript: string;
-  naturalPolishedVersion: HindiText;
+  naturalElegantVersion: HindiText;
   elevatedVersion: HindiText;
-  originalEleganceScore: number;
-  improvedEleganceScore: number;
-  feedback: string;
   replacements: WordReplacement[];
   saveableWords: LearnedWordInput[];
 };

@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
+import confetti from "canvas-confetti";
 import { RotateCcw, WandSparkles } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import {
   RecorderButton,
   type RecorderState,
@@ -69,7 +71,13 @@ const initialChallengeState: ChallengeState = {
   lastFailedStep: null,
 };
 
-export function DailyChallenge({ word }: { word: WordEntry }) {
+export function DailyChallenge({
+  isToday = true,
+  word,
+}: {
+  isToday?: boolean;
+  word: WordEntry;
+}) {
   const starters = useMemo(() => getSentenceStarters(word), [word]);
   const resultRef = useRef<HTMLDivElement | null>(null);
   const { completedToday, completeToday } = useStreak();
@@ -99,6 +107,16 @@ export function DailyChallenge({ word }: { word: WordEntry }) {
     (result: ChallengeResponse, fallbackNotice?: string) => {
       if (result.acceptableUsage && !completedToday) {
         completeToday();
+        confetti({
+          particleCount: 64,
+          spread: 68,
+          startVelocity: 32,
+          gravity: 0.9,
+          scalar: 0.86,
+          origin: { x: 0.5, y: 0.72 },
+          colors: ["#f59e0b", "#f97316", "#fb7185", "#10b981"],
+          disableForReducedMotion: true,
+        });
       }
       dispatch({ type: "validation_succeeded", result, fallbackNotice });
     },
@@ -190,36 +208,23 @@ export function DailyChallenge({ word }: { word: WordEntry }) {
       <GlassCard className="animate-floatIn p-5 sm:p-7">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-sm font-bold text-amber-800 dark:text-amber-200">
-              Daily challenge
-            </p>
             <h2
               id="daily-challenge-title"
-              className="mt-1 text-2xl font-bold tracking-[-0.025em] text-ink sm:text-3xl dark:text-white"
+              className="text-2xl font-bold tracking-[-0.025em] text-ink sm:text-3xl dark:text-white"
             >
-              Try today&apos;s word
+              {isToday ? "Try today's word" : "Try this word"}
             </h2>
             <p className="mt-2 text-sm font-normal leading-6 text-zinc-600 dark:text-zinc-300">
-              Say or type a sentence, then check how naturally you used it.
+              Say or type a sentence and check how effectively you have used it.
             </p>
           </div>
-          {state.status !== "idle" || state.transcript.trim() ? (
-            <button
-              type="button"
-              onClick={handleReset}
-              disabled={isBusy && !state.result}
-              className="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-zinc-600 transition hover:bg-zinc-900/5 hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/55 disabled:cursor-not-allowed disabled:opacity-60 dark:text-zinc-300 dark:hover:bg-white/8 dark:hover:text-white"
-            >
-              <RotateCcw size={15} aria-hidden="true" />
-              <span className="hidden sm:inline">Start over</span>
-            </button>
-          ) : null}
         </div>
 
         <div className="mt-5">
           <ChallengeBanner
             completedToday={completedToday}
             disabled={isBusy}
+            isToday={isToday}
             onStarterSelect={handleStarterSelect}
             selectedStarter={state.selectedStarter}
             starters={starters}
@@ -232,6 +237,8 @@ export function DailyChallenge({ word }: { word: WordEntry }) {
             key={recorderResetKey}
             className="border-0 bg-transparent p-0 dark:bg-transparent"
             disabled={isBusy}
+            hideDuration
+            variant="continuation"
             onRecordingComplete={(recording) => void transcribeRecording(recording)}
             onStateChange={(nextState: RecorderState) => {
               if (nextState === "recording") {
@@ -241,7 +248,7 @@ export function DailyChallenge({ word }: { word: WordEntry }) {
           />
           {state.transcriptionError ? (
             <ErrorNotice
-              actionLabel={canRetryTranscription ? "Retry transcription" : undefined}
+              actionLabel={canRetryTranscription ? "Retry" : undefined}
               message={state.transcriptionError}
               onAction={
                 canRetryTranscription && state.recordedAudio
@@ -274,20 +281,34 @@ export function DailyChallenge({ word }: { word: WordEntry }) {
           />
         ) : null}
 
-        <button
-          type="button"
-          onClick={() => void runValidation()}
-          disabled={!canValidate}
-          className={cn(
-            "mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/35 focus-visible:ring-offset-2 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:shadow-none dark:focus-visible:ring-white/40 dark:focus-visible:ring-offset-zinc-950",
-            canValidate
-              ? "bg-ink text-white shadow-lg shadow-zinc-900/15 hover:-translate-y-0.5 dark:bg-white dark:text-zinc-950"
-              : "bg-zinc-400/70 text-white dark:bg-zinc-700 dark:text-zinc-300",
-          )}
-        >
-          <WandSparkles size={18} aria-hidden="true" />
-          {isValidating ? "Checking..." : "Check challenge"}
-        </button>
+        <div className="mt-5 grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={handleReset}
+            disabled={
+              (state.status === "idle" && !state.transcript.trim()) ||
+              (isBusy && !state.result)
+            }
+            className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-zinc-900/12 bg-white/55 px-4 py-3 text-sm font-bold text-zinc-700 transition hover:-translate-y-0.5 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/25 focus-visible:ring-offset-2 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:bg-white/8 dark:text-zinc-200 dark:hover:bg-white/12 dark:focus-visible:ring-white/30 dark:focus-visible:ring-offset-zinc-950"
+          >
+            <RotateCcw size={17} aria-hidden="true" />
+            Start Over
+          </button>
+          <button
+            type="button"
+            onClick={() => void runValidation()}
+            disabled={!canValidate}
+            className={cn(
+              "inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/35 focus-visible:ring-offset-2 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:shadow-none dark:focus-visible:ring-white/40 dark:focus-visible:ring-offset-zinc-950",
+              canValidate
+                ? "bg-ink text-white shadow-lg shadow-zinc-900/15 hover:-translate-y-0.5 dark:bg-white dark:text-zinc-950"
+                : "bg-zinc-400/70 text-white dark:bg-zinc-700 dark:text-zinc-300",
+            )}
+          >
+            <WandSparkles size={18} aria-hidden="true" />
+            {isValidating ? "Checking..." : "Check My Answer"}
+          </button>
+        </div>
       </GlassCard>
 
       {isTranscribing || isValidating ? (
@@ -296,15 +317,25 @@ export function DailyChallenge({ word }: { word: WordEntry }) {
         </GlassCard>
       ) : null}
 
-      {state.result ? (
-        <div ref={resultRef} className="scroll-mt-24">
-          <ChallengeFeedback
-            fallbackNotice={state.fallbackNotice}
-            result={state.result}
-            targetWord={word.elevated.dev}
-          />
-        </div>
-      ) : null}
+      <AnimatePresence mode="wait">
+        {state.result ? (
+          <motion.div
+            key={`${state.result.transcript}-${state.result.acceptableUsage}`}
+            ref={resultRef}
+            className="scroll-mt-24"
+            initial={{ opacity: 0, y: 24, scale: 0.975 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -12, scale: 0.985 }}
+            transition={{ type: "spring", stiffness: 260, damping: 25 }}
+          >
+            <ChallengeFeedback
+              fallbackNotice={state.fallbackNotice}
+              result={state.result}
+              targetWord={word.elevated.dev}
+            />
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </section>
   );
 }
@@ -404,7 +435,7 @@ function ChallengeLoadingState({ status }: { status: ChallengeStatus }) {
     status === "transcribing"
       ? {
           title: "Listening carefully...",
-          body: "Your recording is being transcribed into an editable sentence.",
+          body: "Your recording is being transcribed and formatted as mixed-script Hinglish.",
         }
       : {
           title: "Checking your sentence...",

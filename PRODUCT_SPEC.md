@@ -4,7 +4,7 @@
 
 This document breaks Satya-Vachan into implementation modules that can be used as sequential prompts for Codex. Each module builds on the previous module and includes functional requirements, UI behavior, business logic, data models, APIs, validations, edge cases, dependencies, and acceptance criteria.
 
-Satya-Vachan is an AI-powered Hindi expression coach for fluent Hindi speakers who want to sound more polished, articulate, cultured, and eloquent. The app does not teach Hindi from scratch. It upgrades everyday spoken Hindi into refined, natural Hindi, explains the changes, speaks the improved version back, and helps users build a personal vocabulary through daily challenges and light gamification.
+Satya-Vachan is an AI-powered Hindi expression coach for fluent Hindi speakers who want to sound more elegant, articulate, cultured, and eloquent. The app does not teach Hindi from scratch. It upgrades everyday spoken Hindi into refined, natural Hindi, explains the changes, speaks the improved version back, and helps users build a personal vocabulary through daily challenges and light gamification.
 
 The MVP should be built for deployment on Vercel.
 
@@ -114,7 +114,7 @@ export type WordReplacement = {
 
 export type PracticeResponse = {
   transcript: string;
-  naturalPolishedVersion: string;
+  naturalElegantVersion: string;
   elevatedVersion: string;
   originalEleganceScore: number;
   improvedEleganceScore: number;
@@ -528,7 +528,7 @@ Build the Practice screen UI and state machine using mock data before audio and 
   - recording panel placeholder
   - hint prompt list
   - transcript area
-  - natural polished version
+  - natural elegant version
   - more elevated version
   - elegance score display
   - feedback block
@@ -538,7 +538,7 @@ Build the Practice screen UI and state machine using mock data before audio and 
 - Include a "Try demo sentence" flow using the best demo sentence:
   - "Humne is kaam ko jaldi khatam karne ki koshish ki."
 - Show the expected demo result:
-  - Natural polished: "Humne is karya ko sheeghra samaapt karne ka prayas kiya."
+  - Natural elegant: "Humne is karya ko sheeghra samaapt karne ka prayas kiya."
   - More elevated: "Humne is karya ko atishighra sampann karne ka gambhir prayatna kiya."
 - Let users click hint prompts to fill the transcript and show a mock transformation.
 - Save replacement words into learned words.
@@ -550,7 +550,7 @@ Build the Practice screen UI and state machine using mock data before audio and 
 - Transformation result should animate in after mock submission.
 - Score should show original and improved score with visible improvement.
 - Save buttons should change state after a word is saved.
-- Elevated version should be visually secondary to the natural polished version.
+- Elevated version should be visually secondary to the natural elegant version.
 
 ### Business Logic
 
@@ -597,7 +597,7 @@ Build the Practice screen UI and state machine using mock data before audio and 
 
 ### Codex Prompt
 
-Build the full Practice screen as a static/mock interactive flow. Include hint prompts, transcript display, mock transformation result, score, feedback, word replacement cards, save-to-learned-words behavior, and polished glassmorphic animations. Use the canonical demo sentence and result.
+Build the full Practice screen as a static/mock interactive flow. Include hint prompts, transcript display, mock transformation result, score, feedback, word replacement cards, save-to-learned-words behavior, and elegant glassmorphic animations. Use the canonical demo sentence and result.
 
 ## Module 6: Audio Recording
 
@@ -685,7 +685,7 @@ type RecordingResult = {
 
 ### Codex Prompt
 
-Add reusable MediaRecorder-based audio recording to Satya-Vachan. Build a polished RecorderButton with recording states, duration, max-length handling, permission errors, cleanup, re-record support, and a text fallback for unsupported browsers. Connect it to the Practice screen without calling AI APIs yet.
+Add reusable MediaRecorder-based audio recording to Satya-Vachan. Build an elegant RecorderButton with recording states, duration, max-length handling, permission errors, cleanup, re-record support, and a text fallback for unsupported browsers. Connect it to the Practice screen without calling AI APIs yet.
 
 ## Module 7: OpenAI Server Foundation and Transcription API
 
@@ -785,7 +785,7 @@ Add server-side OpenAI setup and a `/api/transcribe` route for Satya-Vachan. Acc
 
 ### Objective
 
-Implement the AI sentence transformation API that turns a transcript into natural polished Hindi, a more elevated version, score, feedback, and word-level explanations.
+Implement the AI sentence transformation API that turns a transcript into natural elegant Hindi, a more elevated version, score, feedback, and word-level explanations.
 
 ### Dependencies
 
@@ -799,7 +799,7 @@ Implement the AI sentence transformation API that turns a transcript into natura
 - Route returns a validated `PracticeResponse`.
 - AI must produce:
   - original transcript
-  - natural polished Hindi version
+  - natural elegant Hindi version
   - more elevated Hindi version
   - original elegance score
   - improved elegance score
@@ -817,10 +817,10 @@ The system prompt must include:
 
 ```text
 You are Satya-Vachan, an AI Hindi expression coach.
-Help fluent Hindi speakers express the same idea in more polished, clear, elegant Hindi.
+Help fluent Hindi speakers express the same idea in more elegant, clear, expressive Hindi.
 Always preserve the user's meaning.
 Produce two versions:
-1. Natural polished Hindi: refined but usable in normal speech.
+1. Natural elegant Hindi: refined but usable in normal speech.
 2. More elevated Hindi: more formal, literary, or Sanskritized, but still grammatically correct.
 Avoid comically archaic Hindi.
 Prefer words an educated Hindi speaker could realistically use.
@@ -831,7 +831,7 @@ Return only valid JSON matching the schema.
 ### UI Behavior
 
 - Practice screen sends edited transcript to `/api/transform`.
-- Show loading state such as "Polishing your expression..."
+- Show loading state such as "Elevating your expression..."
 - Display transformation result.
 - Auto-scroll result into view on mobile.
 - If API fails, keep the transcript and show retry.
@@ -841,7 +841,7 @@ Return only valid JSON matching the schema.
 - Scores:
   - Must be integers from 0 to 100.
   - Improved score should usually be higher than original score.
-  - If the original is already polished, improved score can be equal or slightly higher with explanatory feedback.
+  - If the original is already elegant, improved score can be equal or slightly higher with explanatory feedback.
 - Replacements:
   - Should focus on reusable vocabulary.
   - Do not include filler changes unless educational.
@@ -902,13 +902,13 @@ Error response:
 
 ### Codex Prompt
 
-Implement Satya-Vachan's `/api/transform` route with a strong Hindi expression coach prompt, structured JSON response, validation, score normalization, error handling, and frontend integration. The Practice screen should transform a transcript into natural polished Hindi, a more elevated version, feedback, scores, replacement cards, and saveable words.
+Implement Satya-Vachan's `/api/transform` route with a strong Hindi expression coach prompt, structured JSON response, validation, score normalization, error handling, and frontend integration. The Practice screen should transform a transcript into natural elegant Hindi, a more elevated version, feedback, scores, replacement cards, and saveable words.
 
 ## Module 9: Text-to-Speech API and Playback
 
 ### Objective
 
-Generate and play audio for the natural polished and elevated Hindi versions.
+Generate and play audio for the natural elegant and elevated Hindi versions.
 
 ### Dependencies
 
@@ -919,7 +919,7 @@ Generate and play audio for the natural polished and elevated Hindi versions.
 - Create `/app/api/tts/route.ts`.
 - Use `gpt-4o-mini-tts`.
 - Accept text and optional variant.
-- Generate audio for the natural polished version by default.
+- Generate audio for the natural elegant version by default.
 - Support manual playback for the elevated version.
 - Return audio in a format the frontend can play, such as base64 MP3.
 - Create reusable `AudioPlayer` component.
@@ -930,13 +930,13 @@ Generate and play audio for the natural polished and elevated Hindi versions.
 Use instructions like:
 
 ```text
-Speak in clear, polished Hindi with a calm teacher-like tone. Pronounce Sanskritized Hindi words carefully. Keep the delivery natural, not theatrical.
+Speak in clear, elegant Hindi with a calm teacher-like tone. Pronounce Sanskritized Hindi words carefully. Keep the delivery natural, not theatrical.
 ```
 
 ### UI Behavior
 
-- After transformation, automatically request or prepare TTS for the natural polished version.
-- User can click listen for natural polished version.
+- After transformation, automatically request or prepare TTS for the natural elegant version.
+- User can click listen for natural elegant version.
 - User can click listen for elevated version.
 - Show loading state on listen buttons.
 - Disable listen buttons while generating audio.
@@ -996,7 +996,7 @@ Error response:
 
 ### Acceptance Criteria
 
-- User can hear the natural polished sentence.
+- User can hear the natural elegant sentence.
 - User can hear the elevated sentence on demand.
 - TTS failures do not erase transformation results.
 - Listen buttons show clear loading and error states.
@@ -1009,7 +1009,7 @@ Add Satya-Vachan's `/api/tts` route using `gpt-4o-mini-tts` and connect it to Pr
 
 ### Objective
 
-Connect recording, transcription, transformation, TTS, learned word saving, error handling, and history into one polished core product loop.
+Connect recording, transcription, transformation, TTS, learned word saving, error handling, and history into one elegant core product loop.
 
 ### Dependencies
 
@@ -1035,7 +1035,7 @@ Connect recording, transcription, transformation, TTS, learned word saving, erro
 
 - Use a clear step-based visual state.
 - Avoid overwhelming the screen during recording.
-- Results should appear in a polished glass panel with score animation.
+- Results should appear in an elegant glass panel with score animation.
 - Replacement cards should be scannable.
 - Saving a word should give immediate visual feedback.
 - Recent practice history may appear as a compact section if implemented.
@@ -1094,7 +1094,7 @@ Connect recording, transcription, transformation, TTS, learned word saving, erro
 
 ### Codex Prompt
 
-Complete the full Satya-Vachan Practice flow by connecting recording, transcription, editable transcript, transformation, TTS playback, save-to-learned-words, recent history, retries, reset behavior, and polished loading/error states. Preserve user input across failures and make the demo flow fast and clear.
+Complete the full Satya-Vachan Practice flow by connecting recording, transcription, editable transcript, transformation, TTS playback, save-to-learned-words, recent history, retries, reset behavior, and elegant loading/error states. Preserve user input across failures and make the demo flow fast and clear.
 
 ## Module 11: Daily Challenge
 
@@ -1133,7 +1133,7 @@ Implement the daily Word of the Day challenge as a mode of Practice with shared 
 - Show a small completion animation or badge.
 - If already completed today, show completed state and allow optional re-practice without increasing streak.
 - Provide helpful retry feedback if target word is missing.
-- After a successful challenge, offer an optional action to polish the same sentence through the normal transform flow.
+- After a successful challenge, offer an optional action to refine the same sentence through the normal transform flow.
 
 ### Business Logic
 
@@ -1209,7 +1209,7 @@ Error response:
 
 ### Codex Prompt
 
-Build the Daily Challenge mode at `/practice?challenge=today`. Show a compact word banner and starters above the one shared Practice recorder/input, validate target-word usage through `/api/challenge` with a local fallback, offer optional polishing after success, and update local streak without double-counting the same day. Keep `/challenge` as a redirect only.
+Build the Daily Challenge mode at `/practice?challenge=today`. Show a compact word banner and starters above the one shared Practice recorder/input, validate target-word usage through `/api/challenge` with a local fallback, offer an optional elevation after success, and update local streak without double-counting the same day. Keep `/challenge` as a redirect only.
 
 ## Module 12: Learned Words and Personal Dictionary
 
@@ -1290,7 +1290,7 @@ Complete the personal dictionary experience for saved vocabulary and simple foll
 
 ### Codex Prompt
 
-Complete the Learned Words personal dictionary. Display saved and seed vocabulary in polished glass cards, add search/filter/sort, remove with safe UX, show saved counts and source badges, and optionally let users start practice from a selected word.
+Complete the Learned Words personal dictionary. Display saved and seed vocabulary in elegant glass cards, add search/filter/sort, remove with safe UX, show saved counts and source badges, and optionally let users start practice from a selected word.
 
 ## Module 13: Validation, Error Handling, and Resilience
 
@@ -1364,7 +1364,7 @@ Harden the full MVP so failures are understandable and the demo does not collaps
 
 Harden Satya-Vachan with shared validation, consistent API error responses, client-side error states, request guards, fallback text input, localStorage resilience, and graceful handling for microphone, OpenAI, network, TTS, and invalid JSON failures.
 
-## Module 14: Animation, Gamification, and Visual Polish
+## Module 14: Animation, Gamification, and Visual Refinement
 
 ### Objective
 
@@ -1422,7 +1422,7 @@ Elevate the MVP into a refined, warm, softly layered, lightly gamified experienc
 
 ### Acceptance Criteria
 
-- The app looks and feels like a polished demo.
+- The app looks and feels like an elegant demo.
 - The theme is clearly warm, refined, softly layered, and slightly gamified.
 - Animations are smooth but restrained.
 - Reduced motion users get a calmer experience.
@@ -1430,7 +1430,7 @@ Elevate the MVP into a refined, warm, softly layered, lightly gamified experienc
 
 ### Codex Prompt
 
-Polish Satya-Vachan's UI with warm soft surfaces, restrained borders and shadows, subtle animation, recording pulse, score movement, challenge completion feedback, save-word feedback, improved loading and empty states, and reduced-motion support. Keep the app refined, readable, responsive, and demo-ready.
+Refine Satya-Vachan's UI with warm soft surfaces, restrained borders and shadows, subtle animation, recording pulse, score movement, challenge completion feedback, save-word feedback, improved loading and empty states, and reduced-motion support. Keep the app refined, readable, responsive, and demo-ready.
 
 ## Module 15: Vercel Deployment Readiness
 
@@ -1514,7 +1514,7 @@ Perform a final end-to-end pass to ensure the MVP meets the product idea and is 
 
 - Test the core demo sentence:
   - "Humne is kaam ko jaldi khatam karne ki koshish ki."
-- Expected natural polished output should be close to:
+- Expected natural elegant output should be close to:
   - "Humne is karya ko sheeghra samaapt karne ka prayas kiya."
 - Expected elevated output should be close to:
   - "Humne is karya ko atishighra sampann karne ka gambhir prayatna kiya."
@@ -1544,14 +1544,14 @@ Perform a final end-to-end pass to ensure the MVP meets the product idea and is 
 - Judge understands product within 30 seconds.
 - Judge can experience core value within 2 minutes.
 - Core demo flow is stable.
-- UI is polished, warm, softly layered, and lightly gamified.
+- UI is elegant, warm, softly layered, and lightly gamified.
 - Feedback tone is supportive.
 - No feature depends on authentication or database.
 - Vercel deployment is documented and ready.
 
 ### Codex Prompt
 
-Run a final QA pass on Satya-Vachan. Verify the canonical demo flow, localStorage persistence, Practice challenge-mode streak behavior, My Words, AI error handling, responsive layouts, warm soft-UI polish, Vercel build readiness, and README deployment instructions. Fix any issues found without adding non-MVP scope.
+Run a final QA pass on Satya-Vachan. Verify the canonical demo flow, localStorage persistence, Practice challenge-mode streak behavior, My Words, AI error handling, responsive layouts, warm soft-UI refinement, Vercel build readiness, and README deployment instructions. Fix any issues found without adding non-MVP scope.
 
 ## API Summary
 
@@ -1572,7 +1572,7 @@ Response:
 
 ### POST `/api/transform`
 
-Purpose: Convert transcript into polished Hindi variants, scoring, feedback, and vocabulary explanations.
+Purpose: Convert transcript into elegant Hindi variants, scoring, feedback, and vocabulary explanations.
 
 Request:
 
@@ -1649,4 +1649,4 @@ Do not include these in the first implementation unless all MVP modules are comp
 
 ## Definition of Done
 
-The MVP is done when Satya-Vachan lets a fluent Hindi speaker speak or type an ordinary Hindi sentence, receive two polished Hindi transformations, understand the vocabulary improvements, hear the improved version, save useful words, complete a daily word challenge, and see local streak/progress in a polished Vercel-ready web app.
+The MVP is done when Satya-Vachan lets a fluent Hindi speaker speak or type an ordinary Hindi sentence, receive two elegant Hindi transformations, understand the vocabulary improvements, hear the improved version, save useful words, complete a daily word challenge, and see local streak/progress in an elegant Vercel-ready web app.

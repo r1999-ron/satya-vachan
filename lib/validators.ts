@@ -119,42 +119,23 @@ export function normalizePracticeResponse(
   const transcript =
     getTrimmedString(rawValue.transcript, VALIDATION_LIMITS.transcriptChars) ??
     fallbackTranscript.trim();
-  const naturalPolishedVersion = normalizeHindiText(rawValue.naturalPolishedVersion);
+  const naturalElegantVersion = normalizeHindiText(rawValue.naturalElegantVersion);
   const elevatedVersion = normalizeHindiText(rawValue.elevatedVersion);
-  const feedback = getTrimmedString(rawValue.feedback);
 
   if (
     !transcript ||
-    !naturalPolishedVersion.dev ||
-    !naturalPolishedVersion.roman ||
+    !naturalElegantVersion.dev ||
+    !naturalElegantVersion.roman ||
     !elevatedVersion.dev ||
-    !elevatedVersion.roman ||
-    !feedback
+    !elevatedVersion.roman
   ) {
     return null;
   }
 
-  const originalEleganceScore = clampScore(rawValue.originalEleganceScore);
-  let improvedEleganceScore = clampScore(rawValue.improvedEleganceScore);
-
-  if (improvedEleganceScore < originalEleganceScore) {
-    improvedEleganceScore = originalEleganceScore;
-  }
-
-  if (
-    improvedEleganceScore === originalEleganceScore &&
-    naturalPolishedVersion.roman !== transcript
-  ) {
-    improvedEleganceScore = Math.min(100, originalEleganceScore + 5);
-  }
-
   return {
     transcript,
-    naturalPolishedVersion,
+    naturalElegantVersion,
     elevatedVersion,
-    originalEleganceScore,
-    improvedEleganceScore,
-    feedback,
     replacements: Array.isArray(rawValue.replacements)
       ? rawValue.replacements
           .map(normalizeReplacement)
@@ -253,16 +234,6 @@ export function normalizeTtsResponse(rawValue: unknown): TtsResponse | null {
     : null;
 }
 
-export function clampScore(value: unknown) {
-  const numericValue = Number(value);
-
-  if (!Number.isFinite(numericValue)) {
-    return 50;
-  }
-
-  return Math.max(0, Math.min(100, Math.round(numericValue)));
-}
-
 function normalizeReplacement(rawValue: unknown): WordReplacement | null {
   if (!isRecord(rawValue)) {
     return null;
@@ -282,7 +253,7 @@ function normalizeReplacement(rawValue: unknown): WordReplacement | null {
     meaning,
     whyBetter:
       getTrimmedString(rawValue.whyBetter, 400) ??
-      `${replacement.roman} is a more polished option in this sentence.`,
+      `${replacement.roman} is a more elegant option in this sentence.`,
     naturalness: getRegisterLevel(rawValue.naturalness),
   };
 }
