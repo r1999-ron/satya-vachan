@@ -53,7 +53,7 @@ export function DailyWordCard({
   const highlightTarget = activeTab === "everyday" ? word.common : word.elevated;
 
   return (
-    <GlassCard className="overflow-hidden p-5 sm:p-7 lg:p-8">
+    <GlassCard className="overflow-hidden p-4 sm:p-7 lg:p-8">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="text-xs font-bold uppercase tracking-[0.14em] text-amber-800 dark:text-amber-200">
@@ -92,7 +92,7 @@ export function DailyWordCard({
         </div>
       </div>
 
-      <div className="mt-5 sm:mt-6">
+      <div className="mt-4 sm:mt-6">
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
           <p className="text-wrap-anywhere font-hindi text-5xl font-bold leading-[1.4] tracking-[-0.02em] text-ink sm:text-6xl dark:text-white">
             <span lang={preference === "roman" ? "hi-Latn" : "hi"}>
@@ -123,7 +123,7 @@ export function DailyWordCard({
         </p>
       </div>
 
-      <div className="mt-5 sm:mt-6">
+      <div className="mt-4 sm:mt-6">
         <div
           role="tablist"
           aria-label="Example sentences"
@@ -151,7 +151,7 @@ export function DailyWordCard({
         <div
           key={`${word.id}-${activeTab}`}
           className={cn(
-            "mt-2 animate-floatIn rounded-xl border p-4 sm:p-5",
+            "mt-2 animate-floatIn rounded-xl border p-3.5 sm:p-5",
             activeTab === "everyday"
               ? "border-zinc-200/80 bg-white/50 dark:border-white/10 dark:bg-white/[0.03]"
               : "border-amber-200 bg-amber-50/80 dark:border-amber-300/20 dark:bg-amber-300/10",
@@ -188,7 +188,14 @@ export function DailyWordCard({
 
       <a
         href="#daily-challenge"
-        className="mt-5 inline-flex min-h-10 items-center rounded-lg bg-ink px-4 text-sm font-bold text-white shadow-md shadow-zinc-900/15 transition hover:-translate-y-0.5 hover:bg-zinc-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f8f5ef] active:translate-y-0 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-white/40 dark:focus-visible:ring-offset-zinc-950"
+        onClick={(event) => {
+          const recorder = document.getElementById("daily-challenge-recorder");
+          if (recorder) {
+            event.preventDefault();
+            recorder.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }}
+        className="mt-5 inline-flex min-h-10 w-full items-center justify-center rounded-lg bg-ink px-4 text-sm font-bold text-white shadow-md shadow-zinc-900/15 transition hover:-translate-y-0.5 hover:bg-zinc-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f8f5ef] active:translate-y-0 sm:w-auto dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-white/40 dark:focus-visible:ring-offset-zinc-950"
       >
         Use it in a sentence
       </a>

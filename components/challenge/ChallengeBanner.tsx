@@ -23,9 +23,9 @@ export function ChallengeBanner({
   word,
 }: ChallengeBannerProps) {
   return (
-    <section className="rounded-2xl border border-amber-200/80 bg-amber-50/75 p-4 sm:p-5 dark:border-amber-300/20 dark:bg-amber-300/10">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0">
+    <section className="rounded-2xl border border-amber-200/80 bg-amber-50/75 p-3.5 sm:p-5 dark:border-amber-300/20 dark:bg-amber-300/10">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
           <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-amber-800 dark:text-amber-200">
             <Sparkles size={14} aria-hidden="true" />
             {isToday ? "Today's challenge" : "Challenge"}

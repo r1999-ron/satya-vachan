@@ -251,7 +251,6 @@ export function AudioPlayer({
 
       <audio
         ref={audioRef}
-        src={audioUrl || undefined}
         preload="metadata"
         className="hidden"
         aria-hidden="true"

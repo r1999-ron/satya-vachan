@@ -258,8 +258,8 @@ function PracticeContent() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-5">
-      <GlassCard className="animate-floatIn p-5 sm:p-8">
+    <div className="mx-auto max-w-4xl space-y-4 sm:space-y-5">
+      <GlassCard className="animate-floatIn p-4 sm:p-8">
         <PracticePipeline status={state.status} />
         <div>
           <RecorderButton
@@ -292,7 +292,7 @@ function PracticeContent() {
             value={state.transcript}
             disabled={isBusy}
             onChange={(event) => handleTranscriptChange(event.target.value)}
-            placeholder="Type any sentence..."
+            placeholder="Write anything, in English, Hindi or Hinglish..."
             className="min-h-32 w-full resize-y rounded-xl border border-zinc-900/10 bg-white/58 p-4 text-sm font-normal leading-7 text-ink outline-none transition placeholder:text-zinc-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 disabled:cursor-not-allowed disabled:opacity-70 dark:border-white/12 dark:bg-white/8 dark:text-white dark:placeholder:text-zinc-500"
           />
         </label>
