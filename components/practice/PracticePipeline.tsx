@@ -96,7 +96,7 @@ export function PracticePipeline({ status }: PracticePipelineProps) {
                 {status === "recording" && index === 0 ? <PulsingDots /> : null}
               </div>
             </div>
-            {index < steps.length - 1 ? (
+            {/* {index < steps.length - 1 ? (
               <ChevronRight
                 className={cn(
                   "mx-1 mt-2 shrink-0 sm:mx-2",
@@ -105,7 +105,7 @@ export function PracticePipeline({ status }: PracticePipelineProps) {
                 size={14}
                 aria-hidden="true"
               />
-            ) : null}
+            ) : null} */}
           </li>
         );
       })}

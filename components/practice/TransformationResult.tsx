@@ -37,6 +37,7 @@ export function TransformationResult({
         />
         <VersionPanel
           label="Scholarly"
+          replacements={result.replacements}
           text={result.elevatedVersion}
           variant="elevated"
           onAudioStatusChange={onAudioStatusChange}
@@ -95,7 +96,7 @@ function VersionPanel({
   return (
     <div
       className={cn(
-        "rounded-2xl border p-5 transition duration-200 hover:-translate-y-0.5 motion-safe:animate-floatIn",
+        "rounded-2xl border p-4 transition duration-200 hover:-translate-y-0.5 motion-safe:animate-floatIn sm:p-5",
         isScholarly
           ? "border-peacock/30 bg-peacock/10 shadow-[0_18px_42px_rgba(23,107,135,0.12)] dark:border-peacock/35 dark:bg-peacock/15"
           : "border-emerald-200/75 bg-emerald-100/45 shadow-glow dark:border-emerald-300/20 dark:bg-emerald-300/10",
@@ -119,11 +120,11 @@ function VersionPanel({
           variant={variant}
         />
       </div>
-      {isScholarly ? (
-        <HighlightedSentence text={text} tone="scholarly" />
-      ) : (
-        <HighlightedSentence text={text} replacements={replacements} tone="natural" />
-      )}
+      <HighlightedSentence
+        text={text}
+        replacements={replacements}
+        tone={isScholarly ? "scholarly" : "natural"}
+      />
     </div>
   );
 }

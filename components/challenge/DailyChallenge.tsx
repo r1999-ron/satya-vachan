@@ -205,7 +205,7 @@ export function DailyChallenge({
       aria-labelledby="daily-challenge-title"
       className="scroll-mt-24 space-y-4 sm:space-y-5"
     >
-      <GlassCard className="animate-floatIn p-5 sm:p-7">
+      <GlassCard className="animate-floatIn p-4 sm:p-7">
         <div className="flex items-start justify-between gap-3">
           <div>
             <h2
@@ -214,13 +214,10 @@ export function DailyChallenge({
             >
               {isToday ? "Try today's word" : "Try this word"}
             </h2>
-            <p className="mt-2 text-sm font-normal leading-6 text-zinc-600 dark:text-zinc-300">
-              Say or type a sentence and check how effectively you have used it.
-            </p>
           </div>
         </div>
 
-        <div className="mt-5">
+        <div className="mt-4 sm:mt-5">
           <ChallengeBanner
             completedToday={completedToday}
             disabled={isBusy}
@@ -232,7 +229,7 @@ export function DailyChallenge({
           />
         </div>
 
-        <div className="mt-6">
+        <div id="daily-challenge-recorder" className="mt-5 sm:mt-6">
           <RecorderButton
             key={recorderResetKey}
             className="border-0 bg-transparent p-0 dark:bg-transparent"
@@ -262,13 +259,13 @@ export function DailyChallenge({
           ) : null}
         </div>
 
-        <label className="mt-6 block">
+        <label className="mt-5 block sm:mt-6">
           <span className="sr-only">Your sentence using today&apos;s word</span>
           <textarea
             value={state.transcript}
             disabled={isBusy}
             onChange={(event) => handleTranscriptChange(event.target.value)}
-            placeholder={`Write a sentence using ${word.elevated.roman}...`}
+            placeholder={`Write any sentence in English, Hindi or Hinglish using the word ${word.elevated.roman}...`}
             className="min-h-32 w-full resize-y rounded-xl border border-zinc-900/10 bg-white/58 p-4 text-sm font-normal leading-7 text-ink outline-none transition placeholder:text-zinc-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 disabled:cursor-not-allowed disabled:opacity-70 dark:border-white/12 dark:bg-white/8 dark:text-white dark:placeholder:text-zinc-500"
           />
         </label>
@@ -306,7 +303,7 @@ export function DailyChallenge({
             )}
           >
             <WandSparkles size={18} aria-hidden="true" />
-            {isValidating ? "Checking..." : "Check My Answer"}
+            {isValidating ? "Checking..." : "Check Answer"}
           </button>
         </div>
       </GlassCard>
