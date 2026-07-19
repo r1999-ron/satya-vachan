@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
+import confetti from "canvas-confetti";
 import { RotateCcw, WandSparkles } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import {
   RecorderButton,
   type RecorderState,
@@ -99,6 +101,16 @@ export function DailyChallenge({ word }: { word: WordEntry }) {
     (result: ChallengeResponse, fallbackNotice?: string) => {
       if (result.acceptableUsage && !completedToday) {
         completeToday();
+        confetti({
+          particleCount: 64,
+          spread: 68,
+          startVelocity: 32,
+          gravity: 0.9,
+          scalar: 0.86,
+          origin: { x: 0.5, y: 0.72 },
+          colors: ["#f59e0b", "#f97316", "#fb7185", "#10b981"],
+          disableForReducedMotion: true,
+        });
       }
       dispatch({ type: "validation_succeeded", result, fallbackNotice });
     },
@@ -301,15 +313,25 @@ export function DailyChallenge({ word }: { word: WordEntry }) {
         </GlassCard>
       ) : null}
 
-      {state.result ? (
-        <div ref={resultRef} className="scroll-mt-24">
-          <ChallengeFeedback
-            fallbackNotice={state.fallbackNotice}
-            result={state.result}
-            targetWord={word.elevated.dev}
-          />
-        </div>
-      ) : null}
+      <AnimatePresence mode="wait">
+        {state.result ? (
+          <motion.div
+            key={`${state.result.transcript}-${state.result.acceptableUsage}`}
+            ref={resultRef}
+            className="scroll-mt-24"
+            initial={{ opacity: 0, y: 24, scale: 0.975 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -12, scale: 0.985 }}
+            transition={{ type: "spring", stiffness: 260, damping: 25 }}
+          >
+            <ChallengeFeedback
+              fallbackNotice={state.fallbackNotice}
+              result={state.result}
+              targetWord={word.elevated.dev}
+            />
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </section>
   );
 }

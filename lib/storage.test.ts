@@ -263,6 +263,27 @@ describe("storage", () => {
     });
   });
 
+  it("notifies other streak consumers when a challenge is completed", () => {
+    const dispatchEvent = vi.fn<(event: Event) => boolean>(() => true);
+    Object.defineProperty(globalThis, "window", {
+      configurable: true,
+      value: {
+        localStorage: storage,
+        addEventListener: () => undefined,
+        removeEventListener: () => undefined,
+        dispatchEvent,
+      },
+    });
+
+    const streak = completeTodaysChallenge(new Date("2026-07-18T12:00:00.000Z"));
+
+    expect(dispatchEvent).toHaveBeenCalledOnce();
+    expect(dispatchEvent.mock.calls[0]?.[0]).toMatchObject({
+      type: "satya-vachan:streak",
+      detail: streak,
+    });
+  });
+
   it("keeps only the 60 most recent challenge completion keys", () => {
     const completedChallenges = Array.from(
       { length: 70 },

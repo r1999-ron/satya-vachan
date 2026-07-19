@@ -35,6 +35,7 @@ const EMPTY_STREAK: StreakState = {
 const PRACTICE_HISTORY_LIMIT = 10;
 const COMPLETED_CHALLENGES_LIMIT = 60;
 const PREFERENCES_EVENT = "satya-vachan:preferences";
+const STREAK_EVENT = "satya-vachan:streak";
 
 type Preferences = {
   script: ScriptPreference;
@@ -350,6 +351,7 @@ export function completeTodaysChallenge(date: Date = new Date()): StreakState {
       ]),
     };
     writeJson(STORAGE_KEYS.streak, nextState);
+    dispatchStreakEvent(nextState);
     return nextState;
   }
 
@@ -367,7 +369,14 @@ export function completeTodaysChallenge(date: Date = new Date()): StreakState {
   };
 
   writeJson(STORAGE_KEYS.streak, nextState);
+  dispatchStreakEvent(nextState);
   return nextState;
+}
+
+function dispatchStreakEvent(streak: StreakState) {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent(STREAK_EVENT, { detail: streak }));
+  }
 }
 
 export function isChallengeComplete(date: Date = new Date()) {
@@ -473,17 +482,17 @@ export function useStreak() {
   const [completedToday, setCompletedToday] = useState(false);
 
   useEffect(() => {
-    let isActive = true;
+    const syncStreak = () => {
+      setStreak(loadStreakState());
+      setCompletedToday(isChallengeComplete());
+    };
 
-    queueMicrotask(() => {
-      if (isActive) {
-        setStreak(loadStreakState());
-        setCompletedToday(isChallengeComplete());
-      }
-    });
-
+    syncStreak();
+    window.addEventListener("storage", syncStreak);
+    window.addEventListener(STREAK_EVENT, syncStreak);
     return () => {
-      isActive = false;
+      window.removeEventListener("storage", syncStreak);
+      window.removeEventListener(STREAK_EVENT, syncStreak);
     };
   }, []);
 
