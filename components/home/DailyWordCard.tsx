@@ -180,10 +180,10 @@ export function DailyWordCard({
             </span>
           ))}
         </div>
-        <p className="mt-3 flex items-start gap-2 text-xs font-normal leading-5 text-zinc-500 dark:text-zinc-400">
+        {/* <p className="mt-3 flex items-start gap-2 text-xs font-normal leading-5 text-zinc-500 dark:text-zinc-400">
           <Lightbulb className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-300" size={14} aria-hidden="true" />
           {word.usageNote}
-        </p>
+        </p> */}
       </div>
 
       <a

@@ -670,7 +670,7 @@ function getTitle(state: RecorderState) {
     case "permission-needed":
     case "idle":
     default:
-      return "Speak instead of typing";
+      return "";
   }
 }
 

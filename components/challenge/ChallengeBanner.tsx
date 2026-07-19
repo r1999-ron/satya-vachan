@@ -62,9 +62,9 @@ export function ChallengeBanner({
 
       {starters.length > 0 ? (
       <div className="mt-4 border-t border-amber-900/10 pt-4 dark:border-amber-100/10">
-        <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+        {/* <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
           Start your sentence
-        </p>
+        </p> */}
         <div className="mt-2 flex flex-wrap gap-2">
           {starters.map((starter) => (
             <button
