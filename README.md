@@ -1,5 +1,7 @@
 # Satya-Vachan
 
+![Satya-Vachan application banner](public/application-banner.jpg)
+
 Satya-Vachan is an AI-powered Hindi expression coach for fluent Hindi speakers who want to make everyday Hindi sound more elegant, articulate, and graceful.
 
 ## Local Development
@@ -7,7 +9,7 @@ Satya-Vachan is an AI-powered Hindi expression coach for fluent Hindi speakers w
 1. Install dependencies:
 
    ```bash
-   npm install
+   pnpm install
    ```
 
 2. Create a local environment file:
@@ -48,7 +50,7 @@ Satya-Vachan is an AI-powered Hindi expression coach for fluent Hindi speakers w
 4. Start the app:
 
    ```bash
-   npm run dev
+   pnpm dev
    ```
 
 The app's static screens, localStorage progress, learned words, and typed fallback flows still render without `OPENAI_API_KEY`. AI transcription, transformation, challenge validation, and text-to-speech return a graceful unavailable state until the key is configured.
@@ -90,11 +92,11 @@ tracing if users may submit other sensitive material in their Hindi practice.
 ## Scripts
 
 ```bash
-npm run dev
-npm run lint
-npm run typecheck
-npm run build
-npm run start
+pnpm dev
+pnpm lint
+pnpm typecheck
+pnpm build
+pnpm start
 ```
 
 ## Deployment Readiness Checklist
