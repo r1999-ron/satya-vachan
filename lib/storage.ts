@@ -1,11 +1,22 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { getSeedLearnedWords } from "@/data/demo";
 import { getTodayKey, shiftDateKey } from "@/lib/dates";
 import { DEFAULT_SCRIPT_PREFERENCE, isHindiText, makeHindiText } from "@/lib/hindi";
+import {
+  countDueWords,
+  createReviewSchedule,
+  getNextDueDate,
+  gradeReviewSchedule,
+  isReviewSchedule,
+  normalizeReviewSchedule,
+  selectDueWords,
+} from "@/lib/review";
 import type {
   LearnedWord,
   LearnedWordInput,
   PracticeResponse,
+  ReviewGrade,
+  ReviewSchedule,
   ScriptPreference,
   StreakState,
 } from "@/types";
@@ -15,6 +26,7 @@ export const STORAGE_KEYS = {
   streak: "satya-vachan.streak",
   practiceHistory: "satya-vachan.practiceHistory",
   preferences: "satya-vachan.preferences",
+  reviewSchedules: "satya-vachan.reviewSchedules",
 } as const;
 
 export type PracticeHistoryItem = Pick<
@@ -36,6 +48,7 @@ const PRACTICE_HISTORY_LIMIT = 10;
 const COMPLETED_CHALLENGES_LIMIT = 60;
 const PREFERENCES_EVENT = "satya-vachan:preferences";
 const STREAK_EVENT = "satya-vachan:streak";
+const REVIEW_EVENT = "satya-vachan:review";
 
 type Preferences = {
   script: ScriptPreference;
@@ -523,6 +536,135 @@ export function usePracticeHistory() {
   }, []);
 
   return { history, saveHistory, refreshHistory: () => setHistory(loadPracticeHistory()) };
+}
+
+export function loadReviewSchedules(): ReviewSchedule[] {
+  const stored = readJson<unknown>(STORAGE_KEYS.reviewSchedules, []);
+
+  if (!Array.isArray(stored)) {
+    writeJson(STORAGE_KEYS.reviewSchedules, []);
+    return [];
+  }
+
+  const schedules = stored.filter(isReviewSchedule).map(normalizeReviewSchedule);
+
+  if (schedules.length !== stored.length) {
+    writeJson(STORAGE_KEYS.reviewSchedules, schedules);
+  }
+
+  return schedules;
+}
+
+/**
+ * Drops schedules whose word has been removed, so a long-lived collection does
+ * not accumulate orphans.
+ */
+function pruneReviewSchedules(schedules: ReviewSchedule[], words: LearnedWord[]) {
+  const wordIds = new Set(words.map((word) => word.id));
+  return schedules.filter((schedule) => wordIds.has(schedule.wordId));
+}
+
+export function recordReview(
+  wordId: string,
+  grade: ReviewGrade,
+  date: Date = new Date(),
+): ReviewSchedule[] {
+  const trimmedId = wordId.trim();
+
+  if (!trimmedId) {
+    return loadReviewSchedules();
+  }
+
+  const todayKey = getTodayKey(date);
+  const words = loadLearnedWords();
+  const schedules = pruneReviewSchedules(loadReviewSchedules(), words);
+  const existingIndex = schedules.findIndex((schedule) => schedule.wordId === trimmedId);
+  const existing =
+    existingIndex >= 0 ? schedules[existingIndex] : createReviewSchedule(trimmedId, todayKey);
+  const graded = gradeReviewSchedule(existing, grade, todayKey);
+  const nextSchedules = [...schedules];
+
+  if (existingIndex >= 0) {
+    nextSchedules[existingIndex] = graded;
+  } else {
+    nextSchedules.push(graded);
+  }
+
+  writeJson(STORAGE_KEYS.reviewSchedules, nextSchedules);
+  dispatchReviewEvent();
+  return nextSchedules;
+}
+
+function dispatchReviewEvent() {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent(REVIEW_EVENT));
+  }
+}
+
+/**
+ * Drives a revision session: which saved words are due today, and how grading
+ * one of them feeds back into the schedule.
+ */
+export function useReviewQueue() {
+  const [words, setWords] = useState<LearnedWord[]>([]);
+  const [schedules, setSchedules] = useState<ReviewSchedule[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+  // Grading a word removes it from the live due set, so a session runs off the
+  // queue captured when the data first loaded. It only changes on restart.
+  const [sessionWords, setSessionWords] = useState<LearnedWord[] | null>(null);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const sync = () => {
+      if (!isActive) {
+        return;
+      }
+
+      const nextWords = loadLearnedWords();
+      const nextSchedules = loadReviewSchedules();
+
+      setWords(nextWords);
+      setSchedules(nextSchedules);
+      setSessionWords((current) => current ?? selectDueWords(nextWords, nextSchedules));
+      setIsLoaded(true);
+    };
+
+    queueMicrotask(sync);
+    window.addEventListener("storage", sync);
+    window.addEventListener(REVIEW_EVENT, sync);
+
+    return () => {
+      isActive = false;
+      window.removeEventListener("storage", sync);
+      window.removeEventListener(REVIEW_EVENT, sync);
+    };
+  }, []);
+
+  const gradeWord = useCallback((wordId: string, grade: ReviewGrade) => {
+    const nextSchedules = recordReview(wordId, grade);
+    setSchedules(nextSchedules);
+    return nextSchedules;
+  }, []);
+
+  const restartSession = useCallback(() => {
+    const nextWords = loadLearnedWords();
+    const nextSchedules = loadReviewSchedules();
+    setSessionWords(selectDueWords(nextWords, nextSchedules));
+  }, []);
+
+  const dueCount = useMemo(() => countDueWords(words, schedules), [schedules, words]);
+  const nextDueDate = useMemo(() => getNextDueDate(words, schedules), [schedules, words]);
+
+  return {
+    dueCount,
+    gradeWord,
+    isLoaded,
+    nextDueDate,
+    restartSession,
+    sessionWords,
+    totalWords: words.length,
+  };
 }
 
 function isScriptPreference(value: unknown): value is ScriptPreference {

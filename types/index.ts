@@ -72,6 +72,19 @@ export type StreakState = {
   completedChallenges: string[];
 };
 
+export type ReviewGrade = "again" | "good";
+
+export type ReviewSchedule = {
+  wordId: string;
+  /** Date key for the next time this word should come back. */
+  dueOn: string;
+  /** Index into REVIEW_INTERVALS_DAYS. */
+  stepIndex: number;
+  lapses: number;
+  reviewCount: number;
+  lastReviewedOn: string | null;
+};
+
 export type ChallengeResponse = {
   transcript: string;
   usedTargetWord: boolean;

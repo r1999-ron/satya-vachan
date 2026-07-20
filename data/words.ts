@@ -107,6 +107,61 @@ function validateWordCorpus(words: WordEntry[]) {
 
 validateWordCorpus(wordCorpus);
 
+/**
+ * Finds the corpus entry a saved word relates to, matching any surface form.
+ * Loose on purpose: this backs display metadata such as tags and difficulty,
+ * where a near match is better than nothing.
+ */
+export function findCorpusEntry(word: string, alternative?: string) {
+  const normalizedWord = normalizeForLookup(word);
+  const normalizedAlternative = normalizeForLookup(alternative ?? "");
+
+  if (!normalizedWord && !normalizedAlternative) {
+    return undefined;
+  }
+
+  return wordCorpus.find((entry) => {
+    const candidates = [
+      entry.id,
+      entry.common.dev,
+      entry.common.roman,
+      entry.elevated.dev,
+      entry.elevated.roman,
+      ...entry.synonyms,
+    ]
+      .flatMap((value) => (typeof value === "string" ? [value] : [value.dev, value.roman]))
+      .map(normalizeForLookup);
+
+    return (
+      (Boolean(normalizedWord) && candidates.includes(normalizedWord)) ||
+      (Boolean(normalizedAlternative) && candidates.includes(normalizedAlternative))
+    );
+  });
+}
+
+/**
+ * Finds the corpus entry whose elevated form *is* this word. Strict on purpose:
+ * callers that grade a spoken sentence must target the exact word the user
+ * saved, so a synonym or simple-form match would test the wrong thing.
+ */
+export function findCorpusEntryByElevatedForm(word: string) {
+  const normalizedWord = normalizeForLookup(word);
+
+  if (!normalizedWord) {
+    return undefined;
+  }
+
+  return wordCorpus.find(
+    (entry) =>
+      normalizeForLookup(entry.elevated.dev) === normalizedWord ||
+      normalizeForLookup(entry.elevated.roman) === normalizedWord,
+  );
+}
+
+function normalizeForLookup(value: string) {
+  return value.trim().toLocaleLowerCase();
+}
+
 export function getWordOfTheDay(date: Date = new Date()) {
   if (wordCorpus.length === 0) {
     return fallbackWordEntry;

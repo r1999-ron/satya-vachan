@@ -13,8 +13,9 @@ import {
   X,
 } from "lucide-react";
 import { HindiText } from "@/components/hindi/HindiText";
+import { RevisionCallout } from "@/components/review/RevisionCallout";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { wordCorpus } from "@/data/words";
+import { findCorpusEntry } from "@/data/words";
 import { UI_FEEDBACK_DURATION_MS } from "@/lib/constants";
 import { useLearnedWords } from "@/lib/storage";
 import { cn } from "@/lib/utils";
@@ -155,6 +156,8 @@ export default function LearnedPage() {
 
   return (
     <div className="space-y-4 sm:space-y-5">
+      <RevisionCallout />
+
       <div>
         <div className="flex items-center gap-2">
           <label className="flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-xl border border-zinc-900/10 bg-white/58 px-3 dark:border-white/12 dark:bg-white/8">
@@ -451,32 +454,7 @@ function sortLearnedWords(words: LearnedWord[]) {
 }
 
 function getCorpusMeta(word: LearnedWord) {
-  const normalizedWord = normalizeForLookup(word.word);
-  const normalizedAlternative = normalizeForLookup(word.simpleAlternative ?? "");
-
-  return wordCorpus.find((entry) => {
-    const candidates = [
-      entry.id,
-      entry.common.dev,
-      entry.common.roman,
-      entry.elevated.dev,
-      entry.elevated.roman,
-      ...entry.synonyms,
-    ]
-      .flatMap((value) =>
-        typeof value === "string" ? [value] : [value.dev, value.roman],
-      )
-      .map(normalizeForLookup);
-
-    return (
-      candidates.includes(normalizedWord) ||
-      Boolean(normalizedAlternative && candidates.includes(normalizedAlternative))
-    );
-  });
-}
-
-function normalizeForLookup(value: string) {
-  return value.trim().toLocaleLowerCase();
+  return findCorpusEntry(word.word, word.simpleAlternative);
 }
 
 function dateValue(value: string) {
