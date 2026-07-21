@@ -1,10 +1,14 @@
+"use client";
+
 import {
   AlertCircle,
   CheckCircle2,
   Trophy,
   WandSparkles,
 } from "lucide-react";
+import { motion } from "motion/react";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { popIn, transitions } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import type { ChallengeResponse } from "@/types";
 
@@ -30,20 +34,21 @@ export function ChallengeFeedback({
   return (
     <GlassCard
       className={cn(
-        "relative animate-floatIn",
+        "relative",
         successful
-          ? "border-emerald-200/80 bg-emerald-50/75 motion-safe:animate-savePop dark:border-emerald-300/25 dark:bg-emerald-300/10"
-          : "border-amber-200/80 bg-amber-50/75 dark:border-amber-300/25 dark:bg-amber-300/10",
+          ? "border-success/50 bg-success-soft"
+          : "border-accent/50 bg-accent-soft",
       )}
     >
       {successful ? <CompletionBurst /> : null}
       <div className="flex min-w-0 gap-3">
-        <span
+        <motion.span
+          variants={popIn}
+          initial="hidden"
+          animate="visible"
           className={cn(
-            "grid size-11 shrink-0 place-items-center rounded-xl",
-            successful
-              ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-300/15 dark:text-emerald-100"
-              : "bg-amber-100 text-amber-800 dark:bg-amber-300/15 dark:text-amber-100",
+            "grid size-11 shrink-0 place-items-center rounded-btn border-theme border-line bg-surface",
+            successful ? "text-success" : "text-accent",
           )}
         >
           {successful ? (
@@ -51,60 +56,60 @@ export function ChallengeFeedback({
           ) : (
             <AlertCircle size={21} aria-hidden="true" />
           )}
-        </span>
+        </motion.span>
         <div className="min-w-0">
-          <p className="text-xs font-bold uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-400">
+          <p className="eyebrow">
             {successful ? "Challenge accepted" : "Try once more"}
           </p>
-          <h2 className="mt-1 text-xl font-bold text-ink sm:text-2xl dark:text-white">
+          <h2 className="mt-1 font-display text-xl font-bold tracking-display sm:text-2xl">
             {successful
               ? "That usage works nicely."
               : `Use ${targetWord} a little more directly.`}
           </h2>
-          <p className="mt-2 text-wrap-anywhere text-sm font-normal leading-7 text-zinc-700 dark:text-zinc-300">
+          <p className="mt-2 text-wrap-anywhere text-sm leading-7 text-content-muted">
             {result.feedback}
           </p>
         </div>
       </div>
 
       {fallbackNotice ? (
-        <p className="mt-4 border-t border-zinc-900/8 pt-3 text-xs font-normal leading-5 text-zinc-600 dark:border-white/10 dark:text-zinc-400">
+        <p className="mt-4 border-t border-line pt-3 text-xs leading-5 text-content-subtle">
           {fallbackNotice}
         </p>
       ) : null}
 
-      <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 border-t border-zinc-900/8 pt-4 text-xs font-medium dark:border-white/10">
-        <span className={result.usedTargetWord ? "text-emerald-800 dark:text-emerald-200" : "text-amber-900 dark:text-amber-100"}>
+      <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4 text-xs font-medium">
+        <span className={result.usedTargetWord ? "text-success" : "text-content-muted"}>
           <CheckCircle2 className="mr-1.5 inline" size={14} aria-hidden="true" />
           Target word: {result.usedTargetWord ? "found" : "missing"}
         </span>
-        <span className={result.acceptableUsage ? "text-emerald-800 dark:text-emerald-200" : "text-amber-900 dark:text-amber-100"}>
+        <span className={result.acceptableUsage ? "text-success" : "text-content-muted"}>
           <CheckCircle2 className="mr-1.5 inline" size={14} aria-hidden="true" />
           Usage: {result.acceptableUsage ? "acceptable" : "needs revision"}
         </span>
       </div>
 
       {result.suggestedImprovement ? (
-        <div className="mt-4 border-t border-zinc-900/8 pt-4 dark:border-white/10">
-          <p className="text-xs font-bold uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-400">
-            Suggested version
-          </p>
-          <p className="mt-2 text-wrap-anywhere text-sm font-medium leading-7 text-ink dark:text-white">
+        <div className="mt-4 border-t border-line pt-4">
+          <p className="eyebrow">Suggested version</p>
+          <p className="mt-2 text-wrap-anywhere text-sm font-medium leading-7">
             {result.suggestedImprovement}
           </p>
         </div>
       ) : null}
 
       {successful && onElevate ? (
-        <button
+        <motion.button
           type="button"
           onClick={onElevate}
           disabled={elevateDisabled}
-          className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-emerald-300/70 bg-white/70 px-4 py-2.5 text-sm font-bold text-emerald-950 transition hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/45 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto dark:border-emerald-300/25 dark:bg-white/8 dark:text-emerald-100 dark:hover:bg-white/12"
+          whileTap={elevateDisabled ? undefined : { scale: 0.98 }}
+          transition={transitions.snappy}
+          className="btn btn-outline mt-5 w-full sm:w-auto"
         >
           <WandSparkles size={16} aria-hidden="true" />
-          {elevateInProgress ? "Elevating…" : "Elevate this sentence too →"}
-        </button>
+          {elevateInProgress ? "Elevating…" : "Elevate this sentence too"}
+        </motion.button>
       ) : null}
     </GlassCard>
   );
@@ -117,13 +122,15 @@ function CompletionBurst() {
       aria-hidden="true"
     >
       {[0, 1, 2, 3, 4].map((index) => (
-        <span
+        <motion.span
           key={index}
-          className="absolute size-2 rounded-full bg-emerald-400/80 shadow-glow motion-safe:animate-savePop"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: [0, 1.3, 1], opacity: [0, 1, 0.85] }}
+          transition={{ delay: index * 0.07, ...transitions.bouncy }}
+          className="absolute size-2 rounded-full bg-success"
           style={{
             left: `${12 + index * 13}px`,
             top: `${index % 2 === 0 ? 8 : 26}px`,
-            animationDelay: `${index * 70}ms`,
           }}
         />
       ))}

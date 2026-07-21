@@ -55,7 +55,7 @@ export function HindiText({
         <span
           lang="hi-Latn"
           className={cn(
-            "block text-wrap-anywhere text-zinc-500 dark:text-zinc-400",
+            "block text-wrap-anywhere text-content-subtle",
             kind === "word" ? "mt-0.5 text-xs font-semibold" : showDev ? "mt-1 text-xs" : "text-sm font-normal leading-7",
             romanClassName,
           )}
@@ -64,7 +64,7 @@ export function HindiText({
         </span>
       ) : null}
       {showEnglish && text.en ? (
-        <span className={cn("mt-1 block text-xs italic leading-5 text-zinc-500 dark:text-zinc-400", englishClassName)}>
+        <span className={cn("mt-1 block text-xs italic leading-5 text-content-subtle", englishClassName)}>
           “{text.en}”
         </span>
       ) : null}

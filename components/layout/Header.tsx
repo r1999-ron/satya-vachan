@@ -3,10 +3,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { Languages } from "lucide-react";
-import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { AnimatePresence, motion } from "motion/react";
+import { useCallback, useRef, useState } from "react";
+import { Flame, Languages } from "lucide-react";
+import { ThemeSwitcher } from "@/components/layout/ThemeSwitcher";
 import { ResilienceStatus } from "@/components/ui/ResilienceStatus";
+import { useDismissOnOutside } from "@/hooks/useDismissOnOutside";
+import { scaleIn, transitions } from "@/lib/motion";
 import { navItems } from "@/lib/nav";
 import { useScriptPreference, useStreak } from "@/lib/storage";
 import { cn } from "@/lib/utils";
@@ -28,27 +31,39 @@ export function Header() {
   const { streak } = useStreak();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-zinc-900/5 bg-[#fbf8f2]/88 backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/80">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:gap-5 sm:px-6">
+    <header className="sticky top-0 z-30 border-b border-line/70 bg-canvas/85 backdrop-blur-xl">
+      <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:gap-5 sm:px-6">
         <Link
           href="/"
           prefetch={false}
-          className="group flex min-w-0 items-center gap-2.5 rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-500"
+          className="group flex min-w-0 items-center gap-2.5 rounded-btn"
         >
-          <Image
-            src="/logo.svg"
-            alt=""
-            aria-hidden="true"
-            width={45}
-            height={40}
-            priority
-            className="h-10 w-[45px] shrink-0 object-contain"
-          />
+          <motion.span
+            whileHover={{ rotate: -6, scale: 1.06 }}
+            transition={transitions.bouncy}
+            className="shrink-0"
+          >
+            <Image
+              src="/logo.svg"
+              alt=""
+              aria-hidden="true"
+              width={45}
+              height={40}
+              priority
+              className="h-10 w-[45px] object-contain"
+            />
+          </motion.span>
           <span className="min-w-0 leading-normal">
-            <span lang="hi" className="block truncate font-hindi text-lg font-bold leading-tight tracking-tight text-ink dark:text-white">
+            <span
+              lang="hi"
+              className="block truncate font-hindi text-lg font-bold leading-tight tracking-display"
+            >
               सत्य-वचन
             </span>
-            <span lang="hi" className="mt-0.5 block truncate font-hindi text-[8px] font-semibold leading-[1.45] tracking-[0.02em] text-[#d97706] sm:text-[7px] sm:leading-[1.6] dark:text-amber-200">
+            <span
+              lang="hi"
+              className="mt-0.5 block truncate font-hindi text-[9px] font-semibold leading-[1.45] tracking-[0.02em] text-accent"
+            >
               शुद्ध हिंदी बोलना सीखें
             </span>
           </span>
@@ -63,22 +78,30 @@ export function Header() {
                 key={href}
                 href={href}
                 prefetch={false}
+                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-semibold transition",
-                  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500",
-                  active
-                    ? "bg-zinc-900 text-white shadow-sm dark:bg-white dark:text-zinc-950"
-                    : "text-zinc-600 hover:bg-black/5 hover:text-zinc-950 active:scale-95 dark:text-zinc-300 dark:hover:bg-white/10 dark:hover:text-white",
+                  "relative inline-flex items-center gap-2 rounded-btn px-3.5 py-2 text-sm font-semibold transition-colors",
+                  active ? "text-content-invert" : "text-content-muted hover:text-content",
                 )}
               >
-                <Icon size={16} aria-hidden="true" />
-                {label}
+                {active ? (
+                  <motion.span
+                    layoutId="header-nav-pill"
+                    transition={transitions.snappy}
+                    aria-hidden="true"
+                    className="absolute inset-0 rounded-btn border-theme border-line bg-content shadow-btn"
+                  />
+                ) : null}
+                <span className="relative inline-flex items-center gap-2">
+                  <Icon size={16} aria-hidden="true" />
+                  {label}
+                </span>
               </Link>
             );
           })}
         </nav>
 
-        <div className="flex shrink-0 items-center gap-3">
+        <div className="flex shrink-0 items-center gap-2">
           <StreakChip count={streak.currentStreak} />
           <div className="hidden sm:block">
             <ScriptPreferenceControl
@@ -90,8 +113,10 @@ export function Header() {
             preference={preference}
             onChange={setScriptPreference}
           />
-          <ThemeToggle />
-          <span className="hidden lg:block"><ResilienceStatus /></span>
+          <ThemeSwitcher />
+          <span className="hidden lg:block">
+            <ResilienceStatus />
+          </span>
         </div>
       </div>
     </header>
@@ -100,31 +125,52 @@ export function Header() {
 
 function StreakChip({ count }: { count: number }) {
   const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const dayLabel = count === 1 ? "day" : "days";
 
+  const close = useCallback(() => setIsOpen(false), []);
+  useDismissOnOutside(containerRef, isOpen, close);
+
   return (
-    <div className="relative">
-      <button
+    <div ref={containerRef} className="relative">
+      <motion.button
         type="button"
         aria-expanded={isOpen}
         aria-label={`View ${count} ${dayLabel} streak`}
         onClick={() => setIsOpen((open) => !open)}
-        className="inline-flex min-h-9 items-center gap-1 rounded-full bg-amber-100 px-3 text-sm font-bold text-amber-900 transition hover:bg-amber-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/55 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f8f5ef] dark:bg-amber-300/12 dark:text-amber-100 dark:hover:bg-amber-300/20 dark:focus-visible:ring-offset-zinc-950"
+        whileTap={{ scale: 0.94 }}
+        transition={transitions.snappy}
+        className="inline-flex min-h-9 items-center gap-1.5 rounded-chip border-theme border-line bg-accent-soft px-2.5 text-sm font-bold text-content"
       >
-        <span aria-hidden="true">🔥</span>
+        <motion.span
+          aria-hidden="true"
+          // A live streak breathes; a zeroed one sits still.
+          animate={count > 0 ? { scale: [1, 1.14, 1] } : undefined}
+          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+          className="text-accent"
+        >
+          <Flame size={15} />
+        </motion.span>
         {count}
-      </button>
+      </motion.button>
 
-      {isOpen && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-40 rounded-xl border border-amber-200 bg-[#fdfbf7] p-3 text-right shadow-lg shadow-zinc-900/10 dark:border-amber-300/20 dark:bg-zinc-900 dark:shadow-black/20">
-          <p className="text-xs font-bold uppercase tracking-[0.12em] text-amber-800 dark:text-amber-200">
-            Current streak
-          </p>
-          <p className="mt-1 text-sm font-semibold text-zinc-700 dark:text-zinc-200">
-            {count} {dayLabel}
-          </p>
-        </div>
-      )}
+      <AnimatePresence>
+        {isOpen ? (
+          <motion.div
+            variants={scaleIn}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            style={{ transformOrigin: "top right" }}
+            className="popover absolute right-0 top-full z-50 mt-2 w-44 p-3 text-right"
+          >
+            <p className="eyebrow">Current streak</p>
+            <p className="mt-1 text-sm font-semibold">
+              {count} {dayLabel}
+            </p>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 }
@@ -138,28 +184,38 @@ function ScriptPreferenceControl({
 }) {
   return (
     <div
-      className="flex rounded-xl bg-zinc-900/[0.055] p-1 dark:bg-white/10"
+      className="flex rounded-btn bg-content/5 p-1"
       role="group"
       aria-label="Hindi script preference"
     >
-      {scriptOptions.map((option) => (
-        <button
-          key={option.value}
-          type="button"
-          lang={option.language}
-          onClick={() => onChange(option.value)}
-          aria-pressed={preference === option.value}
-          className={cn(
-            "rounded-lg px-2.5 py-1.5 text-[11px] font-bold transition",
-            option.value === "dev" && "font-hindi",
-            preference === option.value
-              ? "bg-white text-zinc-950 shadow-sm dark:bg-zinc-800 dark:text-white"
-              : "text-zinc-500 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white",
-          )}
-        >
-          {option.label}
-        </button>
-      ))}
+      {scriptOptions.map((option) => {
+        const active = preference === option.value;
+
+        return (
+          <button
+            key={option.value}
+            type="button"
+            lang={option.language}
+            onClick={() => onChange(option.value)}
+            aria-pressed={active}
+            className={cn(
+              "relative rounded-chip px-2.5 py-1.5 text-[11px] font-bold transition-colors",
+              option.value === "dev" && "font-hindi",
+              active ? "text-content" : "text-content-subtle hover:text-content",
+            )}
+          >
+            {active ? (
+              <motion.span
+                layoutId="script-preference-pill"
+                transition={transitions.snappy}
+                aria-hidden="true"
+                className="absolute inset-0 rounded-chip border-theme border-line bg-surface shadow-btn"
+              />
+            ) : null}
+            <span className="relative">{option.label}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -174,73 +230,61 @@ function MobileScriptPreferenceControl({
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
-
-    const handlePointerDown = (event: PointerEvent) => {
-      if (!containerRef.current?.contains(event.target as Node)) {
-        setOpen(false);
-      }
-    };
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setOpen(false);
-      }
-    };
-
-    document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [open]);
+  const close = useCallback(() => setOpen(false), []);
+  useDismissOnOutside(containerRef, open, close);
 
   return (
     <div ref={containerRef} className="relative sm:hidden">
-      <button
+      <motion.button
         type="button"
         onClick={() => setOpen((current) => !current)}
         aria-expanded={open}
         aria-haspopup="menu"
         aria-label="Choose Hindi script"
-        className="inline-flex size-9 items-center justify-center gap-1 rounded-xl bg-zinc-900/[0.055] text-xs font-bold text-zinc-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/55 dark:bg-white/10 dark:text-zinc-200"
+        whileTap={{ scale: 0.92 }}
+        transition={transitions.snappy}
+        className="icon-btn size-9"
       >
-        <Languages size={15} aria-hidden="true" />
-        <span className="sr-only">Aa</span>
-      </button>
-      {open ? (
-        <div
-          role="menu"
-          aria-label="Hindi script preference"
-          className="absolute right-0 top-11 z-50 min-w-36 rounded-xl border border-zinc-900/8 bg-[#fffdf8] p-1.5 shadow-xl dark:border-white/10 dark:bg-zinc-900"
-        >
-          {scriptOptions.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              role="menuitemradio"
-              lang={option.language}
-              aria-checked={preference === option.value}
-              onClick={() => {
-                onChange(option.value);
-                setOpen(false);
-              }}
-              className={cn(
-                "flex w-full rounded-xl px-3 py-2 text-left text-xs font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/55",
-                option.value === "dev" && "font-hindi",
-                preference === option.value
-                  ? "bg-amber-100 text-amber-950 dark:bg-amber-300/15 dark:text-amber-100"
-                  : "text-zinc-600 hover:bg-zinc-900/5 dark:text-zinc-300 dark:hover:bg-white/8",
-              )}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-      ) : null}
+        <Languages size={16} aria-hidden="true" />
+      </motion.button>
+
+      <AnimatePresence>
+        {open ? (
+          <motion.div
+            role="menu"
+            aria-label="Hindi script preference"
+            variants={scaleIn}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            style={{ transformOrigin: "top right" }}
+            className="popover absolute right-0 top-11 z-50 min-w-36 p-1.5"
+          >
+            {scriptOptions.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                role="menuitemradio"
+                lang={option.language}
+                aria-checked={preference === option.value}
+                onClick={() => {
+                  onChange(option.value);
+                  setOpen(false);
+                }}
+                className={cn(
+                  "flex w-full rounded-chip px-3 py-2 text-left text-xs font-semibold transition",
+                  option.value === "dev" && "font-hindi",
+                  preference === option.value
+                    ? "bg-accent-soft text-content"
+                    : "text-content-muted hover:bg-content/5",
+                )}
+              >
+                {option.label}
+              </button>
+            ))}
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 }

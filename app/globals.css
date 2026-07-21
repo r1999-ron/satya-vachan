@@ -2,12 +2,217 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/*
+ * Theme tokens
+ * ------------
+ * Two themes ("classic", "neo"), each with a light and dark mode. Themes are
+ * selected by `data-theme` on <html>; dark mode adds the `.dark` class (kept so
+ * Tailwind's `dark:` variant and `color-scheme` still work).
+ *
+ * Every selector below is written as `:root[data-theme="..."]` so that all four
+ * blocks sit at comparable specificity. Writing the dark blocks as `:root.dark`
+ * would make them (0,2,0) and beat a plain `[data-theme="neo"]` at (0,1,0),
+ * which would leak Classic's dark palette into Neo's light mode.
+ *
+ * Colours are stored as space-separated RGB channels so Tailwind's
+ * `<alpha-value>` placeholder can produce `text-content/60` etc.
+ */
+
+:root,
+:root[data-theme="classic"] {
   color-scheme: light;
+
+  /* Surfaces */
+  --c-canvas: 247 243 234;
+  --c-elev: 252 250 245;
+  --c-surface: 255 253 249;
+  --c-surface-2: 244 239 228;
+  --c-surface-3: 236 229 214;
+
+  /* Lines */
+  --c-border: 231 223 209;
+  --c-border-strong: 212 199 176;
+
+  /* Text */
+  --c-text: 26 23 20;
+  --c-text-muted: 107 97 86;
+  --c-text-subtle: 143 133 122;
+  --c-text-invert: 255 253 249;
+
+  /* Accent — saffron. `accent` is darkened for AA text contrast on paper;
+     `accent-bright` is the untamed brand hue, for fills and glows. */
+  --c-accent: 194 113 12;
+  --c-accent-bright: 232 148 15;
+  --c-accent-soft: 251 239 216;
+  --c-accent-fg: 255 253 249;
+
+  /* Secondary — peacock */
+  --c-secondary: 23 107 135;
+  --c-secondary-soft: 221 237 242;
+  --c-secondary-fg: 255 253 249;
+
+  --c-success: 79 122 82;
+  --c-success-soft: 224 236 222;
+  --c-danger: 155 44 59;
+  --c-danger-soft: 249 226 228;
+
+  --c-highlight: 251 227 168;
+  --c-focus: 232 148 15;
+
+  /* Shape */
+  --radius-card: 1.25rem;
+  --radius-btn: 0.75rem;
+  --radius-chip: 0.625rem;
+  --border-w: 1px;
+  --border-w-card: 1px;
+
+  /* Depth */
+  --shadow-card: 0 18px 55px rgb(36 29 20 / 0.07);
+  --shadow-card-hover: 0 22px 60px rgb(36 29 20 / 0.11);
+  --shadow-btn: 0 8px 20px rgb(36 29 20 / 0.12);
+  --shadow-pop: 0 20px 45px rgb(36 29 20 / 0.16);
+  --lift: translateY(-2px);
+
+  /* Type */
+  --font-display: var(--font-fraunces);
+  --font-ui: var(--font-inter);
+  --font-hindi: var(--font-martel);
+  --tracking-display: -0.02em;
+  --tracking-eyebrow: 0.14em;
+  --weight-display: 700;
+  --uppercase-nav: none;
 }
 
-:root.dark {
+:root[data-theme="neo"] {
+  color-scheme: light;
+
+  --c-canvas: 255 247 230;
+  --c-elev: 255 255 255;
+  --c-surface: 255 255 255;
+  --c-surface-2: 255 240 204;
+  --c-surface-3: 255 231 173;
+
+  --c-border: 17 17 17;
+  --c-border-strong: 17 17 17;
+
+  --c-text: 17 17 17;
+  --c-text-muted: 74 69 60;
+  --c-text-subtle: 107 100 89;
+  --c-text-invert: 255 255 255;
+
+  --c-accent: 255 184 0;
+  --c-accent-bright: 255 200 40;
+  --c-accent-soft: 255 233 168;
+  --c-accent-fg: 17 17 17;
+
+  --c-secondary: 11 127 168;
+  --c-secondary-soft: 201 237 248;
+  --c-secondary-fg: 255 255 255;
+
+  --c-success: 20 160 107;
+  --c-success-soft: 196 241 222;
+  --c-danger: 229 56 74;
+  --c-danger-soft: 255 216 220;
+
+  --c-highlight: 255 216 77;
+  --c-focus: 17 17 17;
+
+  --radius-card: 0.75rem;
+  --radius-btn: 0.5rem;
+  --radius-chip: 0.375rem;
+  --border-w: 2px;
+  --border-w-card: 3px;
+
+  /* Hard offset shadows in the border colour — the signature of the theme. */
+  --shadow-card: 5px 5px 0 0 rgb(var(--c-border));
+  --shadow-card-hover: 8px 8px 0 0 rgb(var(--c-border));
+  --shadow-btn: 3px 3px 0 0 rgb(var(--c-border));
+  --shadow-pop: 6px 6px 0 0 rgb(var(--c-border));
+  --lift: translate(-3px, -3px);
+
+  --font-display: var(--font-space-grotesk);
+  --font-ui: var(--font-space-grotesk);
+  --font-hindi: var(--font-anek);
+  --tracking-display: -0.03em;
+  --tracking-eyebrow: 0.16em;
+  --weight-display: 800;
+  --uppercase-nav: uppercase;
+}
+
+:root[data-theme="classic"].dark {
   color-scheme: dark;
+
+  --c-canvas: 20 18 15;
+  --c-elev: 26 23 19;
+  --c-surface: 30 26 22;
+  --c-surface-2: 38 33 25;
+  --c-surface-3: 48 42 33;
+
+  --c-border: 56 49 42;
+  --c-border-strong: 74 65 56;
+
+  --c-text: 244 239 231;
+  --c-text-muted: 176 166 151;
+  --c-text-subtle: 138 128 113;
+  --c-text-invert: 26 23 20;
+
+  --c-accent: 240 179 44;
+  --c-accent-bright: 250 196 70;
+  --c-accent-soft: 58 46 23;
+  --c-accent-fg: 26 21 18;
+
+  --c-secondary: 94 184 212;
+  --c-secondary-soft: 22 52 62;
+  --c-secondary-fg: 20 18 15;
+
+  --c-success: 127 191 137;
+  --c-success-soft: 30 46 32;
+  --c-danger: 226 128 137;
+  --c-danger-soft: 58 30 33;
+
+  --c-highlight: 90 69 23;
+  --c-focus: 240 179 44;
+
+  --shadow-card: 0 18px 55px rgb(0 0 0 / 0.45);
+  --shadow-card-hover: 0 22px 60px rgb(0 0 0 / 0.55);
+  --shadow-btn: 0 8px 20px rgb(0 0 0 / 0.4);
+  --shadow-pop: 0 20px 45px rgb(0 0 0 / 0.5);
+}
+
+:root[data-theme="neo"].dark {
+  color-scheme: dark;
+
+  --c-canvas: 19 18 16;
+  --c-elev: 28 27 24;
+  --c-surface: 32 30 26;
+  --c-surface-2: 42 39 34;
+  --c-surface-3: 54 50 43;
+
+  /* Brutalism inverted: the heavy outline goes light against dark surfaces. */
+  --c-border: 242 234 218;
+  --c-border-strong: 255 255 255;
+
+  --c-text: 247 241 230;
+  --c-text-muted: 181 172 156;
+  --c-text-subtle: 142 134 119;
+  --c-text-invert: 19 18 16;
+
+  --c-accent: 255 197 48;
+  --c-accent-bright: 255 212 92;
+  --c-accent-soft: 61 49 17;
+  --c-accent-fg: 19 18 16;
+
+  --c-secondary: 63 208 240;
+  --c-secondary-soft: 16 55 64;
+  --c-secondary-fg: 19 18 16;
+
+  --c-success: 63 217 155;
+  --c-success-soft: 17 56 42;
+  --c-danger: 255 107 107;
+  --c-danger-soft: 66 28 28;
+
+  --c-highlight: 107 85 24;
+  --c-focus: 255 197 48;
 }
 
 * {
@@ -23,19 +228,25 @@ body {
   min-height: 100vh;
   margin: 0;
   overflow-x: hidden;
-  font-family: var(--font-noto-sans), system-ui, sans-serif;
+  font-family: var(--font-ui), system-ui, sans-serif;
   letter-spacing: 0;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  background-color: rgb(var(--c-canvas));
+  color: rgb(var(--c-text));
+  /* Theme switches should feel like a wash, not a flash. */
+  transition:
+    background-color 260ms ease,
+    color 260ms ease;
 }
 
 [lang="hi"],
 .font-hindi {
-  font-family: var(--font-martel), var(--font-noto-sans), system-ui, sans-serif;
+  font-family: var(--font-hindi), var(--font-ui), system-ui, sans-serif;
 }
 
 ::selection {
-  background: rgba(245, 158, 11, 0.24);
+  background: rgb(var(--c-accent-bright) / 0.28);
 }
 
 button,
@@ -50,6 +261,11 @@ a {
   touch-action: manipulation;
 }
 
+:where(button, a, input, textarea, [tabindex]):focus-visible {
+  outline: 2px solid rgb(var(--c-focus));
+  outline-offset: 2px;
+}
+
 .text-balance {
   text-wrap: balance;
 }
@@ -57,6 +273,241 @@ a {
 .text-wrap-anywhere {
   overflow-wrap: anywhere;
   word-break: normal;
+}
+
+@layer components {
+  /*
+   * Shape primitives. Components compose these instead of restating borders,
+   * radii and shadows, so a theme can change the *form* of a card (hairline +
+   * soft glow vs. 3px outline + hard offset) from the token block alone.
+   */
+  .card {
+    border-radius: var(--radius-card);
+    border: var(--border-w-card) solid rgb(var(--c-border));
+    background-color: rgb(var(--c-surface));
+    box-shadow: var(--shadow-card);
+  }
+
+  .card-interactive {
+    transition:
+      transform 200ms ease,
+      box-shadow 200ms ease,
+      border-color 200ms ease;
+  }
+
+  .card-interactive:hover {
+    transform: var(--lift);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .card-interactive:active {
+    transform: translate(0, 0);
+    box-shadow: var(--shadow-btn);
+  }
+
+  .inset-panel {
+    border-radius: var(--radius-btn);
+    border: var(--border-w) solid rgb(var(--c-border));
+    background-color: rgb(var(--c-surface-2));
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0 1.1rem;
+    border-radius: var(--radius-btn);
+    border: var(--border-w) solid transparent;
+    font-weight: 700;
+    font-size: 0.875rem;
+    line-height: 1;
+    text-transform: var(--uppercase-nav);
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    transition:
+      transform 160ms ease,
+      box-shadow 160ms ease,
+      background-color 160ms ease,
+      color 160ms ease;
+  }
+
+  .btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /*
+   * Filled buttons need more than reduced opacity when disabled: a near-black
+   * fill at 50% still reads as a heavy, active slab. Swap to a flat inactive
+   * surface so it recedes behind the secondary action beside it.
+   */
+  .btn-solid:disabled,
+  .btn-primary:disabled {
+    opacity: 1;
+    background-color: rgb(var(--c-surface-3));
+    border-color: rgb(var(--c-border) / 0.4);
+    color: rgb(var(--c-text-subtle));
+  }
+
+  .btn-primary {
+    background-color: rgb(var(--c-accent));
+    border-color: rgb(var(--c-border));
+    color: rgb(var(--c-accent-fg));
+    box-shadow: var(--shadow-btn);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    transform: var(--lift);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .btn-primary:active:not(:disabled) {
+    transform: translate(0, 0);
+    box-shadow: none;
+  }
+
+  .btn-solid {
+    background-color: rgb(var(--c-text));
+    border-color: rgb(var(--c-border));
+    color: rgb(var(--c-text-invert));
+    box-shadow: var(--shadow-btn);
+  }
+
+  .btn-solid:hover:not(:disabled) {
+    transform: var(--lift);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .btn-solid:active:not(:disabled) {
+    transform: translate(0, 0);
+    box-shadow: none;
+  }
+
+  .btn-outline {
+    background-color: rgb(var(--c-surface));
+    border-color: rgb(var(--c-border));
+    color: rgb(var(--c-text));
+  }
+
+  .btn-outline:hover:not(:disabled) {
+    background-color: rgb(var(--c-surface-2));
+  }
+
+  .btn-ghost {
+    background-color: transparent;
+    color: rgb(var(--c-text-muted));
+  }
+
+  .btn-ghost:hover:not(:disabled) {
+    background-color: rgb(var(--c-text) / 0.06);
+    color: rgb(var(--c-text));
+  }
+
+  /* Small square control (icon buttons in the header, steppers, etc.) */
+  .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-chip);
+    border: var(--border-w) solid transparent;
+    color: rgb(var(--c-text-muted));
+    transition:
+      background-color 160ms ease,
+      color 160ms ease,
+      border-color 160ms ease;
+  }
+
+  .icon-btn:hover:not(:disabled) {
+    background-color: rgb(var(--c-text) / 0.06);
+    color: rgb(var(--c-text));
+  }
+
+  .icon-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.35;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: var(--radius-chip);
+    border: var(--border-w) solid rgb(var(--c-border));
+    background-color: rgb(var(--c-accent-soft));
+    color: rgb(var(--c-text));
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-eyebrow);
+    color: rgb(var(--c-text-subtle));
+  }
+
+  .field {
+    width: 100%;
+    border-radius: var(--radius-btn);
+    border: var(--border-w) solid rgb(var(--c-border));
+    background-color: rgb(var(--c-surface));
+    color: rgb(var(--c-text));
+    padding: 1rem;
+    outline: none;
+    transition:
+      border-color 160ms ease,
+      box-shadow 160ms ease;
+  }
+
+  .field::placeholder {
+    color: rgb(var(--c-text-subtle));
+  }
+
+  .field:focus {
+    border-color: rgb(var(--c-accent));
+    box-shadow: 0 0 0 3px rgb(var(--c-accent) / 0.25);
+  }
+
+  .field:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  .popover {
+    border-radius: var(--radius-btn);
+    border: var(--border-w) solid rgb(var(--c-border));
+    background-color: rgb(var(--c-elev));
+    box-shadow: var(--shadow-pop);
+  }
+}
+
+/*
+ * Page backdrop. Classic washes the canvas with soft saffron light; Neo Brutal
+ * rejects gradients entirely and lays down a flat dot grid instead.
+ */
+.app-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+}
+
+:root[data-theme="classic"] .app-backdrop {
+  background:
+    radial-gradient(circle at -5% -10%, rgb(var(--c-accent-bright) / 0.18), transparent 36%),
+    radial-gradient(circle at 105% 45%, rgb(var(--c-accent-bright) / 0.12), transparent 32%),
+    radial-gradient(circle at 50% 0%, rgb(var(--c-elev) / 0.85), transparent 48%);
+}
+
+:root[data-theme="neo"] .app-backdrop {
+  background-image: radial-gradient(rgb(var(--c-border) / 0.14) 1.5px, transparent 1.5px);
+  background-size: 22px 22px;
 }
 
 .loading-sheen {
@@ -72,7 +523,7 @@ a {
   background: linear-gradient(
     110deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.35) 46%,
+    rgb(var(--c-text) / 0.08) 46%,
     transparent 58%
   );
   animation: shimmer 1.35s ease-in-out infinite;
@@ -87,5 +538,11 @@ a {
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .card-interactive:hover,
+  .btn-primary:hover:not(:disabled),
+  .btn-solid:hover:not(:disabled) {
+    transform: none;
   }
 }

@@ -16,8 +16,9 @@ import { LoadingMeter } from "@/components/ui/LoadingMeter";
 import { useTranscription } from "@/hooks/useTranscription";
 import { requestJson } from "@/lib/api-client";
 import { evaluateChallengeLocally, getSentenceStarters } from "@/lib/challenge";
+import { transitions } from "@/lib/motion";
 import { useStreak } from "@/lib/storage";
-import { cn } from "@/lib/utils";
+import { readThemeColors } from "@/lib/theme";
 import { normalizeChallengeResponse, validateTranscript } from "@/lib/validators";
 import type { ChallengeResponse, RecordingResult, WordEntry } from "@/types";
 
@@ -114,7 +115,12 @@ export function DailyChallenge({
           gravity: 0.9,
           scalar: 0.86,
           origin: { x: 0.5, y: 0.72 },
-          colors: ["#f59e0b", "#f97316", "#fb7185", "#10b981"],
+          colors: readThemeColors([
+            "--c-accent",
+            "--c-accent-bright",
+            "--c-secondary",
+            "--c-success",
+          ]),
           disableForReducedMotion: true,
         });
       }
@@ -205,12 +211,12 @@ export function DailyChallenge({
       aria-labelledby="daily-challenge-title"
       className="scroll-mt-24 space-y-4 sm:space-y-5"
     >
-      <GlassCard className="animate-floatIn p-4 sm:p-7">
+      <GlassCard className="p-4 sm:p-7">
         <div className="flex items-start justify-between gap-3">
           <div>
             <h2
               id="daily-challenge-title"
-              className="text-2xl font-bold tracking-[-0.025em] text-ink sm:text-3xl dark:text-white"
+              className="font-display text-2xl font-bold tracking-display sm:text-3xl"
             >
               {isToday ? "Try today's word" : "Try this word"}
             </h2>
@@ -232,7 +238,7 @@ export function DailyChallenge({
         <div id="daily-challenge-recorder" className="mt-5 sm:mt-6">
           <RecorderButton
             key={recorderResetKey}
-            className="border-0 bg-transparent p-0 dark:bg-transparent"
+            className="border-0 bg-transparent p-0"
             disabled={isBusy}
             hideDuration
             variant="continuation"
@@ -266,7 +272,7 @@ export function DailyChallenge({
             disabled={isBusy}
             onChange={(event) => handleTranscriptChange(event.target.value)}
             placeholder={`Write any sentence in English, Hindi or Hinglish using the word ${word.elevated.roman}...`}
-            className="min-h-32 w-full resize-y rounded-xl border border-zinc-900/10 bg-white/58 p-4 text-sm font-normal leading-7 text-ink outline-none transition placeholder:text-zinc-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 disabled:cursor-not-allowed disabled:opacity-70 dark:border-white/12 dark:bg-white/8 dark:text-white dark:placeholder:text-zinc-500"
+            className="field min-h-32 resize-y text-sm leading-7"
           />
         </label>
 
@@ -279,37 +285,36 @@ export function DailyChallenge({
         ) : null}
 
         <div className="mt-5 grid grid-cols-2 gap-3">
-          <button
+          <motion.button
             type="button"
             onClick={handleReset}
             disabled={
               (state.status === "idle" && !state.transcript.trim()) ||
               (isBusy && !state.result)
             }
-            className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-zinc-900/12 bg-white/55 px-4 py-3 text-sm font-bold text-zinc-700 transition hover:-translate-y-0.5 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/25 focus-visible:ring-offset-2 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:bg-white/8 dark:text-zinc-200 dark:hover:bg-white/12 dark:focus-visible:ring-white/30 dark:focus-visible:ring-offset-zinc-950"
+            whileTap={{ scale: 0.98 }}
+            transition={transitions.snappy}
+            className="btn btn-outline min-h-12 w-full"
           >
             <RotateCcw size={17} aria-hidden="true" />
             Start Over
-          </button>
-          <button
+          </motion.button>
+          <motion.button
             type="button"
             onClick={() => void runValidation()}
             disabled={!canValidate}
-            className={cn(
-              "inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/35 focus-visible:ring-offset-2 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:shadow-none dark:focus-visible:ring-white/40 dark:focus-visible:ring-offset-zinc-950",
-              canValidate
-                ? "bg-ink text-white shadow-lg shadow-zinc-900/15 hover:-translate-y-0.5 dark:bg-white dark:text-zinc-950"
-                : "bg-zinc-400/70 text-white dark:bg-zinc-700 dark:text-zinc-300",
-            )}
+            whileTap={canValidate ? { scale: 0.98 } : undefined}
+            transition={transitions.snappy}
+            className="btn btn-solid min-h-12 w-full"
           >
             <WandSparkles size={18} aria-hidden="true" />
             {isValidating ? "Checking..." : "Check Answer"}
-          </button>
+          </motion.button>
         </div>
       </GlassCard>
 
       {isTranscribing || isValidating ? (
-        <GlassCard className="animate-floatIn">
+        <GlassCard>
           <ChallengeLoadingState status={state.status} />
         </GlassCard>
       ) : null}
@@ -441,14 +446,16 @@ function ChallengeLoadingState({ status }: { status: ChallengeStatus }) {
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-      <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-amber-100 text-amber-800 dark:bg-amber-300/12 dark:text-amber-100">
+      <motion.span
+        animate={{ rotate: [0, 12, -8, 0] }}
+        transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+        className="grid size-12 shrink-0 place-items-center rounded-btn border-theme border-line bg-accent-soft text-accent"
+      >
         <WandSparkles size={20} aria-hidden="true" />
-      </span>
+      </motion.span>
       <div className="min-w-0 flex-1">
-        <h2 className="text-lg font-bold text-ink dark:text-white">{copy.title}</h2>
-        <p className="mt-1 text-sm font-normal leading-6 text-zinc-600 dark:text-zinc-400">
-          {copy.body}
-        </p>
+        <h2 className="text-lg font-bold">{copy.title}</h2>
+        <p className="mt-1 text-sm leading-6 text-content-muted">{copy.body}</p>
         <LoadingMeter />
       </div>
     </div>

@@ -31,10 +31,10 @@ export function HintPromptList({
             disabled={disabled}
             onClick={() => onSelect(inputValue)}
             className={cn(
-              "max-w-full rounded-xl border px-3 py-2 text-left text-xs font-medium leading-5 transition focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:ring-offset-2 focus:ring-offset-paper active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 dark:focus:ring-offset-zinc-950",
+              "max-w-full rounded-btn border-theme px-3 py-2 text-left text-xs font-medium leading-5 transition active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60",
               selected
-                ? "border-amber-400/80 bg-amber-100/75 text-amber-950 dark:border-amber-300/30 dark:bg-amber-300/12 dark:text-amber-100"
-                : "border-zinc-900/8 bg-white/55 text-zinc-700 hover:border-amber-300 hover:bg-white dark:border-white/12 dark:bg-white/5 dark:text-zinc-300",
+                ? "border-accent bg-accent-soft text-content"
+                : "border-line bg-surface text-content-muted hover:border-accent/60",
             )}
           >
             <HindiText text={hint} showEnglish={false} />

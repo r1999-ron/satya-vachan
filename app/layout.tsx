@@ -1,27 +1,77 @@
 import type { Metadata } from "next";
-import { Martel, Noto_Sans, Noto_Sans_Mono } from "next/font/google";
+import {
+  Anek_Devanagari,
+  Fraunces,
+  Inter,
+  JetBrains_Mono,
+  Martel,
+  Space_Grotesk,
+} from "next/font/google";
 import { headers } from "next/headers";
 import { AppShell } from "@/components/layout/AppShell";
+import { THEME_BOOTSTRAP_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
-const notoSans = Noto_Sans({
-  variable: "--font-noto-sans",
+/*
+ * Typography is theme-owned: `globals.css` points --font-display/-ui/-hindi at
+ * one of these families per theme. Classic pairs a warm old-style serif with a
+ * neutral UI sans; Neo Brutal runs a single tight grotesque throughout.
+ */
+
+// Classic — Latin display. Optical-size axis keeps large headings elegant
+// without the body text turning spindly.
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
-  display: "optional",
+  weight: ["400", "600", "700", "900"],
+  display: "swap",
 });
 
-const notoSansMono = Noto_Sans_Mono({
-  variable: "--font-noto-sans-mono",
+// Classic — Latin UI/body.
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-  display: "optional",
+  display: "swap",
 });
 
+// Neo Brutal — Latin display and UI.
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+// Classic — Devanagari. Chosen over the more calligraphic Tiro Devanagari
+// Hindi because that family ships weight 400 only, which cannot carry the
+// large display word on the home card.
 const martel = Martel({
   variable: "--font-martel",
   subsets: ["devanagari", "latin"],
   weight: ["200", "300", "400", "600", "700", "800", "900"],
-  display: "optional",
+  display: "swap",
 });
+
+// Neo Brutal — Devanagari. Variable to 800, which the theme leans on hard.
+const anekDevanagari = Anek_Devanagari({
+  variable: "--font-anek",
+  subsets: ["devanagari", "latin"],
+  display: "swap",
+});
+
+const jetBrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const fontVariables = [
+  fraunces.variable,
+  inter.variable,
+  spaceGrotesk.variable,
+  martel.variable,
+  anekDevanagari.variable,
+  jetBrainsMono.variable,
+].join(" ");
 
 const brandName = "सत्य-वचन";
 const description = "शुद्ध हिंदी बोलना सीखें। Thoughtful Hindi practice, one sentence at a time.";
@@ -83,15 +133,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
+    // The font variables must live on <html>, the same element the theme blocks
+    // in globals.css are scoped to: those blocks resolve `--font-ui:
+    // var(--font-space-grotesk)`, and a var() only sees custom properties
+    // declared on that element or an ancestor. Declaring them on <body> would
+    // leave `--font-ui` invalid and silently drop every font to the default.
+    <html
+      lang="en"
+      data-theme="classic"
+      data-scroll-behavior="smooth"
+      className={fontVariables}
+      suppressHydrationWarning
+    >
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var theme=localStorage.getItem('satya-vachan-theme');var isDark=theme==='dark';document.documentElement.classList.toggle('dark',isDark);document.documentElement.style.colorScheme=isDark?'dark':'light'}catch(e){}})()`,
-          }}
-        />
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }} />
       </head>
-      <body className={`${notoSans.variable} ${notoSansMono.variable} ${martel.variable}`}>
+      <body>
         <AppShell>{children}</AppShell>
       </body>
     </html>

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight, RotateCcw } from "lucide-react";
+import { motion } from "motion/react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { useReviewQueue } from "@/lib/storage";
 
@@ -17,31 +18,36 @@ export function RevisionCallout() {
   }
 
   return (
-    <GlassCard
-      interactive
-      className="animate-floatIn border-amber-200/80 bg-amber-50/75 p-0 dark:border-amber-300/20 dark:bg-amber-300/10"
-    >
+    <GlassCard interactive className="border-accent/50 bg-accent-soft p-0">
       <Link
         href="/review"
         prefetch={false}
-        className="flex items-center gap-4 rounded-2xl p-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 sm:p-5"
+        className="flex items-center gap-4 rounded-card p-4 sm:p-5"
       >
-        <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-amber-100 text-amber-800 dark:bg-amber-300/15 dark:text-amber-100">
+        <motion.span
+          animate={{ rotate: [0, -12, 0] }}
+          transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+          className="grid size-11 shrink-0 place-items-center rounded-btn border-theme border-line bg-surface text-accent"
+        >
           <RotateCcw size={19} aria-hidden="true" />
-        </span>
+        </motion.span>
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-bold uppercase tracking-[0.14em] text-amber-800 dark:text-amber-200">
-            Revision ready
-          </p>
-          <p className="mt-1 text-base font-bold text-ink dark:text-white">
+          <p className="eyebrow text-accent">Revision ready</p>
+          <p className="mt-1 text-base font-bold">
             {dueCount} saved {dueCount === 1 ? "word is" : "words are"} waiting to be
             spoken
           </p>
-          <p className="mt-1 text-sm font-normal leading-6 text-zinc-600 dark:text-zinc-300">
+          <p className="mt-1 text-sm leading-6 text-content-muted">
             About a minute to bring them back into your speech.
           </p>
         </div>
-        <ArrowRight className="shrink-0 text-amber-700 dark:text-amber-200" size={18} aria-hidden="true" />
+        <motion.span
+          animate={{ x: [0, 4, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+          className="shrink-0 text-accent"
+        >
+          <ArrowRight size={18} aria-hidden="true" />
+        </motion.span>
       </Link>
     </GlassCard>
   );

@@ -1,7 +1,10 @@
-import type { CSSProperties } from "react";
+"use client";
+
 import { ArrowRight, Check, Plus } from "lucide-react";
+import { motion } from "motion/react";
 import { HindiText } from "@/components/hindi/HindiText";
 import { StatusBadge } from "@/components/ui/StatusBadge";
+import { transitions } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import type { LearnedWordInput, WordReplacement } from "@/types";
 
@@ -23,44 +26,45 @@ export function WordReplacementCard({
   onSave,
 }: WordReplacementCardProps) {
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ ...transitions.soft, delay: revealDelay / 1000 }}
       className={cn(
-        "rounded-2xl border p-4 transition duration-200 motion-safe:animate-floatIn",
-        isSaved
-          ? "border-emerald-200/80 bg-emerald-100/42 motion-safe:animate-savePop dark:border-emerald-300/25 dark:bg-emerald-300/10"
-          : "border-white/60 bg-white/36 hover:border-amber-200/80 hover:bg-white/46 dark:border-white/12 dark:bg-white/5 dark:hover:border-amber-300/20",
+        "rounded-card border-theme p-4 transition-colors",
+        isSaved ? "border-success/50 bg-success-soft" : "border-line bg-surface-2",
       )}
-      style={{ animationDelay: `${revealDelay}ms` } as CSSProperties}
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 space-y-3">
           <div className="flex flex-wrap items-center gap-2 text-lg font-bold">
-            <HindiText text={replacement.original} kind="inline" className="text-wrap-anywhere text-rosewood/75 line-through decoration-rosewood/45 decoration-2 dark:text-[#d18b97]" />
-            <ArrowRight
-              className="text-amber-600"
-              size={18}
-              aria-hidden="true"
+            <HindiText
+              text={replacement.original}
+              kind="inline"
+              className="text-wrap-anywhere text-content-subtle line-through decoration-danger/60 decoration-2"
             />
-            <HindiText text={replacement.replacement} kind="inline" className="text-wrap-anywhere text-ink dark:text-white" />
+            <ArrowRight className="text-accent" size={18} aria-hidden="true" />
+            <HindiText
+              text={replacement.replacement}
+              kind="inline"
+              className="text-wrap-anywhere"
+            />
             <StatusBadge tone="blue">{replacement.naturalness}</StatusBadge>
           </div>
-          <p className="text-wrap-anywhere text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+          <p className="text-wrap-anywhere text-sm font-semibold text-content-muted">
             {replacement.meaning}
           </p>
-          <p lang="hi-Latn" className="text-wrap-anywhere text-sm leading-7 text-zinc-600 dark:text-zinc-400">
+          <p lang="hi-Latn" className="text-wrap-anywhere text-sm leading-7 text-content-subtle">
             {replacement.whyBetter}
           </p>
         </div>
-        <button
+        <motion.button
           type="button"
           disabled={disabled || isSaved}
           onClick={() => onSave(saveableWord)}
-          className={cn(
-            "inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-2xl px-4 py-2 text-sm font-bold transition focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:ring-offset-2 focus:ring-offset-paper active:scale-95 disabled:cursor-not-allowed dark:focus:ring-offset-zinc-950",
-            isSaved
-              ? "bg-emerald-400/16 text-emerald-900 motion-safe:animate-savePop dark:text-emerald-100"
-              : "bg-ink text-white shadow-lg shadow-zinc-900/15 hover:-translate-y-0.5 dark:bg-white dark:text-zinc-950",
-          )}
+          whileTap={disabled || isSaved ? undefined : { scale: 0.96 }}
+          transition={transitions.snappy}
+          className={cn("btn shrink-0", isSaved ? "btn-outline" : "btn-solid")}
         >
           {isSaved ? (
             <Check size={17} aria-hidden="true" />
@@ -68,8 +72,8 @@ export function WordReplacementCard({
             <Plus size={17} aria-hidden="true" />
           )}
           {isSaved ? "Saved" : "Save"}
-        </button>
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 }

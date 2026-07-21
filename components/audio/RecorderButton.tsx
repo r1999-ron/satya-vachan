@@ -15,8 +15,18 @@ import {
   requestMicrophoneStream,
   stopMediaStreamTracks,
 } from "@/lib/audio";
+import { useThemeColors } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 import type { RecordingResult } from "@/types";
+
+/** Tokens the recorder animates between; resolved to real colours at runtime. */
+const RECORDER_COLOR_TOKENS = [
+  "--c-accent",
+  "--c-accent-bright",
+  "--c-danger",
+  "--c-success",
+  "--c-text",
+] as const;
 
 const INACTIVE_WAVEFORM_LEVELS = Array.from(
   { length: RECORDING_WAVEFORM_BAR_COUNT },
@@ -382,15 +392,15 @@ export function RecorderButton({
     return (
       <div
         className={cn(
-          "rounded-2xl border border-amber-200/70 bg-amber-100/40 p-4 text-sm leading-6 text-amber-950 dark:border-amber-300/25 dark:bg-amber-300/10 dark:text-amber-100",
+          "rounded-card border-theme border-accent/50 bg-accent-soft p-4 text-sm leading-6",
           className,
         )}
       >
         <div className="flex items-start gap-3">
-          <AlertCircle className="mt-0.5 shrink-0" size={18} aria-hidden="true" />
+          <AlertCircle className="mt-0.5 shrink-0 text-accent" size={18} aria-hidden="true" />
           <div>
             <p className="font-bold">Recording is not supported here.</p>
-            <p className="mt-1">
+            <p className="mt-1 text-content-muted">
               Type your Hindi sentence in the transcript box to continue.
             </p>
           </div>
@@ -402,7 +412,7 @@ export function RecorderButton({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-white/60 bg-white/35 p-4 dark:border-white/12 dark:bg-white/5",
+        "rounded-card border-theme border-line bg-surface-2 p-4",
         className,
       )}
     >
@@ -424,25 +434,23 @@ export function RecorderButton({
           <div>
             {!(isContinuationVariant && state === "recorded") ? (
               <div className="mx-auto">
-                <p className="text-sm font-bold text-ink dark:text-white">
-                  {getTitle(state)}
-                </p>
+                <p className="text-sm font-bold">{getTitle(state)}</p>
                 {!(isContinuationVariant && state === "recording") ? (
-                  <p className="mx-auto mt-1 max-w-md text-xs font-normal leading-5 text-zinc-600 dark:text-zinc-400">
+                  <p className="mx-auto mt-1 max-w-md text-xs leading-5 text-content-muted">
                     {getDescription(state, maxDurationLabel)}
                   </p>
                 ) : null}
               </div>
             ) : null}
             {!hideDuration && !isContinuationVariant ? (
-              <span className="mt-2 inline-flex rounded-full bg-zinc-900/[0.045] px-3 py-1 text-xs font-bold text-zinc-700 dark:bg-white/8 dark:text-zinc-200">
+              <span className="mt-2 inline-flex rounded-chip border-theme border-line bg-surface px-3 py-1 text-xs font-bold tabular-nums">
                 {formatRecordingDuration(durationMs)}
               </span>
             ) : null}
           </div>
 
           {error ? (
-            <p className="mx-auto mt-3 max-w-md text-sm font-normal leading-6 text-rose-800 dark:text-rose-100">
+            <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-danger">
               {error}
             </p>
           ) : null}
@@ -471,6 +479,7 @@ function RecorderHero({
   waveformLevels,
 }: RecorderHeroProps) {
   const reduceMotion = useReducedMotion();
+  const colors = useThemeColors(RECORDER_COLOR_TOKENS);
   const isIdle = state === "idle" || state === "permission-needed" || state === "error";
   const isRecording = state === "recording";
   const isStopping = state === "stopping";
@@ -482,11 +491,20 @@ function RecorderHero({
         ? "Continue recording"
         : "Record again"
       : "Start recording";
-  const buttonColor = isRecording || isStopping
-    ? "#e11d48"
-    : isRecorded && !isContinuationVariant
-      ? "#059669"
-      : "#18181b";
+  // Falls back to the Classic light values for the first paint, before the
+  // computed styles have been read.
+  const danger = colors["--c-danger"] ?? "#9b2c3b";
+  const success = colors["--c-success"] ?? "#4f7a52";
+  const accent = colors["--c-accent"] ?? "#c2710c";
+  const accentBright = colors["--c-accent-bright"] ?? "#e8940f";
+  const ink = colors["--c-text"] ?? "#1a1714";
+  const buttonColor =
+    isRecording || isStopping
+      ? danger
+      : isRecorded && !isContinuationVariant
+        ? success
+        : ink;
+  const ringColor = isRecording ? danger : accentBright;
   const reactiveScale = 1 + audioLevel * 0.12;
   const reactiveBlur = 24 + Math.round(audioLevel * 38);
   const reactiveSpread = 3 + Math.round(audioLevel * 13);
@@ -526,7 +544,7 @@ function RecorderHero({
                   x2="100"
                   animate={{ y2: 29 - barLength }}
                   transform={`rotate(${angle} 100 100)`}
-                  stroke={isRecording ? "#fb7185" : "#f59e0b"}
+                  stroke={ringColor}
                   strokeWidth={isRecording ? 3.2 : 2.4}
                   strokeLinecap="round"
                   transition={{ duration: reduceMotion ? 0 : 0.08, ease: "easeOut" }}
@@ -539,7 +557,7 @@ function RecorderHero({
 
       {isIdle ? (
         <motion.span
-          className="pointer-events-none absolute size-28 rounded-full bg-amber-400/22 blur-md sm:size-32 dark:bg-amber-300/18"
+          className="pointer-events-none absolute size-28 rounded-full bg-accent/20 blur-md sm:size-32"
           animate={reduceMotion ? { opacity: 0.35 } : {
             opacity: [0.25, 0.5, 0.25],
             scale: [0.92, 1.12, 0.92],
@@ -550,11 +568,12 @@ function RecorderHero({
 
       {isRecording ? (
         <motion.span
-          className="pointer-events-none absolute size-24 rounded-full border border-rose-300/80 sm:size-28 dark:border-rose-300/60"
+          className="pointer-events-none absolute size-24 rounded-full border-2 sm:size-28"
           animate={{ opacity: 0.35 + audioLevel * 0.45, scale: reactiveScale }}
           transition={{ type: "spring", stiffness: 420, damping: 28, mass: 0.35 }}
           style={{
-            boxShadow: `0 0 ${reactiveBlur}px ${reactiveSpread}px rgba(244, 63, 94, ${0.18 + audioLevel * 0.24})`,
+            borderColor: danger,
+            boxShadow: `0 0 ${reactiveBlur}px ${reactiveSpread}px ${danger}`,
           }}
         />
       ) : null}
@@ -564,28 +583,19 @@ function RecorderHero({
         onClick={onClick}
         disabled={disabled}
         aria-label={buttonLabel}
-        className={cn(
-          "relative z-10 grid size-24 shrink-0 place-items-center rounded-full p-1 text-white focus:outline-none focus-visible:ring-4 focus-visible:ring-amber-400/45 focus-visible:ring-offset-4 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:opacity-60 sm:size-28 dark:focus-visible:ring-offset-zinc-950",
-          isRecording || isStopping
-            ? "bg-gradient-to-br from-rose-300 via-rose-500 to-red-700"
-            : isRecorded && !isContinuationVariant
-              ? "bg-gradient-to-br from-emerald-200 via-emerald-500 to-emerald-700"
-              : "bg-gradient-to-br from-amber-200 via-amber-500 to-orange-600",
-        )}
+        // A flat colour ring rather than a gradient, so the control reads the
+        // same way under Neo Brutal as under Classic.
+        className="relative z-10 grid size-24 shrink-0 place-items-center rounded-full border-theme border-line p-1.5 text-white disabled:cursor-not-allowed disabled:opacity-60 sm:size-28"
         animate={{
           scale: isStopping ? 0.9 : isRecorded ? 1.03 : 1,
-          boxShadow: isRecording
-            ? `0 18px ${reactiveBlur}px rgba(190, 18, 60, ${0.26 + audioLevel * 0.22})`
-            : isRecorded
-              ? "0 18px 42px rgba(5, 150, 105, 0.26)"
-              : "0 18px 42px rgba(180, 83, 9, 0.24)",
+          backgroundColor: isRecording || isStopping ? danger : isRecorded ? success : accent,
         }}
         whileHover={disabled || reduceMotion ? undefined : { scale: 1.045, y: -2 }}
         whileTap={disabled || reduceMotion ? undefined : { scale: 0.96 }}
         transition={{ type: "spring", stiffness: 360, damping: 24 }}
       >
         <motion.span
-          className="grid size-full place-items-center rounded-full border border-white/18"
+          className="grid size-full place-items-center rounded-full"
           animate={{ backgroundColor: buttonColor }}
           transition={{ type: "spring", stiffness: 220, damping: 26 }}
         >

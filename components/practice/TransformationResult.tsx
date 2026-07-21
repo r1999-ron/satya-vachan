@@ -1,8 +1,10 @@
 "use client";
 
+import { motion } from "motion/react";
 import { AudioPlayer } from "@/components/audio/AudioPlayer";
 import { useScriptPreference } from "@/lib/storage";
 import { WordReplacementCard } from "@/components/practice/WordReplacementCard";
+import { transitions } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import type {
   HindiText as HindiTextValue,
@@ -45,11 +47,9 @@ export function TransformationResult({
       </div>
 
       <div className="space-y-3">
-        <div className="motion-safe:animate-floatIn motion-safe:[animation-delay:160ms]">
-          <h2 className="text-xl font-bold text-ink dark:text-white">
-            Word upgrades
-          </h2>
-        </div>
+        <h2 className="font-display text-xl font-bold tracking-display">
+          Word upgrades
+        </h2>
         <div className="grid gap-3">
           {result.replacements.length > 0 ? result.replacements.map((replacement, index) => {
             const saveableWord = getSaveableWord(result, replacement);
@@ -65,7 +65,7 @@ export function TransformationResult({
               />
             );
           }) : (
-            <div className="rounded-2xl border border-white/60 bg-white/36 p-4 text-sm font-normal leading-7 text-zinc-600 dark:border-white/12 dark:bg-white/5 dark:text-zinc-300">
+            <div className="rounded-card border-theme border-line bg-surface-2 p-4 text-sm leading-7 text-content-muted">
               No specific word swaps were needed this time. The full sentence
               elegant version is still ready above.
             </div>
@@ -94,20 +94,24 @@ function VersionPanel({
   const isScholarly = variant === "elevated";
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ ...transitions.soft, delay: isScholarly ? 0.08 : 0 }}
       className={cn(
-        "rounded-2xl border p-4 transition duration-200 hover:-translate-y-0.5 motion-safe:animate-floatIn sm:p-5",
+        "rounded-card border-theme p-4 sm:p-5",
         isScholarly
-          ? "border-peacock/30 bg-peacock/10 shadow-[0_18px_42px_rgba(23,107,135,0.12)] dark:border-peacock/35 dark:bg-peacock/15"
-          : "border-emerald-200/75 bg-emerald-100/45 shadow-glow dark:border-emerald-300/20 dark:bg-emerald-300/10",
+          ? "border-secondary/40 bg-secondary-soft"
+          : "border-success/40 bg-success-soft",
       )}
-      style={{ animationDelay: isScholarly ? "80ms" : "0ms" }}
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className={cn(
-          "text-xs font-bold uppercase tracking-[0.16em]",
-          isScholarly ? "text-peacock dark:text-[#8ecfe3]" : "text-emerald-800 dark:text-emerald-200",
-        )}>
+        <p
+          className={cn(
+            "eyebrow",
+            isScholarly ? "text-secondary" : "text-success",
+          )}
+        >
           {label}
         </p>
         <AudioPlayer
@@ -125,7 +129,7 @@ function VersionPanel({
         replacements={replacements}
         tone={isScholarly ? "scholarly" : "natural"}
       />
-    </div>
+    </motion.div>
   );
 }
 
@@ -143,9 +147,7 @@ function HighlightedSentence({
   const showRoman = preference !== "dev";
   const devWords = replacements.map((item) => item.replacement.dev);
   const romanWords = replacements.map((item) => item.replacement.roman);
-  const sentenceTone = tone === "scholarly"
-    ? "text-peacock dark:text-[#d4f1f8]"
-    : "text-emerald-950 dark:text-emerald-100";
+  const sentenceTone = tone === "scholarly" ? "text-secondary" : "text-content";
 
   return (
     <div className="mt-3">
@@ -155,12 +157,12 @@ function HighlightedSentence({
         </p>
       ) : null}
       {showRoman ? (
-        <p lang="hi-Latn" className={cn("text-wrap-anywhere text-sm leading-7 text-zinc-500 dark:text-zinc-400", showDev && "mt-1")}>
+        <p lang="hi-Latn" className={cn("text-wrap-anywhere text-sm leading-7 text-content-subtle", showDev && "mt-1")}>
           <HighlightedWords text={text.roman} words={romanWords} />
         </p>
       ) : null}
       {text.en ? (
-        <p className="mt-1 text-xs italic leading-5 text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-xs italic leading-5 text-content-subtle">
           &ldquo;{text.en}&rdquo;
         </p>
       ) : null}
@@ -183,7 +185,7 @@ function HighlightedWords({ text, words }: { text: string; words: string[] }) {
     highlighted.has(part.toLocaleLowerCase()) ? (
       <mark
         key={`${part}-${index}`}
-        className="rounded-sm bg-amber-100/45 px-0.5 text-inherit underline decoration-amber-500 decoration-2 underline-offset-4 shadow-[0_5px_16px_rgba(245,158,11,0.25)] dark:bg-amber-300/15 dark:decoration-amber-300"
+        className="rounded-sm bg-highlight/50 px-0.5 text-inherit underline decoration-accent decoration-2 underline-offset-4"
       >
         {part}
       </mark>

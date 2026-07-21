@@ -1,7 +1,9 @@
 "use client";
 
+import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { SPEAK_BETTER_HINDI_TAGLINES } from "@/data/taglines";
+import { fadeUp, stagger } from "@/lib/motion";
 
 export function SpeakBetterHindiTagline() {
   const [taglineIndex, setTaglineIndex] = useState(0);
@@ -42,15 +44,34 @@ export function SpeakBetterHindiTagline() {
   }, []);
 
   return (
-    <section className="animate-floatIn px-1 pt-1 sm:px-2" aria-label="Hindi speaking goal">
-      <h1
+    <motion.section
+      variants={stagger()}
+      initial="hidden"
+      animate="visible"
+      className="px-1 pt-1 sm:px-2"
+      aria-label="Hindi speaking goal"
+    >
+      <motion.p variants={fadeUp} className="eyebrow">
+        Speak better Hindi
+      </motion.p>
+      <motion.h1
+        variants={fadeUp}
         lang="hi"
         aria-label={currentTagline}
-        className="rounded-2xl border border-amber-200/55 bg-gradient-to-r from-amber-100/70 via-orange-50/70 to-rose-100/60 px-4 py-3 text-balance font-hindi text-base font-semibold leading-[1.6] text-ink shadow-sm shadow-amber-900/5 sm:px-5 sm:text-lg dark:border-amber-200/10 dark:from-amber-300/10 dark:via-orange-300/8 dark:to-rose-300/10 dark:text-white"
+        // The typed text is decorative churn; aria-label above carries the real
+        // sentence so screen readers are not fed it one character at a time.
+        className="mt-2 text-balance font-hindi text-2xl font-bold leading-[1.5] tracking-display sm:text-3xl"
       >
-        {typedTagline.tagline === currentTagline ? typedTagline.text : ""}
-        <span aria-hidden="true" className="ml-0.5 inline-block h-[0.95em] w-0.5 animate-pulse bg-amber-700 align-[-0.08em] dark:bg-amber-200" />
-      </h1>
-    </section>
+        <span aria-hidden="true">
+          {typedTagline.tagline === currentTagline ? typedTagline.text : ""}
+        </span>
+        <motion.span
+          aria-hidden="true"
+          animate={{ opacity: [1, 0.15, 1] }}
+          transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
+          className="ml-1 inline-block h-[0.9em] w-[3px] rounded-sm bg-accent align-[-0.08em]"
+        />
+      </motion.h1>
+    </motion.section>
   );
 }

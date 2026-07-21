@@ -1,14 +1,20 @@
 import type { Config } from "tailwindcss";
 
+/**
+ * Colours resolve to CSS variables holding space-separated RGB channels, so
+ * every utility keeps Tailwind's opacity modifier (`text-content/60`) while the
+ * actual hue is owned by the theme blocks in `app/globals.css`.
+ */
+const token = (name: string) => `rgb(var(${name}) / <alpha-value>)`;
+
 const config: Config = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./lib/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  // Keep the current product theme consistently light across browsers.
-  // Dark variants are only enabled if a future theme control adds a `.dark`
-  // class explicitly, rather than following the browser/OS preference.
+  // Dark mode is opt-in via a `.dark` class written by the theme controller;
+  // it never follows the OS preference on its own.
   darkMode: "class",
   theme: {
     extend: {
@@ -16,27 +22,69 @@ const config: Config = {
         compact: { raw: "(max-width: 767px) and (max-height: 720px)" },
       },
       colors: {
-        ink: "#171514",
-        paper: "#fffaf0",
-        saffron: "#f59e0b",
-        rosewood: "#8f2e3b",
-        peacock: "#176b87",
-        sage: "#73866a",
+        canvas: token("--c-canvas"),
+        elev: token("--c-elev"),
+        surface: {
+          DEFAULT: token("--c-surface"),
+          2: token("--c-surface-2"),
+          3: token("--c-surface-3"),
+        },
+        line: {
+          DEFAULT: token("--c-border"),
+          strong: token("--c-border-strong"),
+        },
+        content: {
+          DEFAULT: token("--c-text"),
+          muted: token("--c-text-muted"),
+          subtle: token("--c-text-subtle"),
+          invert: token("--c-text-invert"),
+        },
+        accent: {
+          DEFAULT: token("--c-accent"),
+          bright: token("--c-accent-bright"),
+          soft: token("--c-accent-soft"),
+          fg: token("--c-accent-fg"),
+        },
+        secondary: {
+          DEFAULT: token("--c-secondary"),
+          soft: token("--c-secondary-soft"),
+          fg: token("--c-secondary-fg"),
+        },
+        success: {
+          DEFAULT: token("--c-success"),
+          soft: token("--c-success-soft"),
+        },
+        danger: {
+          DEFAULT: token("--c-danger"),
+          soft: token("--c-danger-soft"),
+        },
+        highlight: token("--c-highlight"),
+        focus: token("--c-focus"),
+      },
+      borderRadius: {
+        card: "var(--radius-card)",
+        btn: "var(--radius-btn)",
+        chip: "var(--radius-chip)",
+      },
+      borderWidth: {
+        theme: "var(--border-w)",
+        "theme-card": "var(--border-w-card)",
       },
       boxShadow: {
-        glass: "0 24px 80px rgba(41, 24, 18, 0.16)",
-        glow: "0 0 32px rgba(245, 158, 11, 0.24)",
+        card: "var(--shadow-card)",
+        "card-hover": "var(--shadow-card-hover)",
+        btn: "var(--shadow-btn)",
+        pop: "var(--shadow-pop)",
       },
       fontFamily: {
-        hindi: ["var(--font-martel)", "var(--font-noto-sans)", "system-ui", "sans-serif"],
-        sans: ["var(--font-noto-sans)", "system-ui", "sans-serif"],
-        mono: [
-          "ui-monospace",
-          "SFMono-Regular",
-          "Consolas",
-          "Liberation Mono",
-          "monospace",
-        ],
+        display: ["var(--font-display)", "var(--font-ui)", "system-ui", "sans-serif"],
+        sans: ["var(--font-ui)", "system-ui", "sans-serif"],
+        hindi: ["var(--font-hindi)", "var(--font-ui)", "system-ui", "sans-serif"],
+        mono: ["var(--font-jetbrains-mono)", "ui-monospace", "Consolas", "monospace"],
+      },
+      letterSpacing: {
+        display: "var(--tracking-display)",
+        eyebrow: "var(--tracking-eyebrow)",
       },
       keyframes: {
         aurora: {

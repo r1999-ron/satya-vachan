@@ -6,7 +6,7 @@ export function LoadingMeter() {
       {[0, 1, 2].map((index) => (
         <span
           key={index}
-          className="loading-sheen h-2 rounded-full bg-white/55 dark:bg-white/10"
+          className="loading-sheen h-2 rounded-full bg-content/10"
           style={{ "--sheen-delay": `${index * 120}ms` } as CSSProperties}
         />
       ))}

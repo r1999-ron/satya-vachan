@@ -211,18 +211,13 @@ export function AudioPlayer({
           disabled={!trimmedText || isLoading}
           onClick={handleTogglePlayback}
           className={cn(
-            "inline-flex h-10 items-center justify-center gap-2.5 rounded-xl border px-3 text-xs font-bold shadow-sm transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:ring-offset-2 focus:ring-offset-paper active:scale-95 disabled:cursor-not-allowed disabled:opacity-70 dark:focus:ring-offset-zinc-950",
-            tone === "primary"
-              ? "border-emerald-700/15 bg-emerald-950 text-white hover:bg-emerald-900 dark:border-emerald-200/20 dark:bg-emerald-200 dark:text-emerald-950 dark:hover:bg-emerald-100"
-              : "border-zinc-900/10 bg-white/75 text-zinc-800 hover:bg-white dark:border-white/12 dark:bg-white/10 dark:text-white dark:hover:bg-white/15",
+            "btn h-10 min-h-0 px-3 text-xs",
+            tone === "primary" ? "btn-solid" : "btn-outline",
           )}
           aria-label={`${label} ${variant} audio`}
           aria-pressed={isPlaying}
         >
-          <span className={cn(
-            "grid size-6 place-items-center rounded-lg",
-            tone === "primary" ? "bg-white/15 dark:bg-emerald-950/10" : "bg-zinc-900/[0.06] dark:bg-white/12",
-          )}>
+          <span className="grid size-6 place-items-center">
             {isLoading ? (
               <LoaderCircle className="motion-safe:animate-spin" size={15} aria-hidden="true" />
             ) : isPlaying ? (
@@ -241,7 +236,7 @@ export function AudioPlayer({
             type="button"
             onClick={handleRetry}
             disabled={!trimmedText || isLoading}
-            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-2xl border border-rose-200/70 bg-rose-100/55 px-3 py-2 text-xs font-bold text-rose-950 transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-rose-400/45 focus:ring-offset-2 focus:ring-offset-paper active:scale-95 disabled:cursor-not-allowed disabled:opacity-70 dark:border-rose-300/25 dark:bg-rose-300/12 dark:text-rose-100 dark:focus:ring-offset-zinc-950"
+            className="btn h-10 min-h-0 border-danger/50 bg-danger-soft px-3 text-xs text-content"
           >
             <RefreshCw size={15} aria-hidden="true" />
             Retry
@@ -260,7 +255,7 @@ export function AudioPlayer({
       />
 
       {error ? (
-        <p className="flex items-start gap-2 text-xs leading-5 text-rose-900 dark:text-rose-100">
+        <p className="flex items-start gap-2 text-xs leading-5 text-danger">
           <AlertCircle className="mt-0.5 shrink-0" size={14} aria-hidden="true" />
           <span>{error}</span>
         </p>

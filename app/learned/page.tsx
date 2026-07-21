@@ -160,20 +160,20 @@ export default function LearnedPage() {
 
       <div>
         <div className="flex items-center gap-2">
-          <label className="flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-xl border border-zinc-900/10 bg-white/58 px-3 dark:border-white/12 dark:bg-white/8">
+          <label className="field flex min-h-11 min-w-0 flex-1 items-center gap-2 p-0 px-3">
             <span className="sr-only">Search your words</span>
-            <Search size={17} className="shrink-0 text-zinc-500" aria-hidden="true" />
+            <Search size={17} className="shrink-0 text-content-subtle" aria-hidden="true" />
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search your words"
-              className="min-w-0 flex-1 bg-transparent text-sm font-normal text-ink outline-none placeholder:text-zinc-400 dark:text-white dark:placeholder:text-zinc-500"
+              className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-content-subtle"
             />
             {query ? (
               <button
                 type="button"
                 onClick={() => setQuery("")}
-                className="grid size-7 shrink-0 place-items-center rounded-full text-zinc-500 transition hover:bg-zinc-900/5 hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/55 dark:hover:bg-white/10 dark:hover:text-white"
+                className="icon-btn size-7 shrink-0 rounded-full"
                 aria-label="Clear search"
               >
                 <X size={15} aria-hidden="true" />
@@ -187,10 +187,10 @@ export default function LearnedPage() {
               onClick={() => setFiltersOpen((current) => !current)}
               aria-expanded={filtersOpen}
               className={cn(
-                "inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl px-3 text-xs font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/55",
+                "btn min-h-11 shrink-0 px-3 text-xs",
                 filtersOpen || hasAdvancedFilters
-                  ? "bg-amber-100 text-amber-950 dark:bg-amber-300/12 dark:text-amber-100"
-                  : "bg-zinc-900/[0.045] text-zinc-700 hover:bg-zinc-900/[0.075] dark:bg-white/8 dark:text-zinc-200 dark:hover:bg-white/12",
+                  ? "border-line bg-accent-soft text-content"
+                  : "btn-outline",
               )}
             >
               <Filter size={15} aria-hidden="true" />
@@ -200,7 +200,7 @@ export default function LearnedPage() {
         </div>
 
         {advancedFiltersAvailable && filtersOpen ? (
-          <div className="mt-4 grid gap-3 border-t border-zinc-900/8 pt-4 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto] dark:border-white/10">
+          <div className="mt-4 grid gap-3 border-t border-line pt-4 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto]">
             <FilterSelect
               label="Source"
               value={sourceFilter}
@@ -226,7 +226,7 @@ export default function LearnedPage() {
               type="button"
               onClick={clearAdvancedFilters}
               disabled={!hasAdvancedFilters}
-              className="inline-flex min-h-10 items-center justify-center gap-2 self-end rounded-xl px-3 py-2 text-xs font-semibold text-zinc-600 transition hover:bg-zinc-900/5 hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/55 disabled:cursor-not-allowed disabled:opacity-50 dark:text-zinc-300 dark:hover:bg-white/8 dark:hover:text-white"
+              className="btn btn-ghost min-h-10 self-end px-3 text-xs"
             >
               <RotateCcw size={14} aria-hidden="true" />
               Reset
@@ -235,7 +235,7 @@ export default function LearnedPage() {
         ) : null}
 
         {hasActiveFilters ? (
-          <p className="mt-3 text-xs font-normal text-zinc-500 dark:text-zinc-400">
+          <p className="mt-3 text-xs text-content-subtle">
             {filteredWords.length} {filteredWords.length === 1 ? "match" : "matches"}
           </p>
         ) : null}
@@ -262,7 +262,7 @@ export default function LearnedPage() {
       {removedWord ? (
         <div
           role="status"
-          className="fixed bottom-[calc(6.25rem+env(safe-area-inset-bottom))] left-1/2 z-50 flex w-[min(calc(100%-2rem),28rem)] -translate-x-1/2 items-center justify-between gap-3 rounded-xl bg-zinc-950 px-4 py-3 text-white shadow-2xl md:bottom-6 dark:bg-white dark:text-zinc-950"
+          className="fixed bottom-[calc(6.25rem+env(safe-area-inset-bottom))] left-1/2 z-50 flex w-[min(calc(100%-2rem),28rem)] -translate-x-1/2 items-center justify-between gap-3 rounded-btn border-theme border-line bg-content px-4 py-3 text-content-invert shadow-pop md:bottom-6"
         >
           <p className="min-w-0 truncate text-sm font-medium">
             Removed {removedWord.word.word}
@@ -270,7 +270,7 @@ export default function LearnedPage() {
           <button
             type="button"
             onClick={handleUndoRemove}
-            className="inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-xl px-2 text-xs font-bold text-amber-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60 dark:text-amber-700"
+            className="inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-chip px-2 text-xs font-bold text-accent"
           >
             <Undo2 size={14} aria-hidden="true" />
             Undo
@@ -304,28 +304,29 @@ function LearnedWordCard({
           <HindiText
             text={displayWord}
             kind="word"
-            devClassName="text-wrap-anywhere text-xl text-ink dark:text-white"
+            devClassName="text-wrap-anywhere text-xl"
           />
         </h2>
         <SourceBadge source={word.source} />
       </div>
 
-      <p className="mt-3 text-wrap-anywhere text-sm font-normal leading-6 text-zinc-700 dark:text-zinc-300">
+      <p className="mt-3 text-wrap-anywhere text-sm leading-6 text-content-muted">
         {word.meaning}
       </p>
 
       {word.simpleAlternative ? (
-        <p className="mt-2 text-wrap-anywhere text-xs font-normal leading-5 text-zinc-500 dark:text-zinc-400">
-          instead of <span className="font-medium text-zinc-700 dark:text-zinc-300">{word.simpleAlternative}</span>
+        <p className="mt-2 text-wrap-anywhere text-xs leading-5 text-content-subtle">
+          instead of{" "}
+          <span className="font-medium text-content-muted">{word.simpleAlternative}</span>
         </p>
       ) : null}
 
-      <p className="mt-3 text-wrap-anywhere text-sm font-normal italic leading-6 text-zinc-500 dark:text-zinc-400">
+      <p className="mt-3 text-wrap-anywhere text-sm italic leading-6 text-content-subtle">
         “{word.exampleSentence}”
       </p>
 
-      <div className="mt-auto flex items-center justify-between gap-3 border-t border-zinc-900/8 pt-3 dark:border-white/10">
-        <p className="min-h-5 text-xs font-normal text-zinc-400 dark:text-zinc-500">
+      <div className="mt-auto flex items-center justify-between gap-3 border-t border-line pt-3">
+        <p className="min-h-5 text-xs text-content-subtle">
           {word.source === "seed" ? "" : `Saved ${formatSavedDate(word.savedAt)}`}
         </p>
         <div className="flex shrink-0 items-center gap-1.5">
@@ -333,7 +334,7 @@ function LearnedWordCard({
             type="button"
             onClick={onRemove}
             disabled={!word.id}
-            className="grid size-9 place-items-center rounded-xl text-rose-700 transition hover:bg-rose-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/45 disabled:cursor-not-allowed disabled:opacity-50 dark:text-rose-200 dark:hover:bg-rose-300/10"
+            className="icon-btn size-9 text-danger"
             aria-label={`Remove ${word.word}`}
           >
             <Trash2 size={16} aria-hidden="true" />
@@ -348,10 +349,10 @@ function SourceBadge({ source }: { source: LearnedWord["source"] }) {
   return (
     <span
       className={cn(
-        "rounded-full px-2 py-1 text-[10px] font-bold uppercase tracking-wide",
+        "rounded-chip border-theme px-2 py-1 text-[10px] font-bold uppercase tracking-wide",
         source === "challenge"
-          ? "bg-amber-100 text-amber-900 dark:bg-amber-300/12 dark:text-amber-100"
-          : "bg-zinc-900/[0.05] text-zinc-600 dark:bg-white/8 dark:text-zinc-300",
+          ? "border-line bg-accent-soft text-content"
+          : "border-line bg-surface-2 text-content-muted",
       )}
     >
       {sourceLabels[source]}
@@ -372,14 +373,12 @@ function FilterSelect({
 }) {
   return (
     <label className="block">
-      <span className="text-xs font-bold uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-400">
-        {label}
-      </span>
-      <span className="mt-2 flex min-h-10 items-center rounded-xl border border-zinc-900/10 bg-white/58 px-3 dark:border-white/12 dark:bg-white/8">
+      <span className="eyebrow">{label}</span>
+      <span className="field mt-2 flex min-h-10 items-center p-0 px-3">
         <select
           value={value}
           onChange={(event) => onChange(event.target.value)}
-          className="min-w-0 flex-1 bg-transparent text-sm font-medium text-ink outline-none dark:text-white"
+          className="min-w-0 flex-1 bg-transparent text-sm font-medium outline-none"
         >
           {options.map((option) => (
             <option key={option.value} value={option.value}>
@@ -402,26 +401,22 @@ function EmptyDictionaryState({
   onClear: () => void;
 }) {
   return (
-    <GlassCard className="animate-floatIn p-7 sm:p-8">
+    <GlassCard className="p-7 sm:p-8">
       <div className="flex items-start gap-4">
-        <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-amber-100 text-amber-800 dark:bg-amber-300/12 dark:text-amber-100">
+        <span className="grid size-11 shrink-0 place-items-center rounded-btn border-theme border-line bg-accent-soft text-accent">
           <BookOpen size={19} aria-hidden="true" />
         </span>
         <div className="min-w-0">
-          <h2 className="text-xl font-bold text-ink dark:text-white">
+          <h2 className="font-display text-xl font-bold tracking-display">
             {hasActiveFilters ? "No matching words" : "No saved words yet"}
           </h2>
-          <p className="mt-2 text-sm font-normal leading-7 text-zinc-600 dark:text-zinc-400">
+          <p className="mt-2 text-sm leading-7 text-content-muted">
             {hasActiveFilters && hasWords
               ? "Try a broader search or clear the filters."
               : "Words you save while practicing will appear here."}
           </p>
           {hasActiveFilters ? (
-            <button
-              type="button"
-              onClick={onClear}
-              className="mt-4 inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-ink px-4 py-2 text-xs font-bold text-white transition hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/35 dark:bg-white dark:text-zinc-950"
-            >
+            <button type="button" onClick={onClear} className="btn btn-solid mt-4 min-h-10">
               <RotateCcw size={15} aria-hidden="true" />
               Clear filters
             </button>
@@ -429,7 +424,7 @@ function EmptyDictionaryState({
             <Link
               href="/practice"
               prefetch={false}
-              className="mt-4 inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-ink px-4 py-2 text-xs font-bold text-white transition hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/35 dark:bg-white dark:text-zinc-950"
+              className="btn btn-solid mt-4 min-h-10"
             >
               Start practicing
               <ArrowRight size={15} aria-hidden="true" />

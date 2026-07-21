@@ -23,10 +23,10 @@ export function ChallengeBanner({
   word,
 }: ChallengeBannerProps) {
   return (
-    <section className="rounded-2xl border border-amber-200/80 bg-amber-50/75 p-3.5 sm:p-5 dark:border-amber-300/20 dark:bg-amber-300/10">
+    <section className="rounded-card border-theme border-accent/50 bg-accent-soft p-3.5 sm:p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-amber-800 dark:text-amber-200">
+          <p className="eyebrow flex items-center gap-2 text-accent">
             <Sparkles size={14} aria-hidden="true" />
             {isToday ? "Today's challenge" : "Challenge"}
           </p>
@@ -34,57 +34,54 @@ export function ChallengeBanner({
             <HindiText
               text={word.common}
               kind="inline"
-              className="text-wrap-anywhere font-medium text-zinc-600 dark:text-zinc-300"
+              className="text-wrap-anywhere font-medium text-content-muted"
             />
-            <ArrowRight className="shrink-0 text-amber-600" size={18} aria-hidden="true" />
+            <ArrowRight className="shrink-0 text-accent" size={18} aria-hidden="true" />
             <HindiText
               text={word.elevated}
               kind="inline"
-              className="text-wrap-anywhere text-lg font-bold text-ink dark:text-white"
+              className="text-wrap-anywhere text-lg font-bold"
             />
           </div>
-          <p className="mt-2 text-sm font-normal leading-6 text-zinc-600 dark:text-zinc-300">
+          <p className="mt-2 text-sm leading-6 text-content-muted">
             {word.englishMeaning}
           </p>
         </div>
         <span
           className={cn(
-            "inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-full px-3 text-xs font-bold",
+            "inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-chip border-theme px-3 text-xs font-bold",
             completedToday
-              ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-300/15 dark:text-emerald-100"
-              : "bg-white/75 text-zinc-600 ring-1 ring-zinc-900/8 dark:bg-white/8 dark:text-zinc-300 dark:ring-white/10",
+              ? "border-success/50 bg-success-soft text-success"
+              : "border-line bg-surface text-content-muted",
           )}
         >
           {completedToday ? <CheckCircle2 size={14} aria-hidden="true" /> : null}
-          {completedToday ? "Completed ✓" : "Not attempted"}
+          {completedToday ? "Completed" : "Not attempted"}
         </span>
       </div>
 
       {starters.length > 0 ? (
-      <div className="mt-4 border-t border-amber-900/10 pt-4 dark:border-amber-100/10">
-        {/* <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-          Start your sentence
-        </p> */}
-        <div className="mt-2 flex flex-wrap gap-2">
-          {starters.map((starter) => (
-            <button
-              key={starter}
-              type="button"
-              disabled={disabled}
-              onClick={() => onStarterSelect(starter)}
-              aria-pressed={selectedStarter === starter}
-              className={cn(
-                "min-h-9 max-w-full rounded-xl px-3 py-2 text-left text-xs font-medium leading-5 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/55 disabled:cursor-not-allowed disabled:opacity-60",
-                selectedStarter === starter
-                  ? "bg-amber-500 text-zinc-950"
-                  : "bg-white/75 text-zinc-700 ring-1 ring-zinc-900/8 hover:bg-white dark:bg-white/8 dark:text-zinc-200 dark:ring-white/10 dark:hover:bg-white/12",
-              )}
-            >
-              {starter}
-            </button>
-          ))}
+        <div className="mt-4 border-t border-line/60 pt-4">
+          <div className="mt-2 flex flex-wrap gap-2">
+            {starters.map((starter) => (
+              <button
+                key={starter}
+                type="button"
+                disabled={disabled}
+                onClick={() => onStarterSelect(starter)}
+                aria-pressed={selectedStarter === starter}
+                className={cn(
+                  "min-h-9 max-w-full rounded-btn border-theme px-3 py-2 text-left text-xs font-medium leading-5 transition disabled:cursor-not-allowed disabled:opacity-60",
+                  selectedStarter === starter
+                    ? "border-line bg-accent text-accent-fg"
+                    : "border-line bg-surface text-content-muted hover:text-content",
+                )}
+              >
+                {starter}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
       ) : null}
     </section>
   );

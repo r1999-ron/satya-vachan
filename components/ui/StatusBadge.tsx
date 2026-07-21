@@ -8,11 +8,10 @@ type StatusBadgeProps = {
 };
 
 const tones = {
-  gold: "border-amber-300/70 bg-amber-100/70 text-amber-950 dark:border-amber-300/30 dark:bg-amber-300/12 dark:text-amber-100",
-  green:
-    "border-emerald-300/70 bg-emerald-100/70 text-emerald-950 dark:border-emerald-300/30 dark:bg-emerald-300/12 dark:text-emerald-100",
-  blue: "border-sky-300/70 bg-sky-100/70 text-sky-950 dark:border-sky-300/30 dark:bg-sky-300/12 dark:text-sky-100",
-  rose: "border-rose-300/70 bg-rose-100/70 text-rose-950 dark:border-rose-300/30 dark:bg-rose-300/12 dark:text-rose-100",
+  gold: "border-accent/45 bg-accent-soft text-content",
+  green: "border-success/45 bg-success-soft text-content",
+  blue: "border-secondary/45 bg-secondary-soft text-content",
+  rose: "border-danger/45 bg-danger-soft text-content",
 };
 
 export function StatusBadge({
@@ -23,8 +22,7 @@ export function StatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex max-w-full items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold",
-        "shadow-sm backdrop-blur-md",
+        "inline-flex max-w-full items-center gap-1 rounded-chip border-theme px-3 py-1 text-xs font-semibold",
         tones[tone],
         className,
       )}

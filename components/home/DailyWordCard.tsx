@@ -1,11 +1,13 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Lightbulb } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { SaveDailyWordButton } from "@/components/challenge/SaveDailyWordButton";
 import { HindiText } from "@/components/hindi/HindiText";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { APP_TIME_ZONE, dateFromKey } from "@/lib/dates";
+import { fadeUp, transitions } from "@/lib/motion";
 import { useScriptPreference } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 import type { HindiText as HindiTextValue, ScriptPreference, WordEntry } from "@/types";
@@ -56,137 +58,157 @@ export function DailyWordCard({
     <GlassCard className="overflow-hidden p-4 sm:p-7 lg:p-8">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-bold uppercase tracking-[0.14em] text-amber-800 dark:text-amber-200">
+          <p className="eyebrow text-accent">
             {isToday ? "Today's word" : "Word of the day"}
           </p>
           {!isToday ? (
-            <p className="mt-1 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+            <p className="mt-1 text-xs font-medium text-content-subtle">
               {formatWordDate(selectedDateKey)}
             </p>
           ) : null}
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
-          <div className="flex items-center rounded-lg border border-zinc-200/80 bg-white/50 p-0.5 dark:border-white/10 dark:bg-white/[0.03]">
-            <button
+          <div className="inset-panel flex items-center p-0.5">
+            <motion.button
               type="button"
               onClick={goToPreviousDay}
-              className="inline-flex size-8 items-center justify-center rounded-md text-zinc-600 transition hover:bg-zinc-900/5 hover:text-zinc-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60 dark:text-zinc-300 dark:hover:bg-white/10 dark:hover:text-white"
+              whileTap={{ scale: 0.9 }}
+              transition={transitions.snappy}
+              className="icon-btn size-8"
               aria-label="Show the previous day's word"
               title="Previous day"
             >
               <ArrowLeft size={16} aria-hidden="true" />
-            </button>
-            <button
+            </motion.button>
+            <motion.button
               type="button"
               onClick={goToNextDay}
               disabled={isToday}
-              className="inline-flex size-8 items-center justify-center rounded-md text-zinc-600 transition hover:bg-zinc-900/5 hover:text-zinc-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60 disabled:cursor-not-allowed disabled:opacity-35 dark:text-zinc-300 dark:hover:bg-white/10 dark:hover:text-white"
+              whileTap={isToday ? undefined : { scale: 0.9 }}
+              transition={transitions.snappy}
+              className="icon-btn size-8"
               aria-label="Show the next day's word"
               title={isToday ? "Today's word" : "Next day"}
             >
               <ArrowRight size={16} aria-hidden="true" />
-            </button>
+            </motion.button>
           </div>
           <SaveDailyWordButton word={word} />
         </div>
       </div>
 
-      <div className="mt-4 sm:mt-6">
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-          <p className="text-wrap-anywhere font-hindi text-5xl font-bold leading-[1.4] tracking-[-0.02em] text-ink sm:text-6xl dark:text-white">
+      {/* Keying on the word id replays the reveal whenever the day changes. */}
+      <motion.div
+        key={word.id}
+        variants={fadeUp}
+        initial="hidden"
+        animate="visible"
+        className="mt-4 sm:mt-6"
+      >
+        <div className="flex flex-wrap items-baseline gap-x-6 gap-y-3">
+          <p className="text-wrap-anywhere font-hindi text-5xl font-bold leading-[1.3] tracking-display sm:text-6xl">
             <span lang={preference === "roman" ? "hi-Latn" : "hi"}>
               {preference === "roman" ? word.elevated.roman : word.elevated.dev}
             </span>
           </p>
 
           <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-400">
-              instead of
-            </p>
+            <p className="eyebrow">instead of</p>
             <HindiText
               text={word.common}
               kind="inline"
-              className="mt-1 block text-wrap-anywhere text-2xl font-bold text-zinc-700 sm:text-3xl dark:text-zinc-200"
+              className="mt-1 block text-wrap-anywhere text-2xl font-bold text-content-muted sm:text-3xl"
             />
           </div>
         </div>
 
-        <p className="mt-2 text-sm font-normal leading-6 text-zinc-600 sm:text-base dark:text-zinc-300">
+        <p className="mt-3 text-sm leading-6 text-content-muted sm:text-base">
           {preference !== "roman" ? (
-            <span lang="hi-Latn" className="font-semibold text-amber-800 dark:text-amber-200">
+            <span lang="hi-Latn" className="font-semibold text-accent">
               {word.elevated.roman}
-              <span aria-hidden="true" className="mx-2 text-zinc-400">·</span>
+              <span aria-hidden="true" className="mx-2 text-content-subtle">
+                ·
+              </span>
             </span>
           ) : null}
           {word.englishMeaning}
         </p>
-      </div>
+      </motion.div>
 
-      <div className="mt-4 sm:mt-6">
+      <div className="mt-5 sm:mt-6">
         <div
           role="tablist"
           aria-label="Example sentences"
-          className="inline-flex max-w-full gap-1 overflow-x-auto rounded-xl bg-zinc-900/[0.045] p-1 dark:bg-white/8"
+          className="inline-flex max-w-full gap-1 overflow-x-auto rounded-btn bg-content/5 p-1"
         >
-          {EXAMPLE_TABS.map((tab) => (
-            <button
-              key={tab.key}
-              type="button"
-              role="tab"
-              aria-selected={activeTab === tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={cn(
-                "shrink-0 rounded-lg px-3 py-1.5 text-xs font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60",
-                activeTab === tab.key
-                  ? "bg-white text-zinc-950 shadow-sm dark:bg-zinc-800 dark:text-white"
-                  : "text-zinc-500 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white",
-              )}
-            >
-              {tab.label}
-            </button>
-          ))}
+          {EXAMPLE_TABS.map((tab) => {
+            const active = activeTab === tab.key;
+
+            return (
+              <button
+                key={tab.key}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                onClick={() => setActiveTab(tab.key)}
+                className={cn(
+                  "relative shrink-0 rounded-chip px-3 py-1.5 text-xs font-bold transition-colors",
+                  active ? "text-content" : "text-content-subtle hover:text-content",
+                )}
+              >
+                {active ? (
+                  <motion.span
+                    layoutId="example-tab-pill"
+                    transition={transitions.snappy}
+                    aria-hidden="true"
+                    className="absolute inset-0 rounded-chip border-theme border-line bg-surface shadow-btn"
+                  />
+                ) : null}
+                <span className="relative">{tab.label}</span>
+              </button>
+            );
+          })}
         </div>
 
-        <div
-          key={`${word.id}-${activeTab}`}
-          className={cn(
-            "mt-2 animate-floatIn rounded-xl border p-3.5 sm:p-5",
-            activeTab === "everyday"
-              ? "border-zinc-200/80 bg-white/50 dark:border-white/10 dark:bg-white/[0.03]"
-              : "border-amber-200 bg-amber-50/80 dark:border-amber-300/20 dark:bg-amber-300/10",
-          )}
-        >
-          <HighlightedSentence
-            text={example}
-            target={highlightTarget}
-            highlight={activeTab !== "everyday"}
-            preference={preference}
-          />
+        <div className="mt-2">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={`${word.id}-${activeTab}`}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={transitions.fade}
+              className={cn(
+                "rounded-btn border-theme p-3.5 sm:p-5",
+                activeTab === "everyday"
+                  ? "border-line bg-surface-2"
+                  : "border-accent/50 bg-accent-soft",
+              )}
+            >
+              <HighlightedSentence
+                text={example}
+                target={highlightTarget}
+                highlight={activeTab !== "everyday"}
+                preference={preference}
+              />
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
 
-      <div className="mt-5 border-t border-zinc-900/8 pt-4 dark:border-white/10">
+      <div className="mt-5 border-t border-line pt-4">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-bold uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-400">
-            Synonyms
-          </span>
+          <span className="eyebrow">Synonyms</span>
           {word.synonyms.map((synonym) => (
-            <span
-              key={synonym.roman}
-              className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-950 dark:bg-amber-300/10 dark:text-amber-100"
-            >
+            <span key={synonym.roman} className="chip">
               <HindiText text={synonym} kind="inline" />
             </span>
           ))}
         </div>
-        {/* <p className="mt-3 flex items-start gap-2 text-xs font-normal leading-5 text-zinc-500 dark:text-zinc-400">
-          <Lightbulb className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-300" size={14} aria-hidden="true" />
-          {word.usageNote}
-        </p> */}
       </div>
 
-      <a
+      <motion.a
         href="#daily-challenge"
         onClick={(event) => {
           const recorder = document.getElementById("daily-challenge-recorder");
@@ -195,10 +217,12 @@ export function DailyWordCard({
             recorder.scrollIntoView({ behavior: "smooth", block: "center" });
           }
         }}
-        className="mt-5 inline-flex min-h-10 w-full items-center justify-center rounded-lg bg-ink px-4 text-sm font-bold text-white shadow-md shadow-zinc-900/15 transition hover:-translate-y-0.5 hover:bg-zinc-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f8f5ef] active:translate-y-0 sm:w-auto dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-white/40 dark:focus-visible:ring-offset-zinc-950"
+        whileTap={{ scale: 0.98 }}
+        transition={transitions.snappy}
+        className="btn btn-solid mt-5 w-full sm:w-auto"
       >
         Use it in a sentence
-      </a>
+      </motion.a>
     </GlassCard>
   );
 }
@@ -222,7 +246,7 @@ function HighlightedSentence({
       {showDev ? (
         <span
           lang="hi"
-          className="block text-wrap-anywhere font-hindi text-base font-medium leading-8 text-ink sm:text-lg dark:text-white"
+          className="block text-wrap-anywhere font-hindi text-base font-medium leading-8 sm:text-lg"
         >
           {highlight ? highlightWord(text.dev, target.dev) : text.dev}
         </span>
@@ -233,8 +257,8 @@ function HighlightedSentence({
           className={cn(
             "block text-wrap-anywhere",
             showDev
-              ? "mt-1 text-xs leading-5 text-zinc-500 dark:text-zinc-400"
-              : "text-base font-medium leading-8 text-ink sm:text-lg dark:text-white",
+              ? "mt-1 text-xs leading-5 text-content-subtle"
+              : "text-base font-medium leading-8 sm:text-lg",
           )}
         >
           {highlight ? highlightWord(text.roman, target.roman, true) : text.roman}
@@ -259,7 +283,7 @@ function highlightWord(sentence: string, word: string, caseInsensitive = false) 
     index % 2 === 1 ? (
       <mark
         key={index}
-        className="rounded bg-amber-200/80 px-0.5 font-bold text-inherit dark:bg-amber-300/30"
+        className="rounded bg-highlight px-1 font-bold text-content"
       >
         {part}
       </mark>

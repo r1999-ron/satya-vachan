@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "motion/react";
+import { transitions } from "@/lib/motion";
 import { navItems } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 
@@ -9,8 +11,11 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav
-      className="fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-40 rounded-2xl border border-zinc-900/8 bg-white/95 p-1.5 shadow-[0_12px_34px_rgba(24,20,16,0.14)] md:hidden dark:border-white/12 dark:bg-zinc-950/95"
+    <motion.nav
+      initial={{ y: 32, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ ...transitions.soft, delay: 0.1 }}
+      className="fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-40 rounded-card border-theme-card border-line bg-surface p-1.5 shadow-card md:hidden"
       aria-label="Primary navigation"
     >
       <div className="grid grid-cols-3 gap-1">
@@ -25,27 +30,42 @@ export function BottomNav() {
               prefetch={false}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-xl px-1 text-[11px] font-semibold transition",
-                "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500",
-                active && !primary
-                  ? "bg-zinc-900 text-white shadow-sm motion-safe:animate-savePop dark:bg-white dark:text-zinc-950"
-                  : "text-zinc-600 hover:bg-black/5 active:scale-95 dark:text-zinc-300 dark:hover:bg-white/10",
-                primary && "relative -top-5 font-bold text-zinc-900 dark:text-white",
+                "relative flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-btn px-1 text-[11px] font-semibold transition-colors",
+                primary
+                  ? "-top-5 font-bold text-content"
+                  : active
+                    ? "text-content-invert"
+                    : "text-content-muted",
               )}
             >
-              <span
+              {/* The raised Practice action is its own visual anchor, so the
+                  sliding pill only tracks the flat tabs. */}
+              {active && !primary ? (
+                <motion.span
+                  layoutId="bottom-nav-pill"
+                  transition={transitions.snappy}
+                  aria-hidden="true"
+                  className="absolute inset-0 rounded-btn border-theme border-line bg-content"
+                />
+              ) : null}
+
+              <motion.span
+                whileTap={{ scale: 0.9 }}
+                transition={transitions.snappy}
                 className={cn(
-                  primary && "grid size-14 place-items-center rounded-full border-4 border-[#f8f5ef] bg-zinc-900 text-white shadow-lg shadow-zinc-900/25 dark:border-zinc-950 dark:bg-white dark:text-zinc-950",
-                  primary && active && "bg-amber-400 text-zinc-950 dark:bg-amber-300",
+                  "relative",
+                  primary &&
+                    "grid size-14 place-items-center rounded-full border-4 border-canvas bg-content text-content-invert shadow-btn",
+                  primary && active && "bg-accent text-accent-fg",
                 )}
               >
                 <Icon size={primary ? 24 : 18} aria-hidden="true" />
-              </span>
-              <span className="max-w-full truncate">{label}</span>
+              </motion.span>
+              <span className="relative max-w-full truncate">{label}</span>
             </Link>
           );
         })}
       </div>
-    </nav>
+    </motion.nav>
   );
 }

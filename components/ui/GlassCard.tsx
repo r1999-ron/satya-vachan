@@ -1,22 +1,37 @@
-import type { HTMLAttributes } from "react";
+"use client";
+
+import { motion, type HTMLMotionProps } from "motion/react";
+import { fadeUp } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-type GlassCardProps = HTMLAttributes<HTMLDivElement> & {
+type GlassCardProps = HTMLMotionProps<"div"> & {
   interactive?: boolean;
+  /** Set false when a parent already orchestrates this card's entrance. */
+  animateIn?: boolean;
 };
 
+/**
+ * The app's primary surface. Its border, radius and shadow all come from theme
+ * tokens via the `.card` class, so Classic renders a hairline card with a soft
+ * glow and Neo Brutal renders a 3px outline with a hard offset shadow — from
+ * the same markup.
+ */
 export function GlassCard({
   className,
   interactive = false,
+  animateIn = true,
   ...props
 }: GlassCardProps) {
+  const entrance = animateIn
+    ? ({ variants: fadeUp, initial: "hidden", animate: "visible" } as const)
+    : {};
+
   return (
-    <div
+    <motion.div
+      {...entrance}
       className={cn(
-        "rounded-2xl border border-zinc-900/[0.07] bg-white/88 p-4 shadow-[0_18px_55px_rgba(36,29,20,0.07)] sm:p-5",
-        "dark:border-white/12 dark:bg-zinc-950/80",
-        interactive &&
-          "transition duration-200 hover:-translate-y-0.5 hover:border-amber-300/70 hover:shadow-[0_22px_60px_rgba(36,29,20,0.11)] active:translate-y-0 active:scale-[0.995]",
+        "card p-4 sm:p-5",
+        interactive && "card-interactive cursor-pointer",
         className,
       )}
       {...props}

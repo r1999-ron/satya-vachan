@@ -10,6 +10,7 @@ import {
   useState,
 } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { motion } from "motion/react";
 import { ArrowRight, Clock3, RotateCcw, WandSparkles } from "lucide-react";
 import {
   RecorderButton,
@@ -29,7 +30,6 @@ import {
   useLearnedWords,
   usePracticeHistory,
 } from "@/lib/storage";
-import { cn } from "@/lib/utils";
 import { normalizePracticeResponse, validateTranscript } from "@/lib/validators";
 import type {
   LearnedWordInput,
@@ -90,10 +90,8 @@ const initialPracticeState: PracticeState = {
 
 function PracticePageFallback() {
   return (
-    <GlassCard className="animate-floatIn p-6 sm:p-8" aria-busy="true">
-      <p className="text-sm font-medium text-zinc-600 dark:text-zinc-300">
-        Loading practice...
-      </p>
+    <GlassCard className="p-6 sm:p-8" aria-busy="true">
+      <p className="text-sm font-medium text-content-muted">Loading practice...</p>
     </GlassCard>
   );
 }
@@ -258,13 +256,13 @@ function PracticeContent() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-4 sm:space-y-5">
-      <GlassCard className="animate-floatIn p-4 sm:p-8">
+    <div className="mx-auto max-w-3xl space-y-4 sm:space-y-5">
+      <GlassCard className="p-4 sm:p-8">
         <PracticePipeline status={state.status} />
         <div>
           <RecorderButton
             key={recorderResetKey}
-            className="border-0 bg-transparent p-0 dark:bg-transparent"
+            className="border-0 bg-transparent p-0"
             disabled={isBusy}
             variant="continuation"
             onRecordingComplete={(recording) => void transcribeRecording(recording)}
@@ -293,7 +291,7 @@ function PracticeContent() {
             disabled={isBusy}
             onChange={(event) => handleTranscriptChange(event.target.value)}
             placeholder="Write anything, in English, Hindi or Hinglish..."
-            className="min-h-32 w-full resize-y rounded-xl border border-zinc-900/10 bg-white/58 p-4 text-sm font-normal leading-7 text-ink outline-none transition placeholder:text-zinc-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 disabled:cursor-not-allowed disabled:opacity-70 dark:border-white/12 dark:bg-white/8 dark:text-white dark:placeholder:text-zinc-500"
+            className="field min-h-32 resize-y text-sm leading-7"
           />
         </label>
 
@@ -303,7 +301,7 @@ function PracticeContent() {
               type="button"
               onClick={handleTryDemo}
               disabled={isBusy}
-              className="inline-flex min-h-8 items-center gap-1.5 rounded-xl px-2 text-xs font-semibold text-amber-800 transition hover:bg-amber-100/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/55 disabled:cursor-not-allowed disabled:opacity-60 dark:text-amber-200 dark:hover:bg-amber-300/10"
+              className="btn btn-ghost min-h-8 px-2 text-xs text-accent"
             >
               <WandSparkles size={14} aria-hidden="true" />
               Try an example
@@ -332,7 +330,7 @@ function PracticeContent() {
               (state.status === "idle" && !state.transcript.trim()) ||
               (isBusy && !state.result)
             }
-            className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-zinc-900/12 bg-white/55 px-4 py-3 text-sm font-bold text-zinc-700 transition hover:-translate-y-0.5 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/25 focus-visible:ring-offset-2 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:bg-white/8 dark:text-zinc-200 dark:hover:bg-white/12 dark:focus-visible:ring-white/30 dark:focus-visible:ring-offset-zinc-950"
+            className="btn btn-outline min-h-12 w-full"
           >
             <RotateCcw size={17} aria-hidden="true" />
             Start Over
@@ -341,12 +339,7 @@ function PracticeContent() {
             type="button"
             onClick={() => void runTransformation()}
             disabled={!canTransform}
-            className={cn(
-              "inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/35 focus-visible:ring-offset-2 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:shadow-none dark:focus-visible:ring-white/40 dark:focus-visible:ring-offset-zinc-950",
-              canTransform
-                ? "bg-ink text-white shadow-lg shadow-zinc-900/15 hover:-translate-y-0.5 dark:bg-white dark:text-zinc-950"
-                : "bg-zinc-400/70 text-white dark:bg-zinc-700 dark:text-zinc-300",
-            )}
+            className="btn btn-solid min-h-12 w-full"
           >
             <WandSparkles size={18} aria-hidden="true" />
             {isTransforming ? "Enhancing..." : "Enhance"}
@@ -355,14 +348,14 @@ function PracticeContent() {
       </GlassCard>
 
       {isTranscribing || isTransforming || state.status === "ttsLoading" ? (
-        <GlassCard className="animate-floatIn">
+        <GlassCard className="">
           <LoadingState status={state.status} />
         </GlassCard>
       ) : null}
 
       {state.result ? (
         <div ref={resultRef}>
-          <GlassCard className="animate-floatIn">
+          <GlassCard className="">
             <TransformationResult
               result={state.result}
               isWordSaved={isWordSaved}
@@ -496,12 +489,16 @@ function LoadingState({ status }: { status: PracticeStatus }) {
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-      <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-amber-100 text-amber-800 dark:bg-amber-300/12 dark:text-amber-100">
+      <motion.span
+        animate={{ rotate: [0, 12, -8, 0] }}
+        transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+        className="grid size-12 shrink-0 place-items-center rounded-btn border-theme border-line bg-accent-soft text-accent"
+      >
         <WandSparkles size={20} aria-hidden="true" />
-      </span>
+      </motion.span>
       <div className="min-w-0 flex-1">
-        <h2 className="text-lg font-bold text-ink dark:text-white">{copy.title}</h2>
-        <p className="mt-1 text-sm leading-6 text-zinc-600 dark:text-zinc-300">
+        <h2 className="text-lg font-bold">{copy.title}</h2>
+        <p className="mt-1 text-sm leading-6 text-content-muted">
           {status === "transforming"
             ? "Finding stronger words while keeping your meaning intact."
             : "One moment while we prepare the next step."}
@@ -527,21 +524,21 @@ function RecentPracticeHistory({
   }
 
   return (
-    <GlassCard className="animate-floatIn">
+    <GlassCard className="">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="flex items-center gap-2 text-lg font-bold text-ink dark:text-white">
-          <Clock3 className="text-amber-700 dark:text-amber-200" size={18} aria-hidden="true" />
+        <h2 className="flex items-center gap-2 font-display text-lg font-bold tracking-display">
+          <Clock3 className="text-accent" size={18} aria-hidden="true" />
           Recently used
         </h2>
-        <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+        <span className="text-xs font-medium text-content-subtle">
           {history.length} saved
         </span>
       </div>
-      <div className="mt-4 divide-y divide-zinc-900/8 dark:divide-white/10">
+      <div className="mt-4 divide-y divide-line">
         {compactHistory.map((item) => (
           <div key={item.id} className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0">
-              <p className="text-wrap-anywhere text-sm font-medium leading-6 text-ink dark:text-white">
+              <p className="text-wrap-anywhere text-sm font-medium leading-6">
                 {item.transcript}
               </p>
               <HindiText
@@ -554,7 +551,7 @@ function RecentPracticeHistory({
               type="button"
               disabled={disabled}
               onClick={() => onUse(item)}
-              className="inline-flex min-h-9 shrink-0 items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-amber-800 transition hover:bg-amber-100/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/55 disabled:cursor-not-allowed disabled:opacity-60 dark:text-amber-200 dark:hover:bg-amber-300/10"
+              className="btn btn-ghost min-h-9 shrink-0 px-3 text-xs text-accent"
             >
               Use again
               <ArrowRight size={14} aria-hidden="true" />
@@ -565,3 +562,4 @@ function RecentPracticeHistory({
     </GlassCard>
   );
 }
+

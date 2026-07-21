@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, Eye, SkipForward, WandSparkles } from "lucide-react";
 import { RecorderButton, type RecorderState } from "@/components/audio/RecorderButton";
 import { ChallengeFeedback } from "@/components/challenge/ChallengeFeedback";
@@ -11,8 +12,8 @@ import { LoadingMeter } from "@/components/ui/LoadingMeter";
 import { useTranscription } from "@/hooks/useTranscription";
 import { requestJson } from "@/lib/api-client";
 import { evaluateChallengeLocally } from "@/lib/challenge";
+import { scaleIn, transitions } from "@/lib/motion";
 import { buildReviewWordEntry, getRecallCue } from "@/lib/review";
-import { cn } from "@/lib/utils";
 import { normalizeChallengeResponse, validateTranscript } from "@/lib/validators";
 import type {
   ChallengeResponse,
@@ -111,31 +112,27 @@ export function ReviewCard({
 
   return (
     <div className="space-y-4 sm:space-y-5">
-      <GlassCard className="animate-floatIn p-4 sm:p-7">
+      <GlassCard className="p-4 sm:p-7">
         <div className="flex items-center justify-between gap-3">
-          <p className="text-xs font-bold uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-400">
+          <p className="eyebrow">
             Word {position} of {total}
           </p>
           <button
             type="button"
             onClick={onSkip}
             disabled={isBusy}
-            className="inline-flex min-h-8 items-center gap-1.5 rounded-full px-3 text-xs font-semibold text-zinc-500 transition hover:bg-black/5 hover:text-zinc-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-zinc-400 dark:hover:bg-white/10 dark:hover:text-white"
+            className="btn btn-ghost min-h-8 px-3 text-xs"
           >
             <SkipForward size={14} aria-hidden="true" />
             Skip
           </button>
         </div>
 
-        <section className="mt-4 rounded-2xl border border-amber-200/80 bg-amber-50/75 p-3.5 sm:p-5 dark:border-amber-300/20 dark:bg-amber-300/10">
-          <p className="text-xs font-bold uppercase tracking-[0.14em] text-amber-800 dark:text-amber-200">
-            Say a sentence with this word
-          </p>
-          <p className="mt-3 text-lg font-bold leading-8 text-ink dark:text-white">
-            {cue.meaning}
-          </p>
+        <section className="mt-4 rounded-card border-theme border-accent/50 bg-accent-soft p-3.5 sm:p-5">
+          <p className="eyebrow text-accent">Say a sentence with this word</p>
+          <p className="mt-3 text-lg font-bold leading-8">{cue.meaning}</p>
           {cue.simpleForm ? (
-            <p className="mt-2 text-sm font-normal leading-6 text-zinc-600 dark:text-zinc-300">
+            <p className="mt-2 text-sm leading-6 text-content-muted">
               The everyday word for it is{" "}
               <span lang="hi" className="font-hindi font-semibold">
                 {cue.simpleForm}
@@ -144,29 +141,46 @@ export function ReviewCard({
             </p>
           ) : null}
 
-          <div className="mt-4 border-t border-amber-900/10 pt-3 dark:border-amber-200/15">
-            {revealed ? (
-              <HindiText
-                text={entry.elevated}
-                kind="inline"
-                className="text-wrap-anywhere text-lg font-bold text-ink dark:text-white"
-              />
-            ) : (
-              <button
-                type="button"
-                onClick={() => setRevealed(true)}
-                className="inline-flex min-h-9 items-center gap-2 rounded-full bg-white/75 px-3.5 text-xs font-bold text-zinc-700 ring-1 ring-zinc-900/8 transition hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 dark:bg-white/8 dark:text-zinc-200 dark:ring-white/10 dark:hover:bg-white/12"
-              >
-                <Eye size={14} aria-hidden="true" />
-                Show the word
-              </button>
-            )}
+          <div className="mt-4 border-t border-line/60 pt-3">
+            <AnimatePresence mode="wait" initial={false}>
+              {revealed ? (
+                <motion.span
+                  key="revealed"
+                  variants={scaleIn}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  className="block"
+                >
+                  <HindiText
+                    text={entry.elevated}
+                    kind="inline"
+                    className="text-wrap-anywhere text-lg font-bold"
+                  />
+                </motion.span>
+              ) : (
+                <motion.button
+                  key="hidden"
+                  type="button"
+                  onClick={() => setRevealed(true)}
+                  variants={scaleIn}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  whileTap={{ scale: 0.97 }}
+                  className="btn btn-outline min-h-9 px-3.5 text-xs"
+                >
+                  <Eye size={14} aria-hidden="true" />
+                  Show the word
+                </motion.button>
+              )}
+            </AnimatePresence>
           </div>
         </section>
 
         <div className="mt-5 sm:mt-6">
           <RecorderButton
-            className="border-0 bg-transparent p-0 dark:bg-transparent"
+            className="border-0 bg-transparent p-0"
             disabled={isBusy || status === "answered"}
             hideDuration
             variant="continuation"
@@ -199,7 +213,7 @@ export function ReviewCard({
               setCheckError("");
             }}
             placeholder="Speak or type a fresh sentence using this word..."
-            className="min-h-28 w-full resize-y rounded-xl border border-zinc-900/10 bg-white/58 p-4 text-sm font-normal leading-7 text-ink outline-none transition placeholder:text-zinc-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 disabled:cursor-not-allowed disabled:opacity-70 dark:border-white/12 dark:bg-white/8 dark:text-white dark:placeholder:text-zinc-500"
+            className="field min-h-28 resize-y text-sm leading-7"
           />
         </label>
 
@@ -212,31 +226,32 @@ export function ReviewCard({
         ) : null}
 
         {status !== "answered" ? (
-          <button
+          <motion.button
             type="button"
             onClick={() => void runCheck()}
             disabled={!canCheck}
-            className={cn(
-              "mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/35 focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:shadow-none dark:focus-visible:ring-white/40 dark:focus-visible:ring-offset-zinc-950",
-              canCheck
-                ? "bg-ink text-white shadow-lg shadow-zinc-900/15 hover:-translate-y-0.5 dark:bg-white dark:text-zinc-950"
-                : "bg-zinc-400/70 text-white dark:bg-zinc-700 dark:text-zinc-300",
-            )}
+            whileTap={canCheck ? { scale: 0.98 } : undefined}
+            transition={transitions.snappy}
+            className="btn btn-solid mt-5 min-h-12 w-full"
           >
             <WandSparkles size={18} aria-hidden="true" />
             {status === "checking" ? "Checking..." : "Check my sentence"}
-          </button>
+          </motion.button>
         ) : null}
       </GlassCard>
 
       {isBusy ? (
-        <GlassCard className="animate-floatIn">
+        <GlassCard>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-            <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-amber-100 text-amber-800 dark:bg-amber-300/12 dark:text-amber-100">
+            <motion.span
+              animate={{ rotate: [0, 12, -8, 0] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+              className="grid size-12 shrink-0 place-items-center rounded-btn border-theme border-line bg-accent-soft text-accent"
+            >
               <WandSparkles size={20} aria-hidden="true" />
-            </span>
+            </motion.span>
             <div className="min-w-0 flex-1">
-              <h2 className="text-lg font-bold text-ink dark:text-white">
+              <h2 className="text-lg font-bold">
                 {status === "transcribing"
                   ? "Listening carefully..."
                   : "Checking your sentence..."}
@@ -254,14 +269,16 @@ export function ReviewCard({
             result={result}
             targetWord={entry.elevated.dev}
           />
-          <button
+          <motion.button
             type="button"
             onClick={() => onNext(grade)}
-            className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-ink px-4 py-3 text-sm font-bold text-white shadow-lg shadow-zinc-900/15 transition hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/35 focus-visible:ring-offset-2 focus-visible:ring-offset-paper dark:bg-white dark:text-zinc-950"
+            whileTap={{ scale: 0.98 }}
+            transition={transitions.snappy}
+            className="btn btn-solid min-h-12 w-full"
           >
             {position === total ? "Finish revision" : "Next word"}
             <ArrowRight size={17} aria-hidden="true" />
-          </button>
+          </motion.button>
         </>
       ) : null}
     </div>

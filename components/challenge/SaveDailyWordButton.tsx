@@ -1,7 +1,9 @@
 "use client";
 
+import { AnimatePresence, motion } from "motion/react";
 import { Check, Plus } from "lucide-react";
 import { useMemo } from "react";
+import { popIn, transitions } from "@/lib/motion";
 import { useLearnedWords } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 import type { WordEntry } from "@/types";
@@ -36,10 +38,12 @@ export function SaveDailyWordButton({ word }: { word: WordEntry }) {
   };
 
   return (
-    <button
+    <motion.button
       type="button"
       onClick={handleSave}
       disabled={isSaved}
+      whileTap={isSaved ? undefined : { scale: 0.88 }}
+      transition={transitions.snappy}
       aria-label={
         isSaved
           ? `${word.elevated.roman} is saved`
@@ -47,17 +51,29 @@ export function SaveDailyWordButton({ word }: { word: WordEntry }) {
       }
       title={isSaved ? "Saved" : "Save word"}
       className={cn(
-        "grid size-9 shrink-0 place-items-center rounded-xl transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/55",
+        "grid size-9 shrink-0 place-items-center rounded-chip border-theme border-line transition-colors",
         isSaved
-          ? "cursor-default bg-emerald-100 text-emerald-800 dark:bg-emerald-300/15 dark:text-emerald-100"
-          : "bg-amber-100 text-amber-900 hover:bg-amber-200 dark:bg-amber-300/12 dark:text-amber-100 dark:hover:bg-amber-300/20",
+          ? "cursor-default bg-success-soft text-success"
+          : "bg-accent-soft text-accent hover:bg-accent/20",
       )}
     >
-      {isSaved ? (
-        <Check size={17} strokeWidth={2.5} aria-hidden="true" />
-      ) : (
-        <Plus size={18} strokeWidth={2.5} aria-hidden="true" />
-      )}
-    </button>
+      {/* The icon swap is the only confirmation of the save, so it gets a
+          deliberate pop rather than an instant switch. */}
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={isSaved ? "saved" : "unsaved"}
+          variants={popIn}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+        >
+          {isSaved ? (
+            <Check size={17} strokeWidth={2.5} aria-hidden="true" />
+          ) : (
+            <Plus size={18} strokeWidth={2.5} aria-hidden="true" />
+          )}
+        </motion.span>
+      </AnimatePresence>
+    </motion.button>
   );
 }
