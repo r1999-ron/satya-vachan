@@ -54,7 +54,7 @@ export type LearnedWord = {
   simpleAlternative?: string;
   exampleSentence: string;
   savedAt: string;
-  source: "seed" | "practice" | "challenge" | "manual";
+  source: "seed" | "practice" | "challenge" | "manual" | "game";
 };
 
 export type LearnedWordInput = {
@@ -70,6 +70,10 @@ export type StreakState = {
   longestStreak: number;
   lastCompletedDate: string | null;
   completedChallenges: string[];
+  /** Earned rest days ("विश्राम दिन") that can absorb a single missed day. */
+  restDayBank: number;
+  /** Date keys of missed days a rest day was spent on. */
+  restDaysUsed: string[];
 };
 
 export type ReviewGrade = "again" | "good";
@@ -97,4 +101,32 @@ export type ChallengeResponse = {
 export type TtsResponse = {
   audioBase64: string;
   mimeType: "audio/mpeg";
+};
+
+export type PuzzleRoundResult = {
+  wordId: string;
+  correct: boolean;
+};
+
+/** Progress through the shared daily word puzzle, persisted per date. */
+export type PuzzleState = {
+  dateKey: string;
+  results: PuzzleRoundResult[];
+  completed: boolean;
+};
+
+export type PuzzleLifetimeStats = {
+  played: number;
+  perfect: number;
+};
+
+/** Per-month counters that power the monthly recap. */
+export type MonthlyActivity = {
+  practices: number;
+  challenges: number;
+  twists: number;
+  puzzlesCompleted: number;
+  puzzlePerfects: number;
+  wordsSaved: number;
+  reviews: number;
 };

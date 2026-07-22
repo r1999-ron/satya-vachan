@@ -10,6 +10,7 @@ import {
 } from "@/components/audio/RecorderButton";
 import { ChallengeBanner } from "@/components/challenge/ChallengeBanner";
 import { ChallengeFeedback } from "@/components/challenge/ChallengeFeedback";
+import { TwistCard } from "@/components/challenge/TwistCard";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { LoadingMeter } from "@/components/ui/LoadingMeter";
@@ -338,6 +339,18 @@ export function DailyChallenge({
           </motion.div>
         ) : null}
       </AnimatePresence>
+
+      {/* The bonus twist is only offered once today's challenge is safely done,
+          so a harder condition can never cost the user their streak. */}
+      {isToday && completedToday ? (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={transitions.soft}
+        >
+          <TwistCard word={word} />
+        </motion.div>
+      ) : null}
     </section>
   );
 }

@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import { AudioPlayer } from "@/components/audio/AudioPlayer";
+import { ShareCardButton } from "@/components/practice/ShareCardButton";
 import { useScriptPreference } from "@/lib/storage";
 import { WordReplacementCard } from "@/components/practice/WordReplacementCard";
 import { transitions } from "@/lib/motion";
@@ -35,6 +36,7 @@ export function TransformationResult({
           preload
           text={result.naturalElegantVersion}
           variant="natural"
+          shareOriginal={result.transcript}
           onAudioStatusChange={onAudioStatusChange}
         />
         <VersionPanel
@@ -82,6 +84,7 @@ function VersionPanel({
   preload = false,
   text,
   variant,
+  shareOriginal,
   onAudioStatusChange,
 }: {
   label: string;
@@ -90,6 +93,8 @@ function VersionPanel({
   replacements?: WordReplacement[];
   text: HindiTextValue;
   variant: "natural" | "elevated";
+  /** When present, the panel offers a shareable card of original → this text. */
+  shareOriginal?: string;
 }) {
   const isScholarly = variant === "elevated";
 
@@ -114,15 +119,20 @@ function VersionPanel({
         >
           {label}
         </p>
-        <AudioPlayer
-          key={`${variant}-${text.dev}`}
-          label="Listen"
-          onStatusChange={onAudioStatusChange}
-          preload={preload}
-          text={text.dev}
-          tone="primary"
-          variant={variant}
-        />
+        <div className="flex items-center gap-2">
+          {shareOriginal ? (
+            <ShareCardButton original={shareOriginal} polished={text} />
+          ) : null}
+          <AudioPlayer
+            key={`${variant}-${text.dev}`}
+            label="Listen"
+            onStatusChange={onAudioStatusChange}
+            preload={preload}
+            text={text.dev}
+            tone="primary"
+            variant={variant}
+          />
+        </div>
       </div>
       <HighlightedSentence
         text={text}

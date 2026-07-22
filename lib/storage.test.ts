@@ -3,11 +3,20 @@ import {
   STORAGE_KEYS,
   canUseLocalStorage,
   completeTodaysChallenge,
+  getMonthlyActivity,
   isChallengeComplete,
   loadLearnedWords,
+  loadMilestonesSeen,
   loadPracticeHistory,
   loadPreferences,
+  loadPuzzleState,
+  loadPuzzleStats,
+  loadRecapSeenMonth,
   loadStreakState,
+  markMilestoneSeen,
+  markRecapSeen,
+  recordActivity,
+  recordPuzzleRound,
   removeLearnedWord,
   restoreLearnedWord,
   saveLearnedWord,
@@ -241,6 +250,8 @@ describe("storage", () => {
       longestStreak: 1,
       lastCompletedDate: "2026-07-17",
       completedChallenges: ["2026-07-17"],
+      restDayBank: 0,
+      restDaysUsed: [],
     });
 
     expect(completeTodaysChallenge(new Date("2026-07-18T12:00:00.000Z"))).toEqual({
@@ -248,6 +259,8 @@ describe("storage", () => {
       longestStreak: 2,
       lastCompletedDate: "2026-07-18",
       completedChallenges: ["2026-07-17", "2026-07-18"],
+      restDayBank: 0,
+      restDaysUsed: [],
     });
     expect(isChallengeComplete(new Date("2026-07-18T12:00:00.000Z"))).toBe(true);
   });
@@ -260,6 +273,8 @@ describe("storage", () => {
       longestStreak: 1,
       lastCompletedDate: "2026-07-18",
       completedChallenges: ["2026-07-18"],
+      restDayBank: 0,
+      restDaysUsed: [],
     });
   });
 
@@ -340,5 +355,168 @@ describe("storage", () => {
 
     storage.setItem(STORAGE_KEYS.practiceHistory, JSON.stringify([...history, { id: "bad" }]));
     expect(loadPracticeHistory()).toHaveLength(10);
+  });
+
+  it("earns a rest day at every 7th consecutive completion, capped at 2", () => {
+    storage.setItem(
+      STORAGE_KEYS.streak,
+      JSON.stringify({
+        currentStreak: 6,
+        longestStreak: 6,
+        lastCompletedDate: "2026-07-17",
+        completedChallenges: [],
+        restDayBank: 0,
+        restDaysUsed: [],
+      }),
+    );
+
+    const seventh = completeTodaysChallenge(new Date("2026-07-18T12:00:00.000Z"));
+    expect(seventh.currentStreak).toBe(7);
+    expect(seventh.restDayBank).toBe(1);
+
+    storage.setItem(
+      STORAGE_KEYS.streak,
+      JSON.stringify({
+        currentStreak: 13,
+        longestStreak: 13,
+        lastCompletedDate: "2026-07-17",
+        completedChallenges: [],
+        restDayBank: 2,
+        restDaysUsed: [],
+      }),
+    );
+
+    const fourteenth = completeTodaysChallenge(new Date("2026-07-18T12:00:00.000Z"));
+    expect(fourteenth.currentStreak).toBe(14);
+    expect(fourteenth.restDayBank).toBe(2);
+  });
+
+  it("spends a rest day to bridge exactly one missed day", () => {
+    storage.setItem(
+      STORAGE_KEYS.streak,
+      JSON.stringify({
+        currentStreak: 9,
+        longestStreak: 9,
+        lastCompletedDate: "2026-07-16",
+        completedChallenges: [],
+        restDayBank: 1,
+        restDaysUsed: [],
+      }),
+    );
+
+    const bridged = completeTodaysChallenge(new Date("2026-07-18T12:00:00.000Z"));
+
+    expect(bridged.currentStreak).toBe(10);
+    expect(bridged.restDayBank).toBe(0);
+    expect(bridged.restDaysUsed).toEqual(["2026-07-17"]);
+  });
+
+  it("still resets the streak on a one-day gap with an empty bank or a longer gap", () => {
+    storage.setItem(
+      STORAGE_KEYS.streak,
+      JSON.stringify({
+        currentStreak: 9,
+        longestStreak: 9,
+        lastCompletedDate: "2026-07-16",
+        completedChallenges: [],
+        restDayBank: 0,
+        restDaysUsed: [],
+      }),
+    );
+
+    expect(completeTodaysChallenge(new Date("2026-07-18T12:00:00.000Z")).currentStreak).toBe(1);
+
+    storage.setItem(
+      STORAGE_KEYS.streak,
+      JSON.stringify({
+        currentStreak: 9,
+        longestStreak: 9,
+        lastCompletedDate: "2026-07-14",
+        completedChallenges: [],
+        restDayBank: 2,
+        restDaysUsed: [],
+      }),
+    );
+
+    const reset = completeTodaysChallenge(new Date("2026-07-18T12:00:00.000Z"));
+    expect(reset.currentStreak).toBe(1);
+    expect(reset.restDayBank).toBe(2);
+  });
+
+  it("upgrades legacy streak states without rest-day fields", () => {
+    storage.setItem(
+      STORAGE_KEYS.streak,
+      JSON.stringify({
+        currentStreak: 4,
+        longestStreak: 6,
+        lastCompletedDate: "2026-07-17",
+        completedChallenges: ["2026-07-17"],
+      }),
+    );
+
+    expect(loadStreakState()).toMatchObject({
+      currentStreak: 4,
+      restDayBank: 0,
+      restDaysUsed: [],
+    });
+  });
+
+  it("records monthly activity counters and prunes old months", () => {
+    completeTodaysChallenge(new Date("2026-07-18T12:00:00.000Z"));
+    completeTodaysChallenge(new Date("2026-07-19T12:00:00.000Z"));
+
+    expect(getMonthlyActivity("2026-07")).toMatchObject({ challenges: 2 });
+
+    storage.setItem(
+      STORAGE_KEYS.activity,
+      JSON.stringify({
+        "2026-03": { practices: 1 },
+        "2026-05": { practices: 2 },
+        "2026-06": { practices: 3 },
+        "2026-07": { practices: 4 },
+      }),
+    );
+    recordActivity("practices");
+
+    const stored = JSON.parse(storage.getItem(STORAGE_KEYS.activity) ?? "{}");
+    expect(Object.keys(stored).sort()).toEqual(["2026-05", "2026-06", "2026-07"]);
+    expect(getMonthlyActivity("2026-07").practices).toBe(5);
+    expect(getMonthlyActivity("2026-03")).toMatchObject({ practices: 0 });
+  });
+
+  it("tracks puzzle rounds and counts a completed set exactly once", () => {
+    const first = recordPuzzleRound({ wordId: "1", correct: true }, 2, "2026-07-18");
+    expect(first.completed).toBe(false);
+    expect(loadPuzzleStats()).toEqual({ played: 0, perfect: 0 });
+
+    const second = recordPuzzleRound({ wordId: "2", correct: true }, 2, "2026-07-18");
+    expect(second.completed).toBe(true);
+    expect(loadPuzzleStats()).toEqual({ played: 1, perfect: 1 });
+    expect(getMonthlyActivity("2026-07")).toMatchObject({
+      puzzlesCompleted: 1,
+      puzzlePerfects: 1,
+    });
+
+    // A completed set is frozen: extra rounds must not double-count.
+    const frozen = recordPuzzleRound({ wordId: "3", correct: false }, 2, "2026-07-18");
+    expect(frozen.results).toHaveLength(2);
+    expect(loadPuzzleStats()).toEqual({ played: 1, perfect: 1 });
+
+    // A new date starts fresh and an imperfect set counts played only.
+    recordPuzzleRound({ wordId: "1", correct: false }, 1, "2026-07-19");
+    expect(loadPuzzleStats()).toEqual({ played: 2, perfect: 1 });
+    expect(loadPuzzleState("2026-07-18")).toBeNull();
+  });
+
+  it("stores milestone and recap seen-state idempotently", () => {
+    expect(loadMilestonesSeen()).toEqual([]);
+    markMilestoneSeen("words-10");
+    markMilestoneSeen("words-10");
+    expect(loadMilestonesSeen()).toEqual(["words-10"]);
+
+    expect(loadRecapSeenMonth()).toBeNull();
+    markRecapSeen("2026-06");
+    markRecapSeen("2026-05");
+    expect(loadRecapSeenMonth()).toBe("2026-06");
   });
 });

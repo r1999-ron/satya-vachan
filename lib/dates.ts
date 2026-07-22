@@ -40,3 +40,24 @@ export function shiftDateKey(dateKey: string, amount: number) {
   const shifted = new Date(dateFromKey(dateKey).getTime() + amount * 86_400_000);
   return getTodayKey(shifted);
 }
+
+/** "YYYY-MM" slice of a date key, the granularity the monthly recap works at. */
+export function getMonthKey(dateKey: string = getTodayKey()) {
+  return dateKey.slice(0, 7);
+}
+
+/** The previous calendar month's key, e.g. "2026-07" → "2026-06". */
+export function getPreviousMonthKey(monthKey: string = getMonthKey()) {
+  const [year, month] = monthKey.split("-").map(Number);
+  const shifted = new Date(Date.UTC(year, month - 2, 1));
+  return `${shifted.getUTCFullYear()}-${String(shifted.getUTCMonth() + 1).padStart(2, "0")}`;
+}
+
+export function formatMonthName(monthKey: string) {
+  const [year, month] = monthKey.split("-").map(Number);
+  return new Intl.DateTimeFormat("en-IN", {
+    timeZone: APP_TIME_ZONE,
+    month: "long",
+    year: "numeric",
+  }).format(new Date(Date.UTC(year, month - 1, 15)));
+}

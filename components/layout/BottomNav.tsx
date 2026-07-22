@@ -18,7 +18,7 @@ export function BottomNav() {
       className="fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-40 rounded-card border-theme-card border-line bg-surface p-1.5 shadow-card md:hidden"
       aria-label="Primary navigation"
     >
-      <div className="grid grid-cols-3 gap-1">
+      <div className="grid grid-cols-5 gap-0.5">
         {navItems.map(({ href, label, icon: Icon }) => {
           const active = pathname === href;
           const primary = href === "/practice";
@@ -30,7 +30,7 @@ export function BottomNav() {
               prefetch={false}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "relative flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-btn px-1 text-[11px] font-semibold transition-colors",
+                "relative flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-btn px-0.5 text-[10px] font-semibold transition-colors",
                 primary
                   ? "-top-5 font-bold text-content"
                   : active

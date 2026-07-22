@@ -183,6 +183,7 @@ export function buildChallengeUserPrompt({
   usageNote,
   challengePrompt,
   elevatedExample,
+  constraint,
 }: {
   transcript: string;
   targetWord: string;
@@ -191,12 +192,23 @@ export function buildChallengeUserPrompt({
   usageNote: string;
   challengePrompt: string;
   elevatedExample: string;
+  /** Optional bonus-twist condition appended after the transcript. */
+  constraint?: string;
 }) {
-  return CHALLENGE_USER_PROMPT.replace("{{TARGET_WORD}}", targetWord)
+  const prompt = CHALLENGE_USER_PROMPT.replace("{{TARGET_WORD}}", targetWord)
     .replace("{{COMMON_WORD}}", commonWord)
     .replace("{{MEANING}}", meaning)
     .replace("{{USAGE_NOTE}}", usageNote)
     .replace("{{CHALLENGE_PROMPT}}", challengePrompt)
     .replace("{{ELEVATED_EXAMPLE}}", elevatedExample)
     .replace("{{TRANSCRIPT}}", () => transcript);
+
+  if (!constraint?.trim()) {
+    return prompt;
+  }
+
+  return (
+    prompt +
+    PROMPTS.challenge.constraintSuffix.replace("{{CONSTRAINT}}", () => constraint.trim())
+  );
 }

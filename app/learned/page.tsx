@@ -33,6 +33,7 @@ const sourceLabels: Record<SourceFilter, string> = {
   practice: "Practice",
   challenge: "Challenge",
   manual: "Manual",
+  game: "Game",
 };
 
 const difficultyLabels: Record<DifficultyFilter, string> = {

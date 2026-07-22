@@ -28,7 +28,10 @@ type ChallengeRequestBody = {
   transcript?: unknown;
   targetWord?: unknown;
   wordEntry?: unknown;
+  constraint?: unknown;
 };
+
+const CONSTRAINT_MAX_CHARS = 240;
 
 export async function POST(request: Request) {
   const guardResponse = guardAiRequest(request, "challenge");
@@ -56,6 +59,10 @@ export async function POST(request: Request) {
   const targetWord =
     typeof body.targetWord === "string" ? body.targetWord.trim() : "";
   const wordEntry = normalizeWordEntry(body.wordEntry, targetWord);
+  const constraint =
+    typeof body.constraint === "string"
+      ? body.constraint.trim().slice(0, CONSTRAINT_MAX_CHARS)
+      : "";
 
   if (!transcriptResult.ok) {
     return jsonApiError(
@@ -113,6 +120,7 @@ export async function POST(request: Request) {
             usageNote: wordEntry.usageNote,
             challengePrompt: wordEntry.challengePrompt,
             elevatedExample: `${wordEntry.elevatedExample.dev} (${wordEntry.elevatedExample.roman})`,
+            constraint: constraint || undefined,
           }),
         },
       ],

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Header } from "@/components/layout/Header";
 import { BottomNav } from "@/components/layout/BottomNav";
+import { MilestoneCelebration } from "@/components/layout/MilestoneCelebration";
 import { MotionProvider } from "@/components/layout/MotionProvider";
 
 type AppShellProps = {
@@ -16,6 +17,7 @@ export function AppShell({ children }: AppShellProps) {
         <MotionProvider>{children}</MotionProvider>
       </main>
       <BottomNav />
+      <MilestoneCelebration />
     </div>
   );
 }

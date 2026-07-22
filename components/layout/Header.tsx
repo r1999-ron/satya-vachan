@@ -5,15 +5,16 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useRef, useState } from "react";
-import { Flame, Languages } from "lucide-react";
+import { Flame, Languages, Leaf } from "lucide-react";
 import { ThemeSwitcher } from "@/components/layout/ThemeSwitcher";
 import { ResilienceStatus } from "@/components/ui/ResilienceStatus";
 import { useDismissOnOutside } from "@/hooks/useDismissOnOutside";
+import { getTodayKey, shiftDateKey } from "@/lib/dates";
 import { scaleIn, transitions } from "@/lib/motion";
 import { navItems } from "@/lib/nav";
 import { useScriptPreference, useStreak } from "@/lib/storage";
 import { cn } from "@/lib/utils";
-import type { ScriptPreference } from "@/types";
+import type { ScriptPreference, StreakState } from "@/types";
 
 const scriptOptions: {
   value: ScriptPreference;
@@ -102,7 +103,7 @@ export function Header() {
         </nav>
 
         <div className="flex shrink-0 items-center gap-2">
-          <StreakChip count={streak.currentStreak} />
+          <StreakChip streak={streak} />
           <div className="hidden sm:block">
             <ScriptPreferenceControl
               preference={preference}
@@ -123,10 +124,13 @@ export function Header() {
   );
 }
 
-function StreakChip({ count }: { count: number }) {
+function StreakChip({ streak }: { streak: StreakState }) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const count = streak.currentStreak;
   const dayLabel = count === 1 ? "day" : "days";
+  const yesterdayKey = shiftDateKey(getTodayKey(), -1);
+  const restDayJustUsed = streak.restDaysUsed.includes(yesterdayKey);
 
   const close = useCallback(() => setIsOpen(false), []);
   useDismissOnOutside(containerRef, isOpen, close);
@@ -162,12 +166,41 @@ function StreakChip({ count }: { count: number }) {
             animate="visible"
             exit="exit"
             style={{ transformOrigin: "top right" }}
-            className="popover absolute right-0 top-full z-50 mt-2 w-44 p-3 text-right"
+            className="popover absolute right-0 top-full z-50 mt-2 w-56 p-3 text-right"
           >
             <p className="eyebrow">Current streak</p>
             <p className="mt-1 text-sm font-semibold">
               {count} {dayLabel}
             </p>
+            {streak.longestStreak > count ? (
+              <p className="mt-0.5 text-xs text-content-muted">
+                Longest: {streak.longestStreak} days
+              </p>
+            ) : null}
+
+            <div className="mt-2 border-t border-line/60 pt-2">
+              <p className="flex items-center justify-end gap-1.5 text-xs font-semibold text-success">
+                <Leaf size={13} aria-hidden="true" />
+                <span lang="hi" className="font-hindi">
+                  विश्राम दिन
+                </span>
+                : {streak.restDayBank}
+              </p>
+              {restDayJustUsed ? (
+                <p className="mt-1 text-[11px] leading-4 text-content-muted">
+                  <span lang="hi" className="font-hindi">
+                    कल विश्राम दिन था — आपकी streak सुरक्षित रही।
+                  </span>
+                </p>
+              ) : (
+                <p className="mt-1 text-[11px] leading-4 text-content-muted">
+                  <span lang="hi" className="font-hindi">
+                    हर 7 दिन पर 1 विश्राम दिन
+                  </span>{" "}
+                  — it quietly covers one missed day.
+                </p>
+              )}
+            </div>
           </motion.div>
         ) : null}
       </AnimatePresence>

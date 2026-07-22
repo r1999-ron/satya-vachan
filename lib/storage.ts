@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getSeedLearnedWords } from "@/data/demo";
-import { getTodayKey, shiftDateKey } from "@/lib/dates";
+import { getMonthKey, getTodayKey, shiftDateKey } from "@/lib/dates";
+import type { MilestoneStats } from "@/lib/milestones";
+import { buildMonthlyRecap, type MonthlyRecap } from "@/lib/recap";
 import { DEFAULT_SCRIPT_PREFERENCE, isHindiText, makeHindiText } from "@/lib/hindi";
 import {
   countDueWords,
@@ -14,7 +16,11 @@ import {
 import type {
   LearnedWord,
   LearnedWordInput,
+  MonthlyActivity,
   PracticeResponse,
+  PuzzleLifetimeStats,
+  PuzzleRoundResult,
+  PuzzleState,
   ReviewGrade,
   ReviewSchedule,
   ScriptPreference,
@@ -27,6 +33,12 @@ export const STORAGE_KEYS = {
   practiceHistory: "satya-vachan.practiceHistory",
   preferences: "satya-vachan.preferences",
   reviewSchedules: "satya-vachan.reviewSchedules",
+  puzzle: "satya-vachan.puzzle",
+  puzzleStats: "satya-vachan.puzzleStats",
+  twist: "satya-vachan.twist",
+  activity: "satya-vachan.activity",
+  milestonesSeen: "satya-vachan.milestonesSeen",
+  recapSeen: "satya-vachan.recapSeen",
 } as const;
 
 export type PracticeHistoryItem = Pick<
@@ -42,13 +54,21 @@ const EMPTY_STREAK: StreakState = {
   longestStreak: 0,
   lastCompletedDate: null,
   completedChallenges: [],
+  restDayBank: 0,
+  restDaysUsed: [],
 };
 
 const PRACTICE_HISTORY_LIMIT = 10;
 const COMPLETED_CHALLENGES_LIMIT = 60;
+/** A rest day is earned every this many consecutive completions. */
+const REST_DAY_EARN_INTERVAL = 7;
+/** Rest days never accumulate beyond this, keeping the streak honest. */
+const REST_DAY_BANK_CAP = 2;
+const REST_DAYS_USED_LIMIT = 30;
 const PREFERENCES_EVENT = "satya-vachan:preferences";
 const STREAK_EVENT = "satya-vachan:streak";
 const REVIEW_EVENT = "satya-vachan:review";
+export const LEARNED_EVENT = "satya-vachan:learned";
 
 type Preferences = {
   script: ScriptPreference;
@@ -151,7 +171,7 @@ function isLearnedWord(value: unknown): value is LearnedWord {
     value.meaning.trim().length > 0 &&
     typeof value.exampleSentence === "string" &&
     typeof value.savedAt === "string" &&
-    ["seed", "practice", "challenge", "manual"].includes(String(value.source))
+    ["seed", "practice", "challenge", "manual", "game"].includes(String(value.source))
   );
 }
 
@@ -173,6 +193,15 @@ function isStreakState(value: unknown): value is StreakState {
     return false;
   }
 
+  // The rest-day fields arrived after launch, so stored states without them
+  // must keep validating; normalizeStreakState fills in the defaults.
+  const restFieldsValid =
+    (value.restDayBank === undefined ||
+      (typeof value.restDayBank === "number" && Number.isFinite(value.restDayBank))) &&
+    (value.restDaysUsed === undefined ||
+      (Array.isArray(value.restDaysUsed) &&
+        value.restDaysUsed.every((date) => typeof date === "string")));
+
   return (
     typeof value.currentStreak === "number" &&
     Number.isFinite(value.currentStreak) &&
@@ -180,7 +209,8 @@ function isStreakState(value: unknown): value is StreakState {
     Number.isFinite(value.longestStreak) &&
     (value.lastCompletedDate === null || typeof value.lastCompletedDate === "string") &&
     Array.isArray(value.completedChallenges) &&
-    value.completedChallenges.every((date) => typeof date === "string")
+    value.completedChallenges.every((date) => typeof date === "string") &&
+    restFieldsValid
   );
 }
 
@@ -194,12 +224,21 @@ function normalizeStreakState(streak: StreakState): StreakState {
   const completedChallenges = trimCompletedChallenges(streak.completedChallenges);
   const currentStreak = Math.max(0, Math.floor(streak.currentStreak));
   const longestStreak = Math.max(currentStreak, Math.floor(streak.longestStreak));
+  const restDayBank = Math.min(
+    REST_DAY_BANK_CAP,
+    Math.max(0, Math.floor(streak.restDayBank ?? 0)),
+  );
+  const restDaysUsed = Array.from(
+    new Set((streak.restDaysUsed ?? []).map((date) => date.trim()).filter(Boolean)),
+  ).slice(-REST_DAYS_USED_LIMIT);
 
   return {
     currentStreak,
     longestStreak,
     lastCompletedDate: streak.lastCompletedDate?.trim() || null,
     completedChallenges,
+    restDayBank,
+    restDaysUsed,
   };
 }
 
@@ -279,6 +318,7 @@ export function saveLearnedWord(
         cleanRequired(input.exampleSentence) || existing.exampleSentence,
     };
     writeJson(STORAGE_KEYS.learnedWords, nextWords);
+    dispatchLearnedEvent(nextWords);
     return nextWords;
   }
 
@@ -295,6 +335,8 @@ export function saveLearnedWord(
   const nextWords = [newWord, ...storedWords];
 
   writeJson(STORAGE_KEYS.learnedWords, nextWords);
+  recordActivity("wordsSaved");
+  dispatchLearnedEvent(nextWords);
   return nextWords;
 }
 
@@ -304,6 +346,7 @@ export function removeLearnedWord(id: string): LearnedWord[] {
   const nextWords = currentWords.filter((word) => word.id !== trimmedId);
 
   writeJson(STORAGE_KEYS.learnedWords, nextWords);
+  dispatchLearnedEvent(nextWords);
   return nextWords;
 }
 
@@ -324,6 +367,7 @@ export function restoreLearnedWord(word: LearnedWord, index = 0): LearnedWord[] 
   nextWords.splice(restoredIndex, 0, restoredWord);
 
   writeJson(STORAGE_KEYS.learnedWords, nextWords);
+  dispatchLearnedEvent(nextWords);
   return nextWords;
 }
 
@@ -362,8 +406,20 @@ export function completeTodaysChallenge(date: Date = new Date()): StreakState {
   }
 
   const yesterdayKey = shiftDateKey(todayKey, -1);
-  const currentStreak =
-    previousState.lastCompletedDate === yesterdayKey ? previousState.currentStreak + 1 : 1;
+  const dayBeforeKey = shiftDateKey(todayKey, -2);
+  const continues = previousState.lastCompletedDate === yesterdayKey;
+  // A banked विश्राम दिन quietly absorbs exactly one missed day; longer gaps
+  // still reset, so the streak keeps meaning something.
+  const useRestDay =
+    !continues &&
+    previousState.lastCompletedDate === dayBeforeKey &&
+    previousState.restDayBank > 0;
+  const currentStreak = continues || useRestDay ? previousState.currentStreak + 1 : 1;
+  const earnsRestDay = currentStreak > 0 && currentStreak % REST_DAY_EARN_INTERVAL === 0;
+  const restDayBank = Math.min(
+    REST_DAY_BANK_CAP,
+    previousState.restDayBank - (useRestDay ? 1 : 0) + (earnsRestDay ? 1 : 0),
+  );
   const nextState: StreakState = {
     currentStreak,
     longestStreak: Math.max(previousState.longestStreak, currentStreak),
@@ -372,9 +428,14 @@ export function completeTodaysChallenge(date: Date = new Date()): StreakState {
       ...previousState.completedChallenges,
       todayKey,
     ]),
+    restDayBank,
+    restDaysUsed: useRestDay
+      ? [...previousState.restDaysUsed, yesterdayKey].slice(-REST_DAYS_USED_LIMIT)
+      : previousState.restDaysUsed,
   };
 
   writeJson(STORAGE_KEYS.streak, nextState);
+  recordActivity("challenges", date);
   dispatchStreakEvent(nextState);
   return nextState;
 }
@@ -382,6 +443,12 @@ export function completeTodaysChallenge(date: Date = new Date()): StreakState {
 function dispatchStreakEvent(streak: StreakState) {
   if (typeof window !== "undefined") {
     window.dispatchEvent(new CustomEvent(STREAK_EVENT, { detail: streak }));
+  }
+}
+
+function dispatchLearnedEvent(words: LearnedWord[]) {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent(LEARNED_EVENT, { detail: words }));
   }
 }
 
@@ -436,6 +503,7 @@ export function savePracticeHistory(response: PracticeResponse): PracticeHistory
   const nextHistory = [item, ...loadPracticeHistory()].slice(0, PRACTICE_HISTORY_LIMIT);
 
   writeJson(STORAGE_KEYS.practiceHistory, nextHistory);
+  recordActivity("practices");
   return nextHistory;
 }
 
@@ -591,6 +659,7 @@ export function recordReview(
   }
 
   writeJson(STORAGE_KEYS.reviewSchedules, nextSchedules);
+  recordActivity("reviews", date);
   dispatchReviewEvent();
   return nextSchedules;
 }
@@ -669,6 +738,265 @@ export function useReviewQueue() {
 
 function isScriptPreference(value: unknown): value is ScriptPreference {
   return value === "dev" || value === "roman" || value === "both";
+}
+
+/* ------------------------------------------------------------------ */
+/* Monthly activity counters — lightweight aggregates for the recap.  */
+/* ------------------------------------------------------------------ */
+
+const ACTIVITY_MONTHS_LIMIT = 3;
+
+const EMPTY_MONTHLY_ACTIVITY: MonthlyActivity = {
+  practices: 0,
+  challenges: 0,
+  twists: 0,
+  puzzlesCompleted: 0,
+  puzzlePerfects: 0,
+  wordsSaved: 0,
+  reviews: 0,
+};
+
+type ActivityLog = Record<string, MonthlyActivity>;
+
+function normalizeMonthlyActivity(value: unknown): MonthlyActivity {
+  if (!isRecord(value)) {
+    return { ...EMPTY_MONTHLY_ACTIVITY };
+  }
+
+  const normalized = { ...EMPTY_MONTHLY_ACTIVITY };
+
+  for (const key of Object.keys(normalized) as (keyof MonthlyActivity)[]) {
+    const counter = value[key];
+    if (typeof counter === "number" && Number.isFinite(counter)) {
+      normalized[key] = Math.max(0, Math.floor(counter));
+    }
+  }
+
+  return normalized;
+}
+
+function loadActivityLog(): ActivityLog {
+  const stored = readJson<unknown>(STORAGE_KEYS.activity, {});
+
+  if (!isRecord(stored)) {
+    return {};
+  }
+
+  const log: ActivityLog = {};
+
+  for (const [monthKey, value] of Object.entries(stored)) {
+    if (/^\d{4}-\d{2}$/.test(monthKey)) {
+      log[monthKey] = normalizeMonthlyActivity(value);
+    }
+  }
+
+  return log;
+}
+
+/** Counters for one month; zeros when nothing was recorded. */
+export function getMonthlyActivity(monthKey: string): MonthlyActivity {
+  return loadActivityLog()[monthKey] ?? { ...EMPTY_MONTHLY_ACTIVITY };
+}
+
+/**
+ * Bumps one counter for the current month. Only the most recent few months are
+ * kept, so the log never grows with account age.
+ */
+export function recordActivity(kind: keyof MonthlyActivity, date: Date = new Date()) {
+  const monthKey = getMonthKey(getTodayKey(date));
+  const log = loadActivityLog();
+  const month = log[monthKey] ?? { ...EMPTY_MONTHLY_ACTIVITY };
+  const nextLog: ActivityLog = { ...log, [monthKey]: { ...month, [kind]: month[kind] + 1 } };
+  const prunedKeys = Object.keys(nextLog).sort().slice(-ACTIVITY_MONTHS_LIMIT);
+
+  writeJson(
+    STORAGE_KEYS.activity,
+    Object.fromEntries(prunedKeys.map((key) => [key, nextLog[key]])),
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Daily puzzle persistence — progress for today plus lifetime stats. */
+/* ------------------------------------------------------------------ */
+
+export const PUZZLE_EVENT = "satya-vachan:puzzle";
+
+function isPuzzleRoundResult(value: unknown): value is PuzzleRoundResult {
+  return (
+    isRecord(value) &&
+    typeof value.wordId === "string" &&
+    typeof value.correct === "boolean"
+  );
+}
+
+function isPuzzleState(value: unknown): value is PuzzleState {
+  return (
+    isRecord(value) &&
+    typeof value.dateKey === "string" &&
+    typeof value.completed === "boolean" &&
+    Array.isArray(value.results) &&
+    value.results.every(isPuzzleRoundResult)
+  );
+}
+
+/** Today's puzzle progress, or null when none exists for this date yet. */
+export function loadPuzzleState(dateKey: string = getTodayKey()): PuzzleState | null {
+  const stored = readJson<unknown>(STORAGE_KEYS.puzzle, null);
+
+  if (!isPuzzleState(stored) || stored.dateKey !== dateKey) {
+    return null;
+  }
+
+  return stored;
+}
+
+export function loadPuzzleStats(): PuzzleLifetimeStats {
+  const stored = readJson<unknown>(STORAGE_KEYS.puzzleStats, null);
+
+  if (
+    !isRecord(stored) ||
+    typeof stored.played !== "number" ||
+    !Number.isFinite(stored.played) ||
+    typeof stored.perfect !== "number" ||
+    !Number.isFinite(stored.perfect)
+  ) {
+    return { played: 0, perfect: 0 };
+  }
+
+  return {
+    played: Math.max(0, Math.floor(stored.played)),
+    perfect: Math.max(0, Math.floor(stored.perfect)),
+  };
+}
+
+/**
+ * Appends one answered round. Completing the final round is when the set is
+ * counted: lifetime stats, monthly activity, and the puzzle event all fire
+ * exactly once per date because a completed state can no longer change.
+ */
+export function recordPuzzleRound(
+  result: PuzzleRoundResult,
+  totalRounds: number,
+  dateKey: string = getTodayKey(),
+): PuzzleState {
+  const current = loadPuzzleState(dateKey) ?? {
+    dateKey,
+    results: [],
+    completed: false,
+  };
+
+  if (current.completed || current.results.length >= totalRounds) {
+    return current;
+  }
+
+  const results = [...current.results, result];
+  const completed = results.length >= totalRounds;
+  const nextState: PuzzleState = { dateKey, results, completed };
+
+  writeJson(STORAGE_KEYS.puzzle, nextState);
+
+  if (completed) {
+    const stats = loadPuzzleStats();
+    const perfect = results.every((round) => round.correct);
+    const nextStats: PuzzleLifetimeStats = {
+      played: stats.played + 1,
+      perfect: stats.perfect + (perfect ? 1 : 0),
+    };
+
+    writeJson(STORAGE_KEYS.puzzleStats, nextStats);
+    recordActivity("puzzlesCompleted");
+    if (perfect) {
+      recordActivity("puzzlePerfects");
+    }
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent(PUZZLE_EVENT, { detail: nextStats }));
+    }
+  }
+
+  return nextState;
+}
+
+/** Whether the bonus twist has been completed for this date. */
+export function isTwistCompleted(dateKey: string = getTodayKey()): boolean {
+  return readJson<unknown>(STORAGE_KEYS.twist, null) === dateKey;
+}
+
+/** Marks today's twist done; counted once because repeat marks are no-ops. */
+export function markTwistCompleted(dateKey: string = getTodayKey()) {
+  if (isTwistCompleted(dateKey)) {
+    return;
+  }
+
+  writeJson(STORAGE_KEYS.twist, dateKey);
+  recordActivity("twists");
+}
+
+/* ------------------------------------------------------------------ */
+/* Milestone + recap seen-state.                                       */
+/* ------------------------------------------------------------------ */
+
+export function loadMilestonesSeen(): string[] {
+  const stored = readJson<unknown>(STORAGE_KEYS.milestonesSeen, []);
+
+  if (!Array.isArray(stored) || !stored.every((id) => typeof id === "string")) {
+    return [];
+  }
+
+  return stored;
+}
+
+export function markMilestoneSeen(id: string) {
+  const seen = loadMilestonesSeen();
+
+  if (!seen.includes(id)) {
+    writeJson(STORAGE_KEYS.milestonesSeen, [...seen, id]);
+  }
+}
+
+/** Live counters the milestone system watches. */
+export function loadMilestoneStats(): MilestoneStats {
+  return {
+    wordsSaved: loadLearnedWords().length,
+    currentStreak: loadStreakState().currentStreak,
+    puzzlePerfects: loadPuzzleStats().perfect,
+  };
+}
+
+/**
+ * On first run, marks every already-reached milestone as seen so an existing
+ * user is never retro-celebrated. Returns the effective seen list.
+ */
+export function initializeMilestonesSeen(reachedIds: string[]): string[] {
+  if (storageKeyExists(STORAGE_KEYS.milestonesSeen)) {
+    return loadMilestonesSeen();
+  }
+
+  writeJson(STORAGE_KEYS.milestonesSeen, reachedIds);
+  return reachedIds;
+}
+
+/** Assembles a month's recap from all locally stored data. */
+export function loadMonthlyRecap(monthKey: string): MonthlyRecap {
+  return buildMonthlyRecap(
+    monthKey,
+    getMonthlyActivity(monthKey),
+    loadLearnedWords(),
+    loadStreakState().completedChallenges,
+  );
+}
+
+/** The most recent recap month the user has viewed or dismissed. */
+export function loadRecapSeenMonth(): string | null {
+  const stored = readJson<unknown>(STORAGE_KEYS.recapSeen, null);
+  return typeof stored === "string" && /^\d{4}-\d{2}$/.test(stored) ? stored : null;
+}
+
+export function markRecapSeen(monthKey: string) {
+  const seen = loadRecapSeenMonth();
+
+  if (!seen || monthKey > seen) {
+    writeJson(STORAGE_KEYS.recapSeen, monthKey);
+  }
 }
 
 export function loadPreferences(): Preferences {
