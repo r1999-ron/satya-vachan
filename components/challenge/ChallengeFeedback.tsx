@@ -125,8 +125,12 @@ function CompletionBurst() {
         <motion.span
           key={index}
           initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: [0, 1.3, 1], opacity: [0, 1, 0.85] }}
-          transition={{ delay: index * 0.07, ...transitions.bouncy }}
+          animate={{ scale: 1, opacity: 0.85 }}
+          transition={{
+            delay: index * 0.07,
+            scale: transitions.bouncy,
+            opacity: transitions.fade,
+          }}
           className="absolute size-2 rounded-full bg-success"
           style={{
             left: `${12 + index * 13}px`,
