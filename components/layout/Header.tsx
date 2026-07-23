@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useRef, useState } from "react";
 import { Flame, Languages, Leaf } from "lucide-react";
+import { AccountMenu } from "@/components/auth/AccountMenu";
 import { ThemeSwitcher } from "@/components/layout/ThemeSwitcher";
 import { ResilienceStatus } from "@/components/ui/ResilienceStatus";
 import { useDismissOnOutside } from "@/hooks/useDismissOnOutside";
@@ -115,6 +116,7 @@ export function Header() {
             onChange={setScriptPreference}
           />
           <ThemeSwitcher />
+          <AccountMenu />
           <span className="hidden lg:block">
             <ResilienceStatus />
           </span>

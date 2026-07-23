@@ -15,7 +15,10 @@ export type ApiErrorCode =
   | "INVALID_MODEL_RESPONSE"
   | "INVALID_REQUEST"
   | "FORBIDDEN_ORIGIN"
-  | "RATE_LIMITED";
+  | "RATE_LIMITED"
+  | "NOT_AUTHENTICATED"
+  | "SYNC_UNAVAILABLE"
+  | "SYNC_FAILED";
 
 export type ApiErrorPayload = {
   error: string;

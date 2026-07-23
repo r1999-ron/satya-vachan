@@ -27,19 +27,19 @@ import type {
   StreakState,
 } from "@/types";
 
-export const STORAGE_KEYS = {
-  learnedWords: "satya-vachan.learnedWords",
-  streak: "satya-vachan.streak",
-  practiceHistory: "satya-vachan.practiceHistory",
-  preferences: "satya-vachan.preferences",
-  reviewSchedules: "satya-vachan.reviewSchedules",
-  puzzle: "satya-vachan.puzzle",
-  puzzleStats: "satya-vachan.puzzleStats",
-  twist: "satya-vachan.twist",
-  activity: "satya-vachan.activity",
-  milestonesSeen: "satya-vachan.milestonesSeen",
-  recapSeen: "satya-vachan.recapSeen",
-} as const;
+import {
+  STORAGE_KEYS,
+  STORAGE_KEY_NAMES,
+  type StateSnapshot,
+  type StorageKeyName,
+} from "@/lib/sync/keys";
+
+export {
+  STORAGE_KEYS,
+  STORAGE_KEY_NAMES,
+  type StateSnapshot,
+  type StorageKeyName,
+};
 
 export type PracticeHistoryItem = Pick<
   PracticeResponse,
@@ -69,6 +69,12 @@ const PREFERENCES_EVENT = "satya-vachan:preferences";
 const STREAK_EVENT = "satya-vachan:streak";
 const REVIEW_EVENT = "satya-vachan:review";
 export const LEARNED_EVENT = "satya-vachan:learned";
+/**
+ * Fires after any successful write to a stored key. The feature-specific
+ * events above stay as they are — this one exists so the cloud sync layer can
+ * observe every change from one place instead of subscribing to each.
+ */
+export const STORAGE_EVENT = "satya-vachan:storage";
 
 type Preferences = {
   script: ScriptPreference;
@@ -119,10 +125,26 @@ function writeJson<T>(key: string, value: T) {
 
   try {
     window.localStorage.setItem(key, JSON.stringify(value));
+    dispatchStorageEvent(key);
     return true;
   } catch {
     return false;
   }
+}
+
+/**
+ * Suppresses the change event while a remote snapshot is being applied, so
+ * pulling from the cloud does not immediately queue a push of what we just
+ * received.
+ */
+let isApplyingRemoteSnapshot = false;
+
+function dispatchStorageEvent(key: string) {
+  if (isApplyingRemoteSnapshot || typeof window === "undefined") {
+    return;
+  }
+
+  window.dispatchEvent(new CustomEvent(STORAGE_EVENT, { detail: { key } }));
 }
 
 function storageKeyExists(key: string) {
@@ -1016,6 +1038,82 @@ export function saveScriptPreference(script: ScriptPreference) {
     window.dispatchEvent(new CustomEvent(PREFERENCES_EVENT, { detail: preferences }));
   }
   return preferences;
+}
+
+/* ------------------------------------------------------------------ */
+/* Snapshot access — the seam the cloud sync layer reads and writes.  */
+/* ------------------------------------------------------------------ */
+
+/** Everything this browser currently has stored. */
+export function readLocalSnapshot(): StateSnapshot {
+  const snapshot: StateSnapshot = {};
+
+  if (!canUseLocalStorage()) {
+    return snapshot;
+  }
+
+  for (const name of STORAGE_KEY_NAMES) {
+    const storageKey = STORAGE_KEYS[name];
+
+    if (!storageKeyExists(storageKey)) {
+      continue;
+    }
+
+    const value = readJson<unknown>(storageKey, undefined);
+
+    if (value !== undefined) {
+      snapshot[name] = value;
+    }
+  }
+
+  return snapshot;
+}
+
+/**
+ * Overwrites local state with a merged snapshot and tells every listening
+ * hook to re-read. Writes happen with the change event suppressed so applying
+ * a pull does not schedule a redundant push; one storage event is emitted at
+ * the end for observers that only care that *something* changed.
+ */
+export function writeLocalSnapshot(snapshot: StateSnapshot) {
+  if (!canUseLocalStorage()) {
+    return;
+  }
+
+  isApplyingRemoteSnapshot = true;
+
+  try {
+    for (const name of STORAGE_KEY_NAMES) {
+      const value = snapshot[name];
+
+      if (value !== undefined) {
+        writeJson(STORAGE_KEYS[name], value);
+      }
+    }
+  } finally {
+    isApplyingRemoteSnapshot = false;
+  }
+
+  notifyStateReplaced();
+}
+
+/**
+ * Fires the feature events the existing hooks already listen to, so a synced
+ * snapshot appears in the UI without a page reload.
+ */
+function notifyStateReplaced() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  dispatchLearnedEvent(loadLearnedWords());
+  dispatchStreakEvent(loadStreakState());
+  dispatchReviewEvent();
+  window.dispatchEvent(
+    new CustomEvent(PREFERENCES_EVENT, { detail: loadPreferences() }),
+  );
+  window.dispatchEvent(new CustomEvent(PUZZLE_EVENT, { detail: loadPuzzleStats() }));
+  window.dispatchEvent(new CustomEvent(STORAGE_EVENT, { detail: { key: null } }));
 }
 
 export function useScriptPreference() {

@@ -89,23 +89,57 @@ is configured.
 
 ### Client-side persistence
 
-There is no backend database or user accounts. All user state (learned
-words, streaks, practice history, script preference) lives in `localStorage`,
-managed through `lib/storage.ts` (see `STORAGE_KEYS`). Reads/writes go
-through the hooks/helpers there rather than touching `localStorage` directly
-elsewhere, and cross-tab/cross-component sync uses custom events
-(`satya-vachan:preferences`, `satya-vachan:streak`).
+All user state (learned words, streaks, practice history, script preference)
+lives in `localStorage`, managed through `lib/storage.ts`. The key registry
+itself lives in `lib/sync/keys.ts` (`STORAGE_KEYS`) so server code can import
+it without pulling in React hooks and seed data; `lib/storage.ts` re-exports
+it for existing callers. Reads/writes go through the hooks/helpers there
+rather than touching `localStorage` directly elsewhere, and
+cross-tab/cross-component sync uses custom events
+(`satya-vachan:preferences`, `satya-vachan:streak`). Every successful write
+also emits a generic `satya-vachan:storage` event, which is what the cloud
+sync layer subscribes to.
+
+**This layer is synchronous and must stay that way.** It is consumed directly
+by ~19 components; making it async would be a breaking refactor across the
+whole UI.
+
+### Authentication and cloud sync (optional)
+
+Google sign-in via Supabase Auth is optional and gated by
+`isSupabaseConfigured()` (`lib/supabase/config.ts`), following the same
+pattern as `isOpenAIConfigured()`. Without `NEXT_PUBLIC_SUPABASE_URL` and
+`NEXT_PUBLIC_SUPABASE_ANON_KEY` the app is guest-only on `localStorage` and
+no account UI renders — preserve that property.
+
+The design is **local-first**: `localStorage` remains the source of truth the
+UI reads, and cloud sync is a background mirror layered on top.
+
+- `lib/auth/AuthProvider.tsx` — client auth context (`useAuth`).
+- `lib/sync/CloudSyncProvider.tsx` — pulls on sign-in, merges, then
+  debounce-pushes local changes.
+- `lib/sync/merge.ts` — pure per-key merge functions; the correctness-critical
+  piece, and where tests belong when a new storage key is added.
+- `app/api/state/route.ts` — GET/PUT the signed-in user's snapshot.
+- `supabase/migrations/` — schema and row level security policies.
+
+When adding a new `STORAGE_KEYS` entry, also add a merge rule in
+`MERGE_BY_KEY` (`lib/sync/merge.ts`), or it will not sync.
+
+Only the browser-facing anon key is used; never introduce the Supabase
+service role key into this app, and rely on row level security for isolation.
 
 ### Directory layout
 
-- `app/` — routes/layouts (`practice`, `challenge`, `learned`) and API route
-  handlers under `app/api/`.
-- `components/` — feature-organized: `audio/`, `challenge/`, `hindi/`,
-  `home/`, `layout/`, `practice/`, `ui/`.
+- `app/` — routes/layouts (`practice`, `challenge`, `learned`), API route
+  handlers under `app/api/`, and the OAuth callback at `app/auth/callback/`.
+- `components/` — feature-organized: `audio/`, `auth/`, `challenge/`,
+  `hindi/`, `home/`, `layout/`, `practice/`, `ui/`.
 - `hooks/` — client-side React hooks (e.g. `useTranscription`).
 - `lib/` — shared business logic, validators, OpenAI/Langfuse integration,
-  storage, prompt registry. Keep server-only integrations here or in API
-  routes.
+  storage, prompt registry, plus `auth/`, `supabase/`, and `sync/`. Keep
+  server-only integrations here or in API routes.
+- `supabase/migrations/` — SQL schema and row level security policies.
 - `data/` — word corpus CSV sources + generated JSON, demo/seed data,
   taglines.
 - `types/` — shared TypeScript types (`WordEntry`, `PracticeResponse`,

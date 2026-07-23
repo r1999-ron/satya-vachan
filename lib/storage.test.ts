@@ -292,11 +292,41 @@ describe("storage", () => {
 
     const streak = completeTodaysChallenge(new Date("2026-07-18T12:00:00.000Z"));
 
-    expect(dispatchEvent).toHaveBeenCalledOnce();
-    expect(dispatchEvent.mock.calls[0]?.[0]).toMatchObject({
+    const streakEvents = dispatchEvent.mock.calls
+      .map(([event]) => event)
+      .filter((event) => event.type === "satya-vachan:streak");
+
+    expect(streakEvents).toHaveLength(1);
+    expect(streakEvents[0]).toMatchObject({
       type: "satya-vachan:streak",
       detail: streak,
     });
+  });
+
+  it("emits a generic storage event for every written key", () => {
+    const dispatchEvent = vi.fn<(event: Event) => boolean>(() => true);
+    Object.defineProperty(globalThis, "window", {
+      configurable: true,
+      value: {
+        localStorage: storage,
+        addEventListener: () => undefined,
+        removeEventListener: () => undefined,
+        dispatchEvent,
+      },
+    });
+
+    completeTodaysChallenge(new Date("2026-07-18T12:00:00.000Z"));
+
+    // The cloud sync layer subscribes to this one event instead of every
+    // feature-specific event, so completing a challenge must announce both the
+    // streak write and the activity counter write.
+    const storageKeys = dispatchEvent.mock.calls
+      .map(([event]) => event)
+      .filter((event) => event.type === "satya-vachan:storage")
+      .map((event) => (event as CustomEvent<{ key: string }>).detail.key);
+
+    expect(storageKeys).toContain(STORAGE_KEYS.streak);
+    expect(storageKeys).toContain(STORAGE_KEYS.activity);
   });
 
   it("keeps only the 60 most recent challenge completion keys", () => {
